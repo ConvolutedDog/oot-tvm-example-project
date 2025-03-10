@@ -17,7 +17,7 @@
  * under the License.
  */
 
-#include "test.h"
+#include "example-test.h"
 #include "ndarray-test.h"
 
 int main() {

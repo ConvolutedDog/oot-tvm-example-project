@@ -19,26 +19,29 @@
 
 #include <cassert>
 #include <iostream>
-#include <unordered_set>
 #include <tvm/../../src/relay/ir/indexed_graph.h>
 #include <tvm/relay/expr.h>
 #include <tvm/relay/function.h>
 #include <tvm/relay/parser.h>
+#include <unordered_set>
 
 namespace tvm {
 namespace relay {
 namespace {
 
-// A module stolen from onnx/test_forward.py::test_loop which combines functions, recursion,
-// control flow, tuples as well as the usual operator calls.
-// We include the known post-dfs indexes in comments to help write the tests.
+// A module stolen from onnx/test_forward.py::test_loop which combines
+// functions, recursion, control flow, tuples as well as the usual operator
+// calls. We include the known post-dfs indexes in comments to help write the
+// tests.
 IRModule TestRecursiveIRModule() {
   Device device = {kDLCPU, 0};
-  Constant const0(runtime::NDArray::Empty(ShapeTuple({1}), DataType::Int(64), device));
-  Constant const1(runtime::NDArray::Empty(ShapeTuple({0, 1}), DataType::Float(32), device));
+  Constant const0(
+      runtime::NDArray::Empty(ShapeTuple({1}), DataType::Int(64), device));
+  Constant const1(
+      runtime::NDArray::Empty(ShapeTuple({0, 1}), DataType::Float(32), device));
   Map<String, Array<ObjectRef>> metadata;
   metadata.Set("relay.Constant", Array<ObjectRef>({const0, const1}));
-  constexpr const char* kModel = R"(
+  constexpr const char *kModel = R"(
     #[version = "0.0.5"]
     def @main(%trip_count: int64,                                        // 0
               %cond: bool,                                               // 1
@@ -94,24 +97,24 @@ void RecursiveExprRegression() {
   {
     // Dataflow node properties for %4
     auto node = graph->index_to_node(21);
-    const auto* call_node = node->ref().as<CallNode>();
+    const auto *call_node = node->ref().as<CallNode>();
     assert(call_node != nullptr);
-    const auto* op_node = call_node->op.as<OpNode>();
+    const auto *op_node = call_node->op.as<OpNode>();
     assert(op_node != nullptr);
     std::cout << "  op_node->name: " << op_node->name << '\n';
     assert(op_node->name == "add");
 
     // 3 inputs (the op itself is an input)
     assert(node->inputs_.size() == 3);
-    assert(node->inputs_[0]->index_ == 15);  // the add op
-    assert(node->inputs_[1]->index_ == 6);   // %y_in
-    assert(node->inputs_[2]->index_ == 20);  // %3
+    assert(node->inputs_[0]->index_ == 15); // the add op
+    assert(node->inputs_[1]->index_ == 6);  // %y_in
+    assert(node->inputs_[2]->index_ == 20); // %3
 
     // 3 outputs
     assert(node->outputs_.size() == 3);
-    assert(node->outputs_[0]->index_ == 23);  // %5
-    assert(node->outputs_[1]->index_ == 36);  // %10
-    assert(node->outputs_[2]->index_ == 40);  // recursive %while_loop call
+    assert(node->outputs_[0]->index_ == 23); // %5
+    assert(node->outputs_[1]->index_ == 36); // %10
+    assert(node->outputs_[2]->index_ == 40); // recursive %while_loop call
 
     // In the 'if' basic block
     assert(node->basic_block_->index_ == 42);
@@ -127,28 +130,28 @@ void RecursiveExprRegression() {
   {
     // The recursive call to %while_loop does not depend on %while_loop
     auto node = graph->index_to_node(40);
-    const auto* call_node = node->ref().as<CallNode>();
+    const auto *call_node = node->ref().as<CallNode>();
     assert(call_node != nullptr);
-    const auto* var_node = call_node->op.as<VarNode>();
+    const auto *var_node = call_node->op.as<VarNode>();
     assert(var_node != nullptr);
     std::cout << "  var_node->name_hint(): " << var_node->name_hint() << '\n';
     assert(var_node->name_hint() == "while_loop");
 
     assert(node->inputs_.size() == 5);
-    assert(node->inputs_[0]->index_ == 17);  // %14
-    assert(node->inputs_[1]->index_ == 4);   // %max_count
-    assert(node->inputs_[2]->index_ == 25);  // %15
-    assert(node->inputs_[3]->index_ == 21);  // %4
-    assert(node->inputs_[4]->index_ == 39);  // %16
+    assert(node->inputs_[0]->index_ == 17); // %14
+    assert(node->inputs_[1]->index_ == 4);  // %max_count
+    assert(node->inputs_[2]->index_ == 25); // %15
+    assert(node->inputs_[3]->index_ == 21); // %4
+    assert(node->inputs_[4]->index_ == 39); // %16
   }
 
   {
     // Downstream nodes of %18
     auto node = graph->index_to_node(48);
-    std::unordered_set<const IndexedGraph<Expr>::Node*> downstreams;
+    std::unordered_set<const IndexedGraph<Expr>::Node *> downstreams;
     node->AccumulateDownstreamNodes(&downstreams);
     assert(downstreams.size() == 4);
-    for (const auto* downstream : downstreams) {
+    for (const auto *downstream : downstreams) {
       assert(downstream->index_ >= 49 && downstream->index_ <= 52);
     }
   }
@@ -164,10 +167,10 @@ void RecursiveExprRegression() {
   }
 }
 
-// A module with unused let-bound function. The 'add' operator should have no dominator
-// since it is used both in the unused function and in the main body.
+// A module with unused let-bound function. The 'add' operator should have no
+// dominator since it is used both in the unused function and in the main body.
 IRModule TestUnusedLetBoundIRModule() {
-  constexpr const char* kModel = R"(
+  constexpr const char *kModel = R"(
     #[version = "0.0.5"]
     def @main(%x: int64) -> int64 {   // 0
       let %f = fn (                   // 5
@@ -193,7 +196,7 @@ void UnusedLetVars() {
 
   {
     auto node = graph->index_to_node(2);
-    const auto* op_node = node->ref().as<OpNode>();
+    const auto *op_node = node->ref().as<OpNode>();
     assert(op_node);
     std::cout << "  op_node->name: " << op_node->name << '\n';
     assert(op_node->name == "add");
@@ -204,6 +207,6 @@ void UnusedLetVars() {
   }
 }
 
-}  // namespace
-}  // namespace relay
-}  // namespace tvm
+} // namespace
+} // namespace relay
+} // namespace tvm

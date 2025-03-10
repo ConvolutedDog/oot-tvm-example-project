@@ -34,4 +34,3 @@ done
 # If the maximum number of retries is reached without success
 echo "Maximum retries reached ($MAX_RETRIES attempts), git push still failed."
 exit 1  # Exit the script with an error code
-
