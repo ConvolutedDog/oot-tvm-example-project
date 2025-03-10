@@ -18,15 +18,20 @@
  */
 
 #include "test.h"
+#include "ndarray-test.h"
 
 int main() {
   std::cout << "Running RecursiveExprRegression...\n";
   tvm::relay::RecursiveExprRegression();
-  std::cout << "RecursiveExprRegression passed!\n";
+  std::cout << "RecursiveExprRegression passed!\n\n";
 
   std::cout << "Running UnusedLetVars...\n";
   tvm::relay::UnusedLetVars();
-  std::cout << "UnusedLetVars passed!\n";
+  std::cout << "UnusedLetVars passed!\n\n";
+
+  std::cout << "Running NDArrayTest...\n";
+  tvm::runtime::NDArrayTest();
+  std::cout << "NDArrayTest passed!\n\n";
 
   std::cout << "All tests passed!\n";
   return 0;
