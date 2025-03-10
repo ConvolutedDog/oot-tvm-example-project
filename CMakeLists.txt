@@ -6,6 +6,8 @@ cmake_policy(SET CMP0077 NEW)
 set(CMAKE_CUDA_STANDARD 17)
 set(CMAKE_CXX_STANDARD 17)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 option(BUILD_STATIC_RUNTIME "Build with static runtime" OFF)
 option(CMAKE_POSITION_INDEPENDENT_CODE "Build with position independent code" OFF)
 
@@ -56,7 +58,8 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 
 # Step 2. Add your own source files
 set(SOURCES
-  src/test.cc
+  src/main.cc
+  src/ndarray-test.cc
 )
 
 # Step 3. Create an executable
