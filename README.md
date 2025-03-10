@@ -19,11 +19,6 @@ This project relies on the following environment variables:
   export TVM_LIBRARY_PATH=/path/to/tvm/build
   ```
 
-- `TVM_SOURCE_DIR`: Path to the TVM source directory (optional). If not set, it will be derived from `TVM_LIBRARY_PATH`.
-  ```bash
-  export TVM_SOURCE_DIR=/path/to/tvm
-  ```
-
 ## Building the Project and Run the Example
 
 - **Clone the repository**:
@@ -44,22 +39,22 @@ This project relies on the following environment variables:
 
 - **Run the example**:
   ```bash
-  ./oot-tvm-example
+  ./oottvm_test
   ```
 
 ## Project Structure
 
 - `CMakeLists.txt:` The main CMake configuration file. You can follow the example steps in this file to add your own source files and dependencies.
-- `src/test.cc`: Example source file demonstrating how to use TVM in an out-of-tree project.
+- `src/`: Example source file demonstrating how to use TVM in an out-of-tree project.
 - `include/`: Directory for your project's header files (if any).
+- `tests/`: Example test files.
 
 ## Customizing the Project
 
 - **Adding new source files**: Add your source files to the `SOURCES` variable in `CMakeLists.txt`.
   ```cmake
-  set(SOURCES
-    src/test.cc
-    src/your_new_file.cc
+  file(GLOB SOURCES
+    ${CMAKE_SOURCE_DIR}/src/*.cc
   )
   ```
 

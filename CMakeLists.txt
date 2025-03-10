@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(oot-tvm-example)
+project(oottvm)
 
 cmake_policy(SET CMP0077 NEW)
 
@@ -55,15 +55,27 @@ include_directories(${TVM_SOURCE_DIR}/3rdparty/dlpack/include)
 
 # Step 1. Add your own include directory
 include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_SOURCE_DIR}/tests/cpp/include)  # Add test include directory
 
 # Step 2. Add your own source files
-set(SOURCES
-  src/main.cc
-  src/ndarray-test.cc
+file(GLOB SOURCES
+  ${CMAKE_SOURCE_DIR}/src/*.cc
 )
 
-# Step 3. Create an executable
-add_executable(${PROJECT_NAME} ${SOURCES})
+# Step 3. Create a shared library
+add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
-# Step 4. Link libraries (e.g., TVM)
+# Step 4. Link libraries for the shared library
 target_link_libraries(${PROJECT_NAME} PRIVATE tvm)
+
+# Step 5. Add your own test source files
+file(GLOB TEST_SOURCES
+  ${CMAKE_SOURCE_DIR}/tests/cpp/*.cc
+  ${CMAKE_SOURCE_DIR}/tests/cpp/src/*.cc
+)
+
+# Step 6. Create an executable for the test
+add_executable(${PROJECT_NAME}_test ${TEST_SOURCES})
+
+# Step 7. Link libraries for the test executable
+target_link_libraries(${PROJECT_NAME}_test PRIVATE ${PROJECT_NAME} tvm)
