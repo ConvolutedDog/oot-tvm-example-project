@@ -68,6 +68,32 @@ void NDArrayTest() {
 
   // Print the shape of the new NDArray.
   std::cout << "ndarray2.Shape(): " << ndarray2.Shape() << '\n';
+
+  ndarray2.CopyFrom(ndarray);
+  std::cout << "ndarray2.Shape(): " << ndarray2.Shape() << '\n';
+
+  int32_t numel = 1;
+  for (size_t i = 0; i < dltensor2.ndim; ++i)
+    numel *= dltensor2.shape[i];
+  ndarray2.CopyFromBytes(dltensor2.data, dltensor2.dtype.bits / 8 * numel);
+  std::cout << "ndarray2.Shape(): " << ndarray2.Shape() << '\n';
+
+  NDArray ndarray3 = NDArray::Empty(
+    ShapeTuple({5, 4, 3, 2}), DLDataType({1, 16, 1}), Device({kDLCPU, 0}));
+  ndarray2.CopyTo(ndarray3);
+  std::cout << "ndarray3.Shape(): " << ndarray3.Shape() << '\n';
+
+  NDArrayWithPrinter ndarray4(ndarray3);
+  std::cout << "ndarray4.Shape(): " << ndarray4.Shape() << '\n';
+  std::cout << "ndarray4.dtype: " << DLDataType2String(
+    DLDataType({
+      static_cast<uint8_t>(ndarray4.DataType().code()),
+      static_cast<uint8_t>(ndarray4.DataType().bits()),
+      static_cast<uint16_t>(ndarray4.DataType().lanes())
+    })
+  ) << '\n';
+  std::cout << "ndarray4.data: " << '\n';
+  ndarray4.show();
 }
 
 } // namespace runtime
