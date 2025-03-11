@@ -1,0 +1,15 @@
+#include "../include/inplacearraybase-test.h"
+
+using namespace tvm::runtime;
+
+void InplaceArrayBaseTest() {
+  typedef uint32_t ArrayType;
+  typedef int16_t ElemType;
+
+  MyArray<ArrayType, ElemType> arr(10, 25, 49, 58, 890);
+  arr.Show();
+
+  typedef double ElemType2;
+  MyArray<ArrayType, ElemType2> arr2(10., 25., 49., 58., 890.);
+  arr2.Show();
+}

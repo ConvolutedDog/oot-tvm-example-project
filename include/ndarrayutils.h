@@ -128,7 +128,7 @@ private:
   /// Calculates the total number of elements in the NDArray.
   ///
   /// @return The total number of elements (product of all dimensions).
-  ShapeTuple::index_type numel() const;
+  ShapeTuple::index_type Numel() const;
 
 public:
   /// Implements the `PrintImpl` method required by the NDArrayPrinter class.

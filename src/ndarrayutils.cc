@@ -16,7 +16,7 @@ typedef enum {
 ///
 /// @return The total number of elements (product of all dimensions).
 /// @throws std::runtime_error If the NDArray has invalid dimensions.
-ShapeTuple::index_type NDArrayWithPrinter::numel() const {
+ShapeTuple::index_type NDArrayWithPrinter::Numel() const {
   int64_t ret = 1;
   auto &nDim = this->get_mutable()->dl_tensor.ndim;
   ASSERT_WITH_MSG(nDim >= 1,  // NOLINT(misc-static-assert)
@@ -45,7 +45,7 @@ void NDArrayWithPrinter::PrintImpl() {
   const runtime::DataType type = this->DataType();
 
   // Get the total number of elements.
-  const size_t numElements = this->numel();
+  const size_t numElements = this->Numel();
 
   // Get the string representation of the NDArray's data type.
   const std::string nDarrayDtype = DataType2String();
