@@ -1,7 +1,7 @@
 #include "../include/ndarrayutils-test.h"
+#include <tvm/runtime/container/shape_tuple.h>
 
-namespace tvm {
-namespace runtime {
+namespace tvm::runtime {
 
 /// This function tests the NDArray API in TVM runtime.
 /// It demonstrates how to create, manipulate, and inspect NDArray objects.
@@ -13,45 +13,45 @@ namespace runtime {
 /// - Copying data between NDArrays.
 void NDArrayTest() {
   // Create a ShapeTuple with initial dimensions {3, 64, 224, 224}.
-  ShapeTuple shape_tuple({3, 64, 224, 224});
+  ShapeTuple shapeTuple({3, 64, 224, 224});
 
   // Reassign ShapeTuple with new dimensions {2, 3, 4, 5}.
-  shape_tuple = std::vector<ShapeTuple::index_type>({2, 3, 4, 5});
+  shapeTuple = std::vector<ShapeTuple::index_type>({2, 3, 4, 5});
 
   // Create an empty NDArray with the specified shape, data type, and device.
-  NDArray ndarray =
-      NDArray::Empty(shape_tuple, DLDataType({2, 16, 1}), Device({kDLCPU, 0}));
+  const NDArray ndarray =
+      NDArray::Empty(shapeTuple, DLDataType({2, 16, 1}), Device({kDLCPU, 0}));
 
   // Print the use count of the NDArray (reference count for shared_ptr).
   std::cout << "ndarray.use_count(): " << ndarray.use_count() << '\n';
 
   // Get the underlying DLTensor pointer from the NDArray.
   const DLTensor *dltensor = ndarray.operator->();
+  assert(dltensor != nullptr);
 
   // Get the shape of the NDArray and assign it to ShapeTuple.
-  shape_tuple = ndarray.Shape();
+  shapeTuple = ndarray.Shape();
 
   // Print the number of dimensions of the DLTensor.
-  std::cout << "dltensor->ndim: " << shape_tuple.size() << '\n';
+  std::cout << "dltensor->ndim: " << shapeTuple.size() << '\n';
 
   // Get a pointer to the shape data and print each dimension.
-  const ShapeTuple::index_type *index_data = shape_tuple.data();
-  for (size_t i = 0; i < shape_tuple.size(); ++i) {
-    std::cout << "index_data[" << i << "]: " << index_data[i] << '\n';
-    std::cout << "  index_data @ " << i << ": " << shape_tuple.at(i) << '\n';
+  const ShapeTuple::index_type *indexData = shapeTuple.data();
+  for (size_t i = 0; i < shapeTuple.size(); ++i) {
+    std::cout << "indexData[" << i << "]: " << indexData[i] << '\n';
+    std::cout << "  indexData @ " << i << ": " << shapeTuple.at(i) << '\n';
   }
 
   // Print the first and last elements of the shape data.
-  std::cout << "index_data front: " << shape_tuple.front() << '\n';
-  std::cout << "index_data back: " << shape_tuple.back() << '\n';
+  std::cout << "indexData front: " << shapeTuple.front() << '\n';
+  std::cout << "indexData back: " << shapeTuple.back() << '\n';
 
   // Get the ShapeTupleObj pointer and print the product of its dimensions.
-  const ShapeTupleObj *shape_tuple_obj = shape_tuple.get();
-  std::cout << "shape_tuple_obj->product: " << shape_tuple_obj->Product()
-            << '\n';
+  const ShapeTupleObj *shapeTupleObj = shapeTuple.get();
+  std::cout << "shapeTupleObj->product: " << shapeTupleObj->Product() << '\n';
 
   // Print the ShapeTuple object directly.
-  std::cout << "shape_tuple: " << shape_tuple << '\n';
+  std::cout << "shapeTuple: " << shapeTuple << '\n';
 
   // Check if the NDArray is contiguous in memory and print the result.
   std::cout << "ndarray.IsContiguous(): " << ndarray.IsContiguous() << '\n';
@@ -64,7 +64,7 @@ void NDArrayTest() {
   dltensor2.ndim = 4;
   dltensor2.dtype = DLDataType({2, 16, 1});
   dltensor2.shape = const_cast<int64_t *>(
-      shape_tuple.data()); // Convert const pointer to non-const.
+      shapeTuple.data());  // Convert const pointer to non-const.
   dltensor2.strides = nullptr;
   dltensor2.byte_offset = 0;
 
@@ -90,7 +90,7 @@ void NDArrayTest() {
   std::cout << "ndarray2.Shape(): " << ndarray2.Shape() << '\n';
 
   // Create a third NDArray and copy data from ndarray2 to it.
-  NDArray ndarray3 = NDArray::Empty(
+  const NDArray ndarray3 = NDArray::Empty(
       ShapeTuple({5, 4, 3, 2}), DLDataType({1, 16, 1}), Device({kDLCPU, 0}));
   ndarray2.CopyTo(ndarray3);
   std::cout << "ndarray3.Shape(): " << ndarray3.Shape() << '\n';
@@ -103,5 +103,4 @@ void NDArrayTest() {
   ndarray4.show();
 }
 
-} // namespace runtime
-} // namespace tvm
+}  // namespace tvm::runtime

@@ -116,7 +116,7 @@ public:
   /// NDArray object.
   ///
   /// @param data A pointer to the underlying TVM Object.
-  NDArrayWithPrinter(ObjectPtr<Object> data) : NDArray(data) {}
+  NDArrayWithPrinter(ObjectPtr<Object> data) : NDArray(std::move(data)) {}
 
   /// Constructor that initializes the NDArrayWithPrinter with an existing
   /// NDArray object.
@@ -136,6 +136,6 @@ public:
   void PrintImpl();
 };
 
-} // namespace tvm::runtime
+}  // namespace tvm::runtime
 
 #endif

@@ -13,11 +13,11 @@ option(CMAKE_POSITION_INDEPENDENT_CODE "Build with position independent code" OF
 option(CLANG_TIDY "Build with clang-tidy" OFF)
 
 if(CLANG_TIDY)
-  find_program(CLANG_TIDY clang-tidy)
-  if(NOT CLANG_TIDY)
+  find_program(CLANG_TIDY_EXE clang-tidy)
+  if(NOT CLANG_TIDY_EXE)
     message(FATAL_ERROR "clang-tidy not found")
   endif()
-  set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY};-checks=*")
+  set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE};--config-file=${CMAKE_SOURCE_DIR}/.clang-tidy")
 endif()
 
 if(DEFINED ENV{TVM_LIBRARY_PATH})
