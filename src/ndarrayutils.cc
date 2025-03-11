@@ -65,8 +65,12 @@ void NDArrayWithPrinter::PrintImpl() {
     break;
   case DataType::kFloat:
     switch (type.bits()) {
-    case kFloat32: PrintData<float>(dlTensorData, numElements, "Float32"); break;
-    case kFloat64: PrintData<double>(dlTensorData, numElements, "Float64"); break;
+    case kFloat32:
+      PrintData<float>(dlTensorData, numElements, "Float32");
+      break;
+    case kFloat64:
+      PrintData<double>(dlTensorData, numElements, "Float64");
+      break;
     default:
       throw std::runtime_error("Unsupported float bit width: " +
                                std::to_string(type.bits()));
