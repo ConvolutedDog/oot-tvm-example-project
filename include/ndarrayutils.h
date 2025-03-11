@@ -26,8 +26,7 @@
     }                                                                          \
   } while (false)
 
-namespace tvm {
-namespace runtime {
+namespace tvm::runtime {
 
 /// A template class for a printer that uses the CRTP (Curiously Recurring
 /// Template Pattern). Derived classes must implement the `PrintImpl` method.
@@ -137,7 +136,6 @@ public:
   void PrintImpl();
 };
 
-} // namespace runtime
-} // namespace tvm
+} // namespace tvm::runtime
 
 #endif

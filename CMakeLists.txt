@@ -10,6 +10,15 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(BUILD_STATIC_RUNTIME "Build with static runtime" OFF)
 option(CMAKE_POSITION_INDEPENDENT_CODE "Build with position independent code" OFF)
+option(CLANG_TIDY "Build with clang-tidy" OFF)
+
+if(CLANG_TIDY)
+  find_program(CLANG_TIDY clang-tidy)
+  if(NOT CLANG_TIDY)
+    message(FATAL_ERROR "clang-tidy not found")
+  endif()
+  set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY};-checks=*")
+endif()
 
 if(DEFINED ENV{TVM_LIBRARY_PATH})
   set(TVM_LIBRARY_PATH "$ENV{TVM_LIBRARY_PATH}")
