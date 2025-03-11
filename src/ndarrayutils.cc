@@ -52,32 +52,36 @@ void NDArrayWithPrinter::PrintImpl() {
 
   // Handle different data types.
   switch (type.code()) {
-  case DataType::kInt:
-  case DataType::kUInt:
-    switch (type.bits()) {
-    case kInt8: PrintData<int8_t>(dlTensorData, numElements, "Int8"); break;
-    case kInt16: PrintData<int16_t>(dlTensorData, numElements, "Int16"); break;
-    case kInt32: PrintData<int32_t>(dlTensorData, numElements, "Int32"); break;
-    default:
-      throw std::runtime_error("Unsupported integer bit width: " +
-                               std::to_string(type.bits()));
-    }
-    break;
-  case DataType::kFloat:
-    switch (type.bits()) {
-    case kFloat32:
-      PrintData<float>(dlTensorData, numElements, "Float32");
+    case DataType::kInt:
+    case DataType::kUInt:
+      switch (type.bits()) {
+        case kInt8: PrintData<int8_t>(dlTensorData, numElements, "Int8"); break;
+        case kInt16:
+          PrintData<int16_t>(dlTensorData, numElements, "Int16");
+          break;
+        case kInt32:
+          PrintData<int32_t>(dlTensorData, numElements, "Int32");
+          break;
+        default:
+          throw std::runtime_error("Unsupported integer bit width: " +
+                                   std::to_string(type.bits()));
+      }
       break;
-    case kFloat64:
-      PrintData<double>(dlTensorData, numElements, "Float64");
+    case DataType::kFloat:
+      switch (type.bits()) {
+        case kFloat32:
+          PrintData<float>(dlTensorData, numElements, "Float32");
+          break;
+        case kFloat64:
+          PrintData<double>(dlTensorData, numElements, "Float64");
+          break;
+        default:
+          throw std::runtime_error("Unsupported float bit width: " +
+                                   std::to_string(type.bits()));
+      }
       break;
     default:
-      throw std::runtime_error("Unsupported float bit width: " +
-                               std::to_string(type.bits()));
-    }
-    break;
-  default:
-    throw std::runtime_error("Unsupported data type code: " + nDarrayDtype);
+      throw std::runtime_error("Unsupported data type code: " + nDarrayDtype);
   }
 }
 

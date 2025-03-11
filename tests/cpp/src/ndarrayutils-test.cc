@@ -100,7 +100,7 @@ void NDArrayTest() {
   std::cout << "ndarray4.Shape(): " << ndarray4.Shape() << '\n';
   std::cout << "ndarray4.dtype: " << ndarray4.DataType2String() << '\n';
   std::cout << "ndarray4.data: " << '\n';
-  ndarray4.show();
+  ndarray4.Show();
 }
 
 }  // namespace tvm::runtime

@@ -33,7 +33,7 @@ namespace {
 // functions, recursion, control flow, tuples as well as the usual operator
 // calls. We include the known post-dfs indexes in comments to help write the
 // tests.
-IRModule testRecursiveIRModule() {
+IRModule TestRecursiveIRModule() {
   Device myDevice = {kDLCPU, 0};
   Constant const0(
       runtime::NDArray::Empty(ShapeTuple({1}), DataType::Int(64), myDevice));
@@ -89,7 +89,7 @@ IRModule testRecursiveIRModule() {
 }
 
 void RecursiveExprRegression() {
-  IRModule irMod = testRecursiveIRModule();
+  IRModule irMod = TestRecursiveIRModule();
   auto main = Downcast<Function>(irMod->Lookup("main"));
   auto graph = CreateIndexedGraph(main);
   graph->CheckValid();

@@ -39,7 +39,7 @@ namespace tvm::runtime {
 /// Usage:
 /// - Extend the `NDArrayPrinter` class by implementing the `PrintImpl` method
 /// in a derived class.
-/// - Use the `show()` method to trigger the custom printing logic.
+/// - Use the `Show()` method to trigger the custom printing logic.
 ///
 /// Example:
 /// ```c++
@@ -55,7 +55,7 @@ public:
   using index_type = ShapeTuple::index_type;
 
   /// Calls the `PrintImpl` method of the derived class.
-  void show();
+  void Show();
 
   /// Helper function to print data of a specific type.
   ///
@@ -64,7 +64,7 @@ public:
   /// @param size Number of elements in the data.
   /// @param type_name A string describing the data type (e.g., "Int8").
   template <typename T>
-  void PrintData(void *data, size_t size, const std::string &type_name);
+  void PrintData(void *data, size_t size, const std::string &typeName);
 
   /// Converts the DataType of the NDArray to a string representation.
   ///
@@ -79,15 +79,15 @@ public:
   virtual ~NDArrayPrinter() = default;
 };
 
-template <typename Derived> void NDArrayPrinter<Derived>::show() {
+template <typename Derived> void NDArrayPrinter<Derived>::Show() {
   static_cast<Derived *>(this)->PrintImpl();
 }
 
 template <typename Derived>
 template <typename T>
 void NDArrayPrinter<Derived>::PrintData(void *data, size_t size,
-                                        const std::string &type_name) {
-  std::cout << type_name << " - NDArray data: ";
+                                        const std::string &typeName) {
+  std::cout << typeName << " - NDArray data: ";
   T *ptr = static_cast<T *>(data);
   for (size_t i = 0; i < size; ++i) {
     std::cout << ptr[i] << ",";
