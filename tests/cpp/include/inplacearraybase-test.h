@@ -15,6 +15,8 @@ public:
     }
     *os << std::endl;
   }
+
+  void Show(std::ostream &os = std::cout) { Show(&os); }
 };
 
 template <typename ArrayType, typename ElemType>
