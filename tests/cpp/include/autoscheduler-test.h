@@ -18,7 +18,6 @@
  */
 
 #include <dmlc/logging.h>
-#include <gtest/gtest.h>
 #include <tvm/auto_scheduler/compute_dag.h>
 #include <tvm/runtime/container/array.h>
 #include <tvm/te/operation.h>
