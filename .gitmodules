@@ -1,0 +1,3 @@
+[submodule "tests/python/hands-on-tvm"]
+	path = tests/python/hands-on-tvm
+	url = https://github.com/JackonYang/hands-on-tvm
