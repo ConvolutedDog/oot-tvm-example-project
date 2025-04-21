@@ -33,17 +33,25 @@ else()
   message(FATAL_ERROR "TVM_LIBRARY_PATH NOT SET, you should build TVM from source.")
 endif()
 
+if(APPLE)  # macOS
+  set(TVM_LIB_NAME "libtvm.dylib")
+  set(TVM_RUNTIME_LIB_NAME "libtvm_runtime.dylib")
+else()  # Linux
+  set(TVM_LIB_NAME "libtvm.so")
+  set(TVM_RUNTIME_LIB_NAME "libtvm_runtime.so")
+endif()
+
 if (DEFINED TVM_LIBRARY_PATH)
   get_filename_component(TVM_LIBRARY_ABS_PATH "${TVM_LIBRARY_PATH}" ABSOLUTE)
   message(STATUS "Using TVM_LIBRARY_PATH: ${TVM_LIBRARY_ABS_PATH}")
   add_library(tvm SHARED IMPORTED)
   set_target_properties(tvm PROPERTIES
-    IMPORTED_LOCATION "${TVM_LIBRARY_ABS_PATH}/libtvm.so"
+    IMPORTED_LOCATION "${TVM_LIBRARY_ABS_PATH}/${TVM_LIB_NAME}"
     INTERFACE_INCLUDE_DIRECTORIES "${TVM_LIBRARY_ABS_PATH}/../include"
   )
   add_library(tvm_runtime SHARED IMPORTED)
   set_target_properties(tvm_runtime PROPERTIES
-    IMPORTED_LOCATION "${TVM_LIBRARY_ABS_PATH}/libtvm_runtime.so"
+    IMPORTED_LOCATION "${TVM_LIBRARY_ABS_PATH}/${TVM_RUNTIME_LIB_NAME}"
     INTERFACE_INCLUDE_DIRECTORIES "${TVM_LIBRARY_ABS_PATH}/../include"
   )
 else()
