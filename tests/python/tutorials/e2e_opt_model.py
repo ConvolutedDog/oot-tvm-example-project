@@ -25,6 +25,8 @@ use a pre-trained ResNet-18 model from PyTorch and end-to-end optimize it using 
 Please note that default end-to-end optimization may not suit complex models.
 """
 
+DEBUG = False
+
 ######################################################################
 # Preparation
 # -----------
@@ -38,6 +40,37 @@ from torch.export import export
 from torchvision.models.resnet import ResNet18_Weights, resnet18
 
 torch_model = resnet18(weights=ResNet18_Weights.DEFAULT).eval()
+
+IMAGE_SIZE = 58
+TORCH_LOGS="+dynamo"
+TORCHDYNAMO_VERBOSE=1
+
+class MyModule(torch.nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.conv = torch.nn.Conv2d(
+            in_channels=3, out_channels=1, kernel_size=3, stride=3, padding=1
+        )
+        # O = (28 + 2*1 - 3)/3 + 1 = 10
+        # O = (58 + 2*1 - 3)/3 + 1 = 20
+        self.prevShapeH = IMAGE_SIZE + 2 * self.conv.padding[0] - self.conv.kernel_size[0]
+        assert self.prevShapeH % self.conv.stride[0] == 0, "prevShapeH must be divisible by stride"
+        self.prevShapeW = IMAGE_SIZE + 2 * self.conv.padding[1] - self.conv.kernel_size[1]
+        assert self.prevShapeW % self.conv.stride[1] == 0, "prevShapeW must be divisible by stride"
+
+        self.outputsizeH = int(self.prevShapeH / self.conv.stride[0]) + 1
+        self.outputsizeW = int(self.prevShapeW / self.conv.stride[1]) + 1
+        self.outputsize = self.outputsizeH * self.outputsizeW
+        self.linear = torch.nn.Linear(self.outputsize * 1, 10)
+
+    def forward(self, x):
+        x = self.conv(x)
+        x = x.view(-1, self.outputsize * 1)
+        x = self.linear(x)
+        return x
+
+
+torch_model = MyModule()
 
 ######################################################################
 # Review Overall Flow
@@ -70,7 +103,7 @@ from tvm import relax
 from tvm.relax.frontend.torch import from_exported_program
 
 # Give an example argument to torch.export
-example_args = (torch.randn(1, 3, 28, 28, dtype=torch.float32),)
+example_args = (torch.randn(1, 3, IMAGE_SIZE, IMAGE_SIZE, dtype=torch.float32),)
 
 # Skip running in CI environment
 IS_IN_CI = os.getenv("CI", "") == "true"
@@ -79,10 +112,19 @@ if not IS_IN_CI:
     # Convert the model to IRModule
     with torch.no_grad():
         exported_program = export(torch_model, example_args)
-        mod = from_exported_program(exported_program, keep_params_as_input=True)
+        if DEBUG:
+            print(exported_program.graph_signature.input_specs)
+            print(exported_program.graph)
+            print(exported_program.state_dict)
+            print(exported_program.graph.nodes)
+            for node in exported_program.graph.nodes:
+                print(node, node.op, node.target)
+        mod: tvm.IRModule = from_exported_program(
+            exported_program, keep_params_as_input=True
+        )
 
     mod, params = relax.frontend.detach_params(mod)
-    mod.show()
+    mod.show(black_format=True, show_all_struct_info=True)
 
 ######################################################################
 # IRModule Optimization
@@ -96,15 +138,24 @@ if not IS_IN_CI:
 # apply the database to the model to get the best performance.
 #
 
-TOTAL_TRIALS = 20  # Change to 20000 for better performance if needed
+TOTAL_TRIALS = 200  # Change to 20000 for better performance if needed
 target = tvm.target.Target("llvm -num-cores 8")  # Change to your target device
 work_dir = "tuning_logs"
 
 if not IS_IN_CI:
-    mod = relax.get_pipeline("static_shape_tuning", target=target, total_trials=TOTAL_TRIALS)(mod)
+    mod = relax.get_pipeline(
+        "static_shape_tuning",
+        target=target,
+        total_trials=TOTAL_TRIALS,
+        cpu_weight_prepack=False,
+    )(mod)
+    mod = relax.get_pipeline(
+        "default_build",
+    )(mod)
 
     # Only show the main function
-    mod["main"].show()
+    mod["main"].show(black_format=True, show_all_struct_info=True)
+    print(mod)
 
 ######################################################################
 # Build and Deploy
@@ -117,7 +168,10 @@ if not IS_IN_CI:
     dev = tvm.device("llvm", 0)
     vm = relax.VirtualMachine(ex, dev)
     # Need to allocate data and params on GPU device
-    gpu_data = tvm.nd.array(np.random.rand(1, 3, 28, 28).astype("float32"), dev)
+    gpu_data = tvm.nd.array(
+        np.random.rand(1, 3, IMAGE_SIZE, IMAGE_SIZE).astype("float32"), dev
+    )
+
     gpu_params = [tvm.nd.array(p, dev) for p in params["main"]]
     # gpu_out = vm["main"](gpu_data, *gpu_params).numpy()
     gpu_out = vm["main"](gpu_data, *gpu_params)
@@ -130,6 +184,8 @@ if not IS_IN_CI:
 
 
 import time
+
+
 def benchmark_model_execution(vm, input_data, params, num_runs=100):
     # Warmup
     for _ in range(5):
@@ -139,24 +195,27 @@ def benchmark_model_execution(vm, input_data, params, num_runs=100):
     for _ in range(num_runs):
         result = vm["main"](input_data, *params)
     end_time = time.time()
-    
+
     avg_time = (end_time - start_time) / num_runs * 1000
     return avg_time
 
+
 if not IS_IN_CI:
-    input_data = tvm.nd.array(np.random.rand(1, 3, 28, 28).astype("float32"), dev)
+    input_data = tvm.nd.array(
+        np.random.rand(1, 3, IMAGE_SIZE, IMAGE_SIZE).astype("float32"), dev
+    )
     params = [tvm.nd.array(p, dev) for p in params["main"]]
-    
+
     print("=== Unoptimized Version Performance ===")
     unoptimized_mod = relax.get_pipeline("zero")(mod)
     unoptimized_ex = tvm.compile(unoptimized_mod, target="llvm")
     unoptimized_vm = relax.VirtualMachine(unoptimized_ex, dev)
     unoptimized_time = benchmark_model_execution(unoptimized_vm, input_data, params)
     print(f"Average latency: {unoptimized_time:.2f} ms")
-    
+
     print("\n=== Optimized Version Performance ===")
     optimized_time = benchmark_model_execution(vm, input_data, params)
     print(f"Average latency: {optimized_time:.2f} ms")
-    
+
     speedup = unoptimized_time / optimized_time
     print(f"\nSpeedup: {speedup:.2f}x")
