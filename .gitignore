@@ -274,3 +274,13 @@ tvm-site/
 
 # GDB history file
 .gdb_history
+
+# Models
+FashionMNIST
+*.pkl
+
+# PDFs
+*.pdf
+
+# Tunes
+tune_tmp
