@@ -34,6 +34,9 @@ class MyModuleVecAdd:
                 vi = T.axis.remap("S", [i])
                 C[vi] = A[vi] + B[vi]
 
+mod = MyModuleVecAdd
+showmod(mod)
+
 sch = tvm.tir.Schedule(MyModuleVecAdd)
 block_C = sch.get_block("C")
 i, = sch.get_loops(block=block_C)
@@ -63,8 +66,8 @@ print(C_nd)
 @tvm.script.ir_module
 class MyModuleWindowSum:
     @T.prim_func
-    def main(A: T.Buffer[(1027,), "float32"],
-             B: T.Buffer[(1024,), "float32"]) -> None:
+    def main(A: T.Buffer((1027,), "float32"),
+             B: T.Buffer((1024,), "float32")) -> None:
         T.func_attr({"global_symbol": "main", "tir.noalias": True})
         for i in T.grid(1024):
             with T.block("C"):
@@ -106,6 +109,9 @@ class MyModuleMatmul:
                 with T.init():
                     C[vi, vj] = 0.0
                 C[vi, vj] = C[vi, vj] + A[vi, vk] * B[vk, vj]
+
+mod = MyModuleMatmul
+showmod(mod)
 
 def blocking(sch,
              tile_local_y,
@@ -198,6 +204,7 @@ sch = blocking_with_shared(sch, 8, 8, 8, 8, 8)
 showmod(sch.mod)
 
 rt_mod = tvm.build(sch.mod, target="cuda")
+print(rt_mod.imported_modules[0].get_source())
 dev = tvm.cuda(0)
 evaluator = rt_mod.time_evaluator("main", dev, number=10)
 
