@@ -72,20 +72,41 @@ void ObjectRefTest() {
   using objectref_test::TestDerived2;
   using objectref_test::TestFinal;
   using tvm::runtime::make_object;
+  using tvm::runtime::ObjectPtr;
 
-  TestCanDerivedFrom testCanDerivedFromRef(make_object<TestCanDerivedFromNode>());
+  ObjectPtr<TestCanDerivedFromNode> objptr =
+      make_object<TestCanDerivedFromNode>();
+  TestCanDerivedFrom testCanDerivedFromRef(objptr);
   LOG_SPLIT_LINE("testCanDerivedFromRef");
   std::cout << testCanDerivedFromRef << '\n';
 
-  TestDerived1 testDerived1Ref(make_object<TestDerived1Node>());
+  ObjectPtr<TestDerived1Node> objptrchild1 = make_object<TestDerived1Node>();
+  TestDerived1 testDerived1Ref(objptrchild1);
   LOG_SPLIT_LINE("testDerived1Ref");
   std::cout << testDerived1Ref << '\n';
 
-  TestDerived2 testDerived2Ref(make_object<TestDerived2Node>());
+  ObjectPtr<TestDerived2Node> objptrchild2 = make_object<TestDerived2Node>();
+  TestDerived2 testDerived2Ref(objptrchild2);
   LOG_SPLIT_LINE("testDerived2Ref");
   std::cout << testDerived2Ref << '\n';
 
   TestFinal testFinalRef(make_object<TestFinalNode>());
   LOG_SPLIT_LINE("testFinalRef");
   std::cout << testFinalRef << '\n';
+
+  /// Different ObjectPtr<TestCanDerivedFromNode>
+  TestCanDerivedFrom testCanDerivedFromRef2(
+      make_object<TestCanDerivedFromNode>(*(testCanDerivedFromRef.get())));
+  LOG_PRINT_VAR(testCanDerivedFromRef2 == testCanDerivedFromRef);  // False
+
+  /// Same ObjectPtr<TestCanDerivedFromNode>
+  TestCanDerivedFrom testCanDerivedFromRef3(objptr);
+  LOG_PRINT_VAR(testCanDerivedFromRef3 == testCanDerivedFromRef);  // True
+  LOG_PRINT_VAR(testCanDerivedFromRef3.same_as(testCanDerivedFromRef));  // True
+  LOG_PRINT_VAR(testCanDerivedFromRef3.use_count()); // 3
+  LOG_PRINT_VAR("\n");
+
+  TestDerived1 testDerived1Ref2(objptrchild1);
+  LOG_SPLIT_LINE("testDerived1Ref2");
+  std::cout << *(testDerived1Ref2.as<TestDerived1Node>()) << '\n';
 }
