@@ -1,6 +1,6 @@
-#include "include/inplacearraybase-test.h"
-#include "include/ndarrayutils-test.h"
-#include "include/object-test.h"
+#include "./include/inplacearraybase-test.h"
+#include "./include/ndarrayutils-test.h"
+#include "./include/object-test.h"
 
 #define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << stmt << std::endl
 

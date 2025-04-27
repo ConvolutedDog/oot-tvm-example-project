@@ -63,7 +63,7 @@ public:
   static constexpr const uint32_t _type_index =
       tvm::runtime::TypeIndex::kDynamic;
   static constexpr const char *_type_key = "test.TestCanDerivedFromObject";
-  static const constexpr int _type_child_slots = 1;
+  static const constexpr int _type_child_slots = 2;
   static const constexpr bool _type_child_slots_can_overflow = 0;
   TVM_DECLARE_BASE_OBJECT_INFO(TestCanDerivedFromObject, tvm::runtime::Object);
 };
@@ -72,10 +72,23 @@ class TestDerived : public TestCanDerivedFromObject,
                     public CreateHelper<TestDerived> {
 public:
   friend class CreateHelper<TestDerived>;
+  /// @note `TestDerived` inherits from `TestCanDerivedFromObject`, which may
+  /// cause ambiguity between the `Create` function in
+  /// `TestCanDerivedFromObject` and the `Create` function in
+  /// `CreateHelper<TestDerived>`. So, we need to explicitly specify which
+  /// `Create` function to use.
   using CreateHelper<TestDerived>::Create;
   static constexpr const uint32_t _type_index =
       tvm::runtime::TypeIndex::kDynamic;
-  static constexpr const char *_type_key = "test.TestDerived1";
+  /// @note `TypeContext::Global()` will return the address of a static `TypeContext`
+  /// object, the `std::vector<TypeInfo> type_table_` in `TypeContext` will store
+  /// all of the types allocated for each node inheritted from `Object`.
+  /// @ref `tvm::runtime::TypeContext::GetOrAllocRuntimeTypeIndex(...)`
+  /// @warning `_type_key` is very important because it will be used to find or
+  /// allocate runtime `type_index_`. If two class inheritted from `Object` or subclasses
+  /// inheritted from `Object` have the same `_type_key`, their `_type_key` will also
+  /// be same.
+  static constexpr const char *_type_key = "test.TestDerived";
   TVM_DECLARE_FINAL_OBJECT_INFO(TestDerived, TestCanDerivedFromObject);
 };
 
@@ -96,7 +109,7 @@ public:
   friend class CreateHelper<TestFinalObject>;
   static constexpr const uint32_t _type_index =
       tvm::runtime::TypeIndex::kDynamic;
-  static constexpr const char *_type_key = "test.TestObject";
+  static constexpr const char *_type_key = "test.TestFinalObject";
   TVM_DECLARE_FINAL_OBJECT_INFO(TestFinalObject, tvm::runtime::Object);
 };
 
