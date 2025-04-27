@@ -1,5 +1,9 @@
 #include "tvm/runtime/object.h"
 
+#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
+#define LOG_SPLIT_LINE(stmt)                                                   \
+  std::cout << "==============" << (stmt) << "==============\n";
+
 /* clang-format off */
 /* Sub-class of objects should declare the following static constexpr fields:
  *
@@ -60,41 +64,43 @@ public:
   }
 };
 
-class TestCanDerivedFromObject : public tvm::runtime::Object,
-                                 public CreateHelper<TestCanDerivedFromObject> {
+class TestCanDerivedFromNode : public tvm::runtime::Object,
+                               public CreateHelper<TestCanDerivedFromNode> {
 public:
-  friend class CreateHelper<TestCanDerivedFromObject>;
+  friend class CreateHelper<TestCanDerivedFromNode>;
   static constexpr const uint32_t _type_index =
       tvm::runtime::TypeIndex::kDynamic;
-  static constexpr const char *_type_key = "test.TestCanDerivedFromObject";
+  static constexpr const char *_type_key = "test.TestCanDerivedFromNode";
   /// For example, in this header, we have two classes that inherits from
   /// the current class, so there is at least 2 child slots here.
-  static const constexpr int _type_child_slots = 3;
+  /// @note The implementation of TVM has bug.
+  /// @ref https://github.com/apache/tvm/issues/17901
+  static const constexpr int _type_child_slots = 2;
   static const constexpr bool _type_child_slots_can_overflow = 0;
-  TVM_DECLARE_BASE_OBJECT_INFO(TestCanDerivedFromObject, tvm::runtime::Object);
+  TVM_DECLARE_BASE_OBJECT_INFO(TestCanDerivedFromNode, tvm::runtime::Object);
 };
 
-class TestDerived1 : public TestCanDerivedFromObject,
-                     public CreateHelper<TestDerived1> {
+class TestDerived1Node : public TestCanDerivedFromNode,
+                         public CreateHelper<TestDerived1Node> {
 public:
-  friend class CreateHelper<TestDerived1>;
-  using CreateHelper<TestDerived1>::Create;
+  friend class CreateHelper<TestDerived1Node>;
+  using CreateHelper<TestDerived1Node>::Create;
   static constexpr const uint32_t _type_index =
       tvm::runtime::TypeIndex::kDynamic;
-  static constexpr const char *_type_key = "test.TestDerived1";
-  TVM_DECLARE_FINAL_OBJECT_INFO(TestDerived1, TestCanDerivedFromObject);
+  static constexpr const char *_type_key = "test.TestDerived1Node";
+  TVM_DECLARE_FINAL_OBJECT_INFO(TestDerived1Node, TestCanDerivedFromNode);
 };
 
-class TestDerived2 : public TestCanDerivedFromObject,
-                     public CreateHelper<TestDerived2> {
+class TestDerived2Node : public TestCanDerivedFromNode,
+                         public CreateHelper<TestDerived2Node> {
 public:
-  friend class CreateHelper<TestDerived2>;
-  /// @note `TestDerived2` inherits from `TestCanDerivedFromObject`, which may
+  friend class CreateHelper<TestDerived2Node>;
+  /// @note `TestDerived2Node` inherits from `TestCanDerivedFromNode`, which may
   /// cause ambiguity between the `Create` function in
-  /// `TestCanDerivedFromObject` and the `Create` function in
-  /// `CreateHelper<TestDerived2>`. So, we need to explicitly specify which
+  /// `TestCanDerivedFromNode` and the `Create` function in
+  /// `CreateHelper<TestDerived2Node>`. So, we need to explicitly specify which
   /// `Create` function to use.
-  using CreateHelper<TestDerived2>::Create;
+  using CreateHelper<TestDerived2Node>::Create;
   static constexpr const uint32_t _type_index =
       tvm::runtime::TypeIndex::kDynamic;
   /// @note `TypeContext::Global()` will return the address of a static
@@ -106,18 +112,58 @@ public:
   /// allocate runtime `type_index_`. If two class inheritted from `Object` or
   /// subclasses inheritted from `Object` have the same `_type_key`, their
   /// runtime `_type_index` will also be same.
-  static constexpr const char *_type_key = "test.TestDerived2";
-  TVM_DECLARE_FINAL_OBJECT_INFO(TestDerived2, TestCanDerivedFromObject);
+  static constexpr const char *_type_key = "test.TestDerived2Node";
+  TVM_DECLARE_FINAL_OBJECT_INFO(TestDerived2Node, TestCanDerivedFromNode);
 };
 
-class TestFinalObject : public tvm::runtime::Object,
-                        public CreateHelper<TestFinalObject> {
+class TestFinalNode : public tvm::runtime::Object,
+                      public CreateHelper<TestFinalNode> {
 public:
-  friend class CreateHelper<TestFinalObject>;
+  friend class CreateHelper<TestFinalNode>;
   static constexpr const uint32_t _type_index =
       tvm::runtime::TypeIndex::kDynamic;
-  static constexpr const char *_type_key = "test.TestFinalObject";
-  TVM_DECLARE_FINAL_OBJECT_INFO(TestFinalObject, tvm::runtime::Object);
+  static constexpr const char *_type_key = "test.TestFinalNode";
+  TVM_DECLARE_FINAL_OBJECT_INFO(TestFinalNode, tvm::runtime::Object);
 };
 
 }  // namespace object_test
+
+std::ostream &operator<<(std::ostream &os, const tvm::runtime::Object &cls);
+
+namespace objectref_test {
+
+using ::object_test::TestCanDerivedFromNode;
+using ::object_test::TestDerived1Node;
+using ::object_test::TestDerived2Node;
+using ::object_test::TestFinalNode;
+using ::tvm::runtime::ObjectRef;
+
+class TestCanDerivedFrom : public ObjectRef {
+public:
+  TVM_DEFINE_OBJECT_REF_METHODS(TestCanDerivedFrom, ObjectRef,
+                                TestCanDerivedFromNode);
+};
+
+class TestDerived1 : public TestCanDerivedFrom {
+public:
+  TVM_DEFINE_OBJECT_REF_METHODS(TestDerived1, TestCanDerivedFrom,
+                                TestDerived1Node);
+};
+
+class TestDerived2 : public TestCanDerivedFrom {
+public:
+  TVM_DEFINE_OBJECT_REF_METHODS(TestDerived2, TestCanDerivedFrom,
+                                TestDerived2Node);
+};
+
+class TestFinal : public ObjectRef {
+public:
+  TVM_DEFINE_OBJECT_REF_METHODS(TestFinal, ObjectRef, TestFinalNode);
+};
+
+}  // namespace objectref_test
+
+std::ostream &operator<<(std::ostream &os, const tvm::runtime::ObjectRef &clsref);
+
+void ObjectTest();
+void ObjectRefTest();
