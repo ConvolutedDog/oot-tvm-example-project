@@ -22,13 +22,7 @@ int main() {
   LOG_PRINT_VAR(testCanDerivedFromObj.type_index());
   LOG_PRINT_VAR(testCanDerivedFromObj
                     .IsInstance<object_test::TestCanDerivedFromObject>());
-
-  object_test::TestDerived testDerived =
-      object_test::InitObject<object_test::TestDerived>();
-  LOG_PRINT_VAR(testDerived.type_index());
-  LOG_PRINT_VAR(testDerived.RuntimeTypeIndex());
-  LOG_PRINT_VAR(testDerived.GetTypeKey());
-  LOG_PRINT_VAR(testDerived.type_index());
+  LOG_PRINT_VAR(testCanDerivedFromObj.unique());
 
   object_test::TestDerived1 testDerived1 =
       object_test::InitObject<object_test::TestDerived1>();
@@ -36,6 +30,22 @@ int main() {
   LOG_PRINT_VAR(testDerived1.RuntimeTypeIndex());
   LOG_PRINT_VAR(testDerived1.GetTypeKey());
   LOG_PRINT_VAR(testDerived1.type_index());
+  LOG_PRINT_VAR(testDerived1.IsInstance<tvm::runtime::Object>());
+  LOG_PRINT_VAR(
+      testDerived1.IsInstance<object_test::TestCanDerivedFromObject>());
+  LOG_PRINT_VAR(testDerived1.IsInstance<object_test::TestDerived2>());
+  LOG_PRINT_VAR(testDerived1.unique());
+
+  object_test::TestDerived2 testDerived2 =
+      object_test::InitObject<object_test::TestDerived2>();
+  LOG_PRINT_VAR(testDerived2.type_index());
+  LOG_PRINT_VAR(testDerived2.RuntimeTypeIndex());
+  LOG_PRINT_VAR(testDerived2.GetTypeKey());
+  LOG_PRINT_VAR(testDerived2.type_index());
+  LOG_PRINT_VAR(testDerived2.IsInstance<tvm::runtime::Object>());
+  LOG_PRINT_VAR(
+      testDerived2.IsInstance<object_test::TestCanDerivedFromObject>());
+  LOG_PRINT_VAR(testDerived2.unique());
 
   object_test::TestFinalObject testFinalObj =
       object_test::InitObject<object_test::TestFinalObject>();
@@ -43,6 +53,8 @@ int main() {
   LOG_PRINT_VAR(testFinalObj.RuntimeTypeIndex());
   LOG_PRINT_VAR(testFinalObj.GetTypeKey());
   LOG_PRINT_VAR(testFinalObj.type_index());
+
+  
 
   std::cout << "All tests passed!\n";
   return 0;

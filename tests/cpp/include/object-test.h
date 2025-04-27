@@ -51,6 +51,10 @@ template <typename Derived> class CreateHelper {
 public:
   static Derived Create() {
     Derived obj{};
+    /// Once we call this, it will call the `_GetOrAllocRuntimeTypeIndex()`
+    /// function and read a static variable `tindex` which is defined in the
+    /// scope of `_GetOrAllocRuntimeTypeIndex()`. `tindex` stores the runtime
+    /// `type_index_` allocated during the initialization of node.
     obj.type_index_ = Derived::RuntimeTypeIndex();
     return obj;
   }
@@ -63,33 +67,11 @@ public:
   static constexpr const uint32_t _type_index =
       tvm::runtime::TypeIndex::kDynamic;
   static constexpr const char *_type_key = "test.TestCanDerivedFromObject";
-  static const constexpr int _type_child_slots = 2;
+  /// For example, in this header, we have two classes that inherits from
+  /// the current class, so there is at least 2 child slots here.
+  static const constexpr int _type_child_slots = 3;
   static const constexpr bool _type_child_slots_can_overflow = 0;
   TVM_DECLARE_BASE_OBJECT_INFO(TestCanDerivedFromObject, tvm::runtime::Object);
-};
-
-class TestDerived : public TestCanDerivedFromObject,
-                    public CreateHelper<TestDerived> {
-public:
-  friend class CreateHelper<TestDerived>;
-  /// @note `TestDerived` inherits from `TestCanDerivedFromObject`, which may
-  /// cause ambiguity between the `Create` function in
-  /// `TestCanDerivedFromObject` and the `Create` function in
-  /// `CreateHelper<TestDerived>`. So, we need to explicitly specify which
-  /// `Create` function to use.
-  using CreateHelper<TestDerived>::Create;
-  static constexpr const uint32_t _type_index =
-      tvm::runtime::TypeIndex::kDynamic;
-  /// @note `TypeContext::Global()` will return the address of a static `TypeContext`
-  /// object, the `std::vector<TypeInfo> type_table_` in `TypeContext` will store
-  /// all of the types allocated for each node inheritted from `Object`.
-  /// @ref `tvm::runtime::TypeContext::GetOrAllocRuntimeTypeIndex(...)`
-  /// @warning `_type_key` is very important because it will be used to find or
-  /// allocate runtime `type_index_`. If two class inheritted from `Object` or subclasses
-  /// inheritted from `Object` have the same `_type_key`, their `_type_key` will also
-  /// be same.
-  static constexpr const char *_type_key = "test.TestDerived";
-  TVM_DECLARE_FINAL_OBJECT_INFO(TestDerived, TestCanDerivedFromObject);
 };
 
 class TestDerived1 : public TestCanDerivedFromObject,
@@ -101,6 +83,31 @@ public:
       tvm::runtime::TypeIndex::kDynamic;
   static constexpr const char *_type_key = "test.TestDerived1";
   TVM_DECLARE_FINAL_OBJECT_INFO(TestDerived1, TestCanDerivedFromObject);
+};
+
+class TestDerived2 : public TestCanDerivedFromObject,
+                     public CreateHelper<TestDerived2> {
+public:
+  friend class CreateHelper<TestDerived2>;
+  /// @note `TestDerived2` inherits from `TestCanDerivedFromObject`, which may
+  /// cause ambiguity between the `Create` function in
+  /// `TestCanDerivedFromObject` and the `Create` function in
+  /// `CreateHelper<TestDerived2>`. So, we need to explicitly specify which
+  /// `Create` function to use.
+  using CreateHelper<TestDerived2>::Create;
+  static constexpr const uint32_t _type_index =
+      tvm::runtime::TypeIndex::kDynamic;
+  /// @note `TypeContext::Global()` will return the address of a static
+  /// `TypeContext` object, the `std::vector<TypeInfo> type_table_` in
+  /// `TypeContext` will store all of the types allocated for each node
+  /// inheritted from `Object`.
+  /// @ref `tvm::runtime::TypeContext::GetOrAllocRuntimeTypeIndex(...)`
+  /// @warning `_type_key` is very important because it will be used to find or
+  /// allocate runtime `type_index_`. If two class inheritted from `Object` or
+  /// subclasses inheritted from `Object` have the same `_type_key`, their
+  /// runtime `_type_index` will also be same.
+  static constexpr const char *_type_key = "test.TestDerived2";
+  TVM_DECLARE_FINAL_OBJECT_INFO(TestDerived2, TestCanDerivedFromObject);
 };
 
 class TestFinalObject : public tvm::runtime::Object,
