@@ -1,3 +1,5 @@
+#include "tvm/runtime/container/string.h"
+#include "tvm/runtime/memory.h"
 #include "tvm/runtime/object.h"
 
 #define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
@@ -45,6 +47,8 @@
 
 namespace object_test {
 
+using tvm::runtime::String;
+
 template <typename T> inline T InitObject() {
   static_assert(std::is_base_of<tvm::runtime::Object, T>::value,
                 "can only be used to init Object");
@@ -67,15 +71,18 @@ public:
 class TestCanDerivedFromNode : public tvm::runtime::Object,
                                public CreateHelper<TestCanDerivedFromNode> {
 public:
+  String nameHint;
+
+public:
   friend class CreateHelper<TestCanDerivedFromNode>;
   static constexpr const uint32_t _type_index =
       tvm::runtime::TypeIndex::kDynamic;
   static constexpr const char *_type_key = "test.TestCanDerivedFromNode";
-  /// For example, in this header, we have two classes that inherits from
-  /// the current class, so there is at least 2 child slots here.
+  /// For example, in this header, we have three classes that inherits from
+  /// the current class, so there is at least 3 child slots here.
   /// @note The implementation of TVM has bug.
   /// @ref https://github.com/apache/tvm/issues/17901
-  static const constexpr int _type_child_slots = 2;
+  static const constexpr int _type_child_slots = 3;
   static const constexpr bool _type_child_slots_can_overflow = 0;
   TVM_DECLARE_BASE_OBJECT_INFO(TestCanDerivedFromNode, tvm::runtime::Object);
 };
@@ -116,6 +123,20 @@ public:
   TVM_DECLARE_FINAL_OBJECT_INFO(TestDerived2Node, TestCanDerivedFromNode);
 };
 
+class TestDerived3Node : public TestCanDerivedFromNode,
+                         public CreateHelper<TestDerived3Node> {
+public:
+  String extraNameHint;
+
+public:
+  friend class CreateHelper<TestDerived3Node>;
+  using CreateHelper<TestDerived3Node>::Create;
+  static constexpr const uint32_t _type_index =
+      tvm::runtime::TypeIndex::kDynamic;
+  static constexpr const char *_type_key = "test.TestDerived3Node";
+  TVM_DECLARE_FINAL_OBJECT_INFO(TestDerived3Node, TestCanDerivedFromNode);
+};
+
 class TestFinalNode : public tvm::runtime::Object,
                       public CreateHelper<TestFinalNode> {
 public:
@@ -135,13 +156,30 @@ namespace objectref_test {
 using ::object_test::TestCanDerivedFromNode;
 using ::object_test::TestDerived1Node;
 using ::object_test::TestDerived2Node;
+using ::object_test::TestDerived3Node;
 using ::object_test::TestFinalNode;
+using ::tvm::runtime::Object;
+using ::tvm::runtime::ObjectPtr;
 using ::tvm::runtime::ObjectRef;
+
+using tvm::runtime::make_object;
+using tvm::runtime::String;
 
 class TestCanDerivedFrom : public ObjectRef {
 public:
   TVM_DEFINE_OBJECT_REF_METHODS(TestCanDerivedFrom, ObjectRef,
                                 TestCanDerivedFromNode);
+};
+
+class TestCanDerivedFrom2 : public ObjectRef {
+public:
+  TestCanDerivedFrom2() = default;
+  explicit TestCanDerivedFrom2(String name);
+  const TestCanDerivedFromNode *operator->() const { return get(); }
+  const TestCanDerivedFromNode *get() const {
+    return static_cast<const TestCanDerivedFromNode *>(data_.get());
+  }
+  using ContainerType = TestCanDerivedFromNode;
 };
 
 class TestDerived1 : public TestCanDerivedFrom {
@@ -156,6 +194,16 @@ public:
                                 TestDerived2Node);
 };
 
+class TestDerived3 : public TestCanDerivedFrom2 {
+public:
+  explicit TestDerived3(String name, String extraName);
+  const TestDerived3Node *operator->() const { return get(); }
+  const TestDerived3Node *get() const {
+    return static_cast<const TestDerived3Node *>(data_.get());
+  }
+  using ContainerType = TestDerived3Node;
+};
+
 class TestFinal : public ObjectRef {
 public:
   TVM_DEFINE_OBJECT_REF_METHODS(TestFinal, ObjectRef, TestFinalNode);
@@ -163,7 +211,8 @@ public:
 
 }  // namespace objectref_test
 
-std::ostream &operator<<(std::ostream &os, const tvm::runtime::ObjectRef &clsref);
+std::ostream &operator<<(std::ostream &os,
+                         const tvm::runtime::ObjectRef &clsref);
 
 void ObjectTest();
 void ObjectRefTest();

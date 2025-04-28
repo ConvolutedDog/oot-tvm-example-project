@@ -34,6 +34,28 @@ std::ostream &operator<<(std::ostream &os, const tvm::runtime::Object &cls) {
   return os;
 }
 
+namespace objectref_test {
+
+TestCanDerivedFrom2::TestCanDerivedFrom2(String name) {
+  ObjectPtr<TestCanDerivedFromNode> n = make_object<TestCanDerivedFromNode>();
+  n->nameHint = std::move(name);
+  data_ = std::move(n);
+}
+
+/// Although TestDerived3 inherits from TestCanDerivedFrom2, it cannot just
+/// directly use the constructor function of TestCanDerivedFrom2, because it
+/// has different internal Object type. And to achive the initialization of
+/// name which is inheritted from TestCanDerivedFrom2, we should also provide
+/// a default constructor function for TestCanDerivedFrom2.
+TestDerived3::TestDerived3(String name, String extraName) {
+  ObjectPtr<TestDerived3Node> n = make_object<TestDerived3Node>();
+  n->nameHint = std::move(name);
+  n->extraNameHint = std::move(extraName);
+  data_ = std::move(n);
+}
+
+}  // namespace objectref_test
+
 std::ostream &operator<<(std::ostream &os,
                          const tvm::runtime::ObjectRef &clsref) {
   operator<<(std::cout, *(clsref.get()));
@@ -71,9 +93,12 @@ void ObjectRefTest() {
   using objectref_test::TestCanDerivedFrom;
   using objectref_test::TestDerived1;
   using objectref_test::TestDerived2;
+  using objectref_test::TestDerived3;
   using objectref_test::TestFinal;
   using tvm::runtime::make_object;
   using tvm::runtime::ObjectPtr;
+
+  using objectref_test::TestCanDerivedFrom2;
 
   ObjectPtr<TestCanDerivedFromNode> objptr =
       make_object<TestCanDerivedFromNode>();
@@ -112,7 +137,8 @@ void ObjectRefTest() {
   LOG_SPLIT_LINE("testDerived1Ref2");
   std::cout << *(testDerived1Ref2.as<TestDerived1Node>()) << '\n';
 
-  /// We can use `Ref.as<Node>()` to transfer a `ObjectRef` object to a `Node *` object.
+  /// We can use `Ref.as<Node>()` to transfer a `ObjectRef` object to a `Node *`
+  /// object.
   std::cout << *(testDerived1Ref2.as<TestCanDerivedFromNode>()) << '\n';
 
   /// We can use GetObjectPtr to get a ObjectPtr<Node> object of a node.
@@ -122,4 +148,16 @@ void ObjectRefTest() {
   TestCanDerivedFrom testXRef(xptr);
   LOG_SPLIT_LINE("testXRef");
   std::cout << testXRef << '\n';
+
+  /// Customize the initialization of an ObjectRef object.
+  TestCanDerivedFrom2 testCanDerivedFrom2Ref{"varname"};
+  LOG_SPLIT_LINE("testCanDerivedFrom2Ref");
+  std::cout << testCanDerivedFrom2Ref << '\n';
+  LOG_PRINT_VAR(testCanDerivedFrom2Ref.get()->nameHint);
+
+  TestDerived3 testDerived3Ref = TestDerived3("varname3", "extraname3");
+  LOG_SPLIT_LINE("testDerived3Ref");
+  std::cout << testDerived3Ref << '\n';
+  LOG_PRINT_VAR(testDerived3Ref.get()->nameHint);
+  LOG_PRINT_VAR(testDerived3Ref.get()->extraNameHint);
 }
