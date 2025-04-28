@@ -102,9 +102,9 @@ void ObjectRefTest() {
 
   /// Same ObjectPtr<TestCanDerivedFromNode>
   TestCanDerivedFrom testCanDerivedFromRef3(objptr);
-  LOG_PRINT_VAR(testCanDerivedFromRef3 == testCanDerivedFromRef);  // True
+  LOG_PRINT_VAR(testCanDerivedFromRef3 == testCanDerivedFromRef);        // True
   LOG_PRINT_VAR(testCanDerivedFromRef3.same_as(testCanDerivedFromRef));  // True
-  LOG_PRINT_VAR(testCanDerivedFromRef3.use_count()); // 3
+  LOG_PRINT_VAR(testCanDerivedFromRef3.use_count());                     // 3
   LOG_PRINT_VAR("\n");
 
   /// as Self
@@ -112,12 +112,13 @@ void ObjectRefTest() {
   LOG_SPLIT_LINE("testDerived1Ref2");
   std::cout << *(testDerived1Ref2.as<TestDerived1Node>()) << '\n';
 
-  /// as Parent
+  /// We can use `Ref.as<Node>()` to transfer a `ObjectRef` object to a `Node *` object.
   std::cout << *(testDerived1Ref2.as<TestCanDerivedFromNode>()) << '\n';
-  
-  /// GetObjectPtr
+
+  /// We can use GetObjectPtr to get a ObjectPtr<Node> object of a node.
   TestCanDerivedFromNode x = object_test::InitObject<TestCanDerivedFromNode>();
-  ObjectPtr<TestCanDerivedFromNode> xptr = tvm::runtime::GetObjectPtr<TestCanDerivedFromNode>(&x);
+  ObjectPtr<TestCanDerivedFromNode> xptr =
+      tvm::runtime::GetObjectPtr<TestCanDerivedFromNode>(&x);
   TestCanDerivedFrom testXRef(xptr);
   LOG_SPLIT_LINE("testXRef");
   std::cout << testXRef << '\n';
