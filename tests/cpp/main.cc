@@ -8,8 +8,7 @@ int main() {
   std::cout << "NDArrayTest passed!\n\n";
 
   std::cout << "Running AutoSchedulerTest...\n";
-  /// @bug
-  /// InplaceArrayBaseTest();
+  InplaceArrayBaseTest();
   std::cout << "AutoSchedulerTest passed!\n\n";
 
   std::cout << "Running ObjectTest...\n";
