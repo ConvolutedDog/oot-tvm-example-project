@@ -1,5 +1,6 @@
 #include "../include/object-test.h"
 #include "tvm/runtime/memory.h"
+#include <tvm/runtime/object.h>
 
 namespace object_test {
 
@@ -106,7 +107,18 @@ void ObjectRefTest() {
   LOG_PRINT_VAR(testCanDerivedFromRef3.use_count()); // 3
   LOG_PRINT_VAR("\n");
 
+  /// as Self
   TestDerived1 testDerived1Ref2(objptrchild1);
   LOG_SPLIT_LINE("testDerived1Ref2");
   std::cout << *(testDerived1Ref2.as<TestDerived1Node>()) << '\n';
+
+  /// as Parent
+  std::cout << *(testDerived1Ref2.as<TestCanDerivedFromNode>()) << '\n';
+  
+  /// GetObjectPtr
+  TestCanDerivedFromNode x = object_test::InitObject<TestCanDerivedFromNode>();
+  ObjectPtr<TestCanDerivedFromNode> xptr = tvm::runtime::GetObjectPtr<TestCanDerivedFromNode>(&x);
+  TestCanDerivedFrom testXRef(xptr);
+  LOG_SPLIT_LINE("testXRef");
+  std::cout << testXRef << '\n';
 }
