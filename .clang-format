@@ -1,7 +1,7 @@
 # We'll use defaults from the LLVM style.
 BasedOnStyle: LLVM
 IndentWidth: 2
-ColumnLimit: 80
+ColumnLimit: 90
 ---
 Language: Cpp
 # Force pointers to the type for C++.
