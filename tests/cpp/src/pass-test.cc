@@ -12,9 +12,7 @@ using tvm::transform::PassContextNode;
 
 namespace pass_test {
 
-template <typename K, typename V,
-          typename = typename std::enable_if<std::is_base_of<ObjectRef, K>::value>::type,
-          typename = typename std::enable_if<std::is_base_of<ObjectRef, V>::value>::type>
+template <typename K, typename V>
 std::ostream &operator<<(std::ostream &os, Map<K, V> &map) {
   LOG_SPLIT_LINE(typeid(map).name());
   for (typename Map<K, V>::iterator iter = map.begin(); iter != map.end(); ++iter) {
