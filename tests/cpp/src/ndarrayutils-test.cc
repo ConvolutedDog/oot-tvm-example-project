@@ -58,19 +58,18 @@ void NDArrayTest() {
 
   // Create a new DLTensor and initialize it with data from the NDArray.
   DLTensor dltensor2;
-  dltensor2.data =
-      const_cast<void *>(reinterpret_cast<const void *>(ndarray.get()));
+  dltensor2.data = const_cast<void *>(reinterpret_cast<const void *>(ndarray.get()));
   dltensor2.device = Device({kDLCPU, 0});
   dltensor2.ndim = 4;
   dltensor2.dtype = DLDataType({2, 16, 1});
-  dltensor2.shape = const_cast<int64_t *>(
-      shapeTuple.data());  // Convert const pointer to non-const.
+  dltensor2.shape =
+      const_cast<int64_t *>(shapeTuple.data());  // Convert const pointer to non-const.
   dltensor2.strides = nullptr;
   dltensor2.byte_offset = 0;
 
   // Create another empty NDArray with a different shape.
-  NDArray ndarray2 = NDArray::Empty(
-      ShapeTuple({3, 2, 5, 4}), DLDataType({2, 16, 1}), Device({kDLCPU, 0}));
+  NDArray ndarray2 = NDArray::Empty(ShapeTuple({3, 2, 5, 4}), DLDataType({2, 16, 1}),
+                                    Device({kDLCPU, 0}));
 
   // Copy data from dltensor2 to ndarray2.
   ndarray2.CopyFrom(&dltensor2);
@@ -90,8 +89,8 @@ void NDArrayTest() {
   std::cout << "ndarray2.Shape(): " << ndarray2.Shape() << '\n';
 
   // Create a third NDArray and copy data from ndarray2 to it.
-  const NDArray ndarray3 = NDArray::Empty(
-      ShapeTuple({5, 4, 3, 2}), DLDataType({1, 16, 1}), Device({kDLCPU, 0}));
+  const NDArray ndarray3 = NDArray::Empty(ShapeTuple({5, 4, 3, 2}),
+                                          DLDataType({1, 16, 1}), Device({kDLCPU, 0}));
   ndarray2.CopyTo(ndarray3);
   std::cout << "ndarray3.Shape(): " << ndarray3.Shape() << '\n';
 

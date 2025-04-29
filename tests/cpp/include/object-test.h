@@ -2,10 +2,6 @@
 #include "tvm/runtime/memory.h"
 #include "tvm/runtime/object.h"
 
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
-#define LOG_SPLIT_LINE(stmt)                                                   \
-  std::cout << "==============" << (stmt) << "==============\n";
-
 /* clang-format off */
 /* Sub-class of objects should declare the following static constexpr fields:
  *
@@ -75,8 +71,7 @@ public:
 
 public:
   friend class CreateHelper<TestCanDerivedFromNode>;
-  static constexpr const uint32_t _type_index =
-      tvm::runtime::TypeIndex::kDynamic;
+  static constexpr const uint32_t _type_index = tvm::runtime::TypeIndex::kDynamic;
   static constexpr const char *_type_key = "test.TestCanDerivedFromNode";
   /// For example, in this header, we have three classes that inherits from
   /// the current class, so there is at least 3 child slots here.
@@ -92,8 +87,7 @@ class TestDerived1Node : public TestCanDerivedFromNode,
 public:
   friend class CreateHelper<TestDerived1Node>;
   using CreateHelper<TestDerived1Node>::Create;
-  static constexpr const uint32_t _type_index =
-      tvm::runtime::TypeIndex::kDynamic;
+  static constexpr const uint32_t _type_index = tvm::runtime::TypeIndex::kDynamic;
   static constexpr const char *_type_key = "test.TestDerived1Node";
   TVM_DECLARE_FINAL_OBJECT_INFO(TestDerived1Node, TestCanDerivedFromNode);
 };
@@ -108,8 +102,7 @@ public:
   /// `CreateHelper<TestDerived2Node>`. So, we need to explicitly specify which
   /// `Create` function to use.
   using CreateHelper<TestDerived2Node>::Create;
-  static constexpr const uint32_t _type_index =
-      tvm::runtime::TypeIndex::kDynamic;
+  static constexpr const uint32_t _type_index = tvm::runtime::TypeIndex::kDynamic;
   /// @note `TypeContext::Global()` will return the address of a static
   /// `TypeContext` object, the `std::vector<TypeInfo> type_table_` in
   /// `TypeContext` will store all of the types allocated for each node
@@ -131,18 +124,15 @@ public:
 public:
   friend class CreateHelper<TestDerived3Node>;
   using CreateHelper<TestDerived3Node>::Create;
-  static constexpr const uint32_t _type_index =
-      tvm::runtime::TypeIndex::kDynamic;
+  static constexpr const uint32_t _type_index = tvm::runtime::TypeIndex::kDynamic;
   static constexpr const char *_type_key = "test.TestDerived3Node";
   TVM_DECLARE_FINAL_OBJECT_INFO(TestDerived3Node, TestCanDerivedFromNode);
 };
 
-class TestFinalNode : public tvm::runtime::Object,
-                      public CreateHelper<TestFinalNode> {
+class TestFinalNode : public tvm::runtime::Object, public CreateHelper<TestFinalNode> {
 public:
   friend class CreateHelper<TestFinalNode>;
-  static constexpr const uint32_t _type_index =
-      tvm::runtime::TypeIndex::kDynamic;
+  static constexpr const uint32_t _type_index = tvm::runtime::TypeIndex::kDynamic;
   static constexpr const char *_type_key = "test.TestFinalNode";
   TVM_DECLARE_FINAL_OBJECT_INFO(TestFinalNode, tvm::runtime::Object);
 };
@@ -167,8 +157,7 @@ using tvm::runtime::String;
 
 class TestCanDerivedFrom : public ObjectRef {
 public:
-  TVM_DEFINE_OBJECT_REF_METHODS(TestCanDerivedFrom, ObjectRef,
-                                TestCanDerivedFromNode);
+  TVM_DEFINE_OBJECT_REF_METHODS(TestCanDerivedFrom, ObjectRef, TestCanDerivedFromNode);
 };
 
 class TestCanDerivedFrom2 : public ObjectRef {
@@ -184,14 +173,12 @@ public:
 
 class TestDerived1 : public TestCanDerivedFrom {
 public:
-  TVM_DEFINE_OBJECT_REF_METHODS(TestDerived1, TestCanDerivedFrom,
-                                TestDerived1Node);
+  TVM_DEFINE_OBJECT_REF_METHODS(TestDerived1, TestCanDerivedFrom, TestDerived1Node);
 };
 
 class TestDerived2 : public TestCanDerivedFrom {
 public:
-  TVM_DEFINE_OBJECT_REF_METHODS(TestDerived2, TestCanDerivedFrom,
-                                TestDerived2Node);
+  TVM_DEFINE_OBJECT_REF_METHODS(TestDerived2, TestCanDerivedFrom, TestDerived2Node);
 };
 
 class TestDerived3 : public TestCanDerivedFrom2 {
@@ -211,8 +198,7 @@ public:
 
 }  // namespace objectref_test
 
-std::ostream &operator<<(std::ostream &os,
-                         const tvm::runtime::ObjectRef &clsref);
+std::ostream &operator<<(std::ostream &os, const tvm::runtime::ObjectRef &clsref);
 
 void ObjectTest();
 void ObjectRefTest();

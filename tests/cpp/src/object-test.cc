@@ -2,6 +2,10 @@
 #include "tvm/runtime/memory.h"
 #include <tvm/runtime/object.h>
 
+#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
+#define LOG_SPLIT_LINE(stmt)                                                             \
+  std::cout << "==============" << (stmt) << "==============\n";
+
 namespace object_test {
 
 /// @brief This macros actually calls `::_GetOrAllocRuntimeTypeIndex()`
@@ -56,8 +60,7 @@ TestDerived3::TestDerived3(String name, String extraName) {
 
 }  // namespace objectref_test
 
-std::ostream &operator<<(std::ostream &os,
-                         const tvm::runtime::ObjectRef &clsref) {
+std::ostream &operator<<(std::ostream &os, const tvm::runtime::ObjectRef &clsref) {
   operator<<(std::cout, *(clsref.get()));
   return os;
 }
@@ -100,8 +103,7 @@ void ObjectRefTest() {
 
   using objectref_test::TestCanDerivedFrom2;
 
-  ObjectPtr<TestCanDerivedFromNode> objptr =
-      make_object<TestCanDerivedFromNode>();
+  ObjectPtr<TestCanDerivedFromNode> objptr = make_object<TestCanDerivedFromNode>();
   TestCanDerivedFrom testCanDerivedFromRef(objptr);
   LOG_SPLIT_LINE("testCanDerivedFromRef");
   std::cout << testCanDerivedFromRef << '\n';

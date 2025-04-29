@@ -2,6 +2,10 @@
 #include "tvm/runtime/container/map.h"
 #include "tvm/runtime/container/string.h"
 
+#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
+#define LOG_SPLIT_LINE(stmt)                                                             \
+  std::cout << "==============" << (stmt) << "==============\n";
+
 using tvm::runtime::Map;
 using tvm::runtime::String;
 

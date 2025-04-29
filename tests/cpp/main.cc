@@ -3,6 +3,7 @@
 #include "./include/ndarrayutils-test.h"
 #include "./include/object-test.h"
 #include "./include/pass-test.h"
+#include "./include/type-test.h"
 
 int main() {
   std::cout << "Running NDArrayTest...\n";
@@ -31,6 +32,13 @@ int main() {
   IntegerTest();
   RangeTest();
   std::cout << "ExprTest passed!\n\n";
+
+  std::cout << "Running TypeTest...\n";
+  PrimTypeTest();
+  PointerTypeTest();
+  TupleTypeTest();
+  FuncTypeTest();
+  std::cout << "TypeTest passed!\n\n";
 
   std::cout << "All tests passed!\n";
   return 0;
