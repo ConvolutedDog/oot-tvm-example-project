@@ -9,3 +9,6 @@
 namespace expr_test {}  // namespace expr_test
 
 void PrimExprTest();
+void BoolTest();
+void IntegerTest();
+void RangeTest();

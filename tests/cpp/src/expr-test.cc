@@ -7,6 +7,8 @@ using tvm::runtime::DataType;
 using tvm::runtime::operator<<;
 
 using tvm::Bool;
+using tvm::Integer;
+using tvm::Range;
 using tvm::FloatImmNode;
 using tvm::IntImmNode;
 
@@ -143,12 +145,54 @@ void PrimExprTest() {
   TEST_OPERATOR_INT_INT(primExprA, primExprC, ==, eq);
   TEST_OPERATOR_INT_INT(primExprA, primExprC, !=, ne);
   TEST_OPERATOR_INT(primExprA, -, neg);
+  /// @bug Maybe a bug of TVM.
+  /// TEST_OPERATOR_INT(primExprA, ~, bitwise neg);
   TEST_OPERATOR_INT_INT(primExprA, primExprC, &, bitwise and);
   TEST_OPERATOR_INT_INT(primExprA, primExprC, |, bitwise or);
-  // TEST_OPERATOR_INT_INT(primExprA, primExprC, ~, bitwise neg); // Error
 
   /// Constant fold for BOOL Nodes.
   TEST_OPERATOR_BOOL(primExprD, !, not);
   TEST_OPERATOR_BOOL_BOOL(primExprD, primExprE, &&, and);
   TEST_OPERATOR_BOOL_BOOL(primExprD, primExprE, ||, or);
+}
+
+void BoolTest() {
+  LOG_SPLIT_LINE("BoolTest");
+  auto b = Bool(true);
+  LOG_PRINT_VAR(b);
+  LOG_PRINT_VAR(!b);
+  LOG_PRINT_VAR((bool)b);
+  LOG_PRINT_VAR(b.dtype());
+
+  auto a = Bool(false);
+  LOG_PRINT_VAR(b && false);
+  LOG_PRINT_VAR(b && a);
+  LOG_PRINT_VAR(b || false);
+  LOG_PRINT_VAR(b || a);
+  LOG_PRINT_VAR(b == false);
+  LOG_PRINT_VAR(b == a);
+}
+
+void IntegerTest() {
+  LOG_SPLIT_LINE("IntegerTest");
+  Integer a = Integer(23);
+  LOG_PRINT_VAR(a.IntValue());
+  enum class X {aa = 20, bb = 21, cc = 22, SIZE = 23};
+  Integer b = Integer(X::SIZE);
+  LOG_PRINT_VAR(b.IntValue());
+  LOG_PRINT_VAR(b == a);
+}
+
+void RangeTest() {
+  LOG_SPLIT_LINE("RangeTest");
+  PrimExpr primExprA = 4;
+  PrimExpr primExprB = 5;
+
+  PrimExpr primExprC = 4;
+
+  Range r = Range(primExprA * primExprB, primExprA * 2 * primExprB + primExprC);
+  auto rnode = *(r.get());
+  LOG_PRINT_VAR(rnode.min);
+  LOG_PRINT_VAR(rnode.extent);
+  LOG_PRINT_VAR(primExprA * 2 * primExprB + primExprC - primExprA * primExprB);
 }

@@ -27,6 +27,9 @@ int main() {
 
   std::cout << "Running PrimExprTest...\n";
   PrimExprTest();
+  BoolTest();
+  IntegerTest();
+  RangeTest();
   std::cout << "PrimExprTest passed!\n\n";
 
   std::cout << "All tests passed!\n";
