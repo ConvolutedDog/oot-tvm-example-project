@@ -7,98 +7,98 @@ using tvm::runtime::DataType;
 using tvm::runtime::operator<<;
 
 using tvm::Bool;
-using tvm::Integer;
-using tvm::Range;
 using tvm::FloatImmNode;
+using tvm::Integer;
 using tvm::IntImmNode;
+using tvm::Range;
 
 namespace expr_test {}
 
 #define PRINT_TOP_LINE(hint)                                                             \
-  LOG_SPLIT_LINE(string(" Constant fold for Op ") + string(#hint) + string(" "));
+  LOG_SPLIT_LINE(string(" Constant fold for Op ") + string(#hint) + string(" "))
 
 #define PRINT_VARS3(a, b, c)                                                             \
-  LOG_PRINT_VAR(a);                                                                      \
-  LOG_PRINT_VAR(b);                                                                      \
-  LOG_PRINT_VAR(c);
+  LOG_PRINT_VAR(a)                                                                       \
+  LOG_PRINT_VAR(b)                                                                       \
+  LOG_PRINT_VAR(c)
 
 #define PRINT_VARS2(a, b)                                                                \
-  LOG_PRINT_VAR(a);                                                                      \
-  LOG_PRINT_VAR(b);
+  LOG_PRINT_VAR(a)                                                                       \
+  LOG_PRINT_VAR(b)
 
 #define GET_DLDATATYPE(primExprA, primExprB)                                             \
   auto dldtypeA = DLDataType((primExprA).dtype());                                       \
   auto dldtypeB = DLDataType((primExprB).dtype());
 
 #define ASSERT_INT_DLDATATYPE(dldatatype)                                                \
-  assert((dldatatype).code == DLDataTypeCode::kDLInt && "error datatype!");
+  assert((dldatatype).code == DLDataTypeCode::kDLInt && "error datatype!")
 
 #define ASSERT_FLOAT_DLDATATYPE(dldatatype)                                              \
-  assert((dldatatype).code == DLDataTypeCode::kDLFloat && "error datatype!");
+  assert((dldatatype).code == DLDataTypeCode::kDLFloat && "error datatype!")
 
 #define ASSERT_BOOL_DLDATATYPE(primExpr)                                                 \
-  assert((primExpr).get()->dtype.is_bool() && "error datatype!");
+  assert((primExpr).get()->dtype.is_bool() && "error datatype!")
 
 #define CAST_TO_NODE(primExpr, res, NodeType)                                            \
-  const NodeType *res = (primExpr).as<NodeType>();
+  const NodeType *res = (primExpr).as<NodeType>()
 
 #define TEST_OPERATOR_INT_FLOAT(primExprA, primExprB, op, hint)                          \
   {                                                                                      \
-    PRINT_TOP_LINE(hint);                                                                \
-    GET_DLDATATYPE(primExprA, primExprB);                                                \
+    PRINT_TOP_LINE(hint)                                                                 \
+    GET_DLDATATYPE(primExprA, primExprB)                                                 \
     ASSERT_INT_DLDATATYPE(dldtypeA);                                                     \
     ASSERT_FLOAT_DLDATATYPE(dldtypeB);                                                   \
     PrimExpr primExprOp = primExprA op primExprB;                                        \
-    CAST_TO_NODE(primExprA, pa, IntImmNode)                                              \
-    CAST_TO_NODE(primExprB, pb, FloatImmNode)                                            \
-    CAST_TO_NODE(primExprOp, popres, FloatImmNode)                                       \
-    PRINT_VARS3(pa->value, pb->value, popres->value);                                    \
+    CAST_TO_NODE(primExprA, pa, IntImmNode);                                             \
+    CAST_TO_NODE(primExprB, pb, FloatImmNode);                                           \
+    CAST_TO_NODE(primExprOp, popres, FloatImmNode);                                      \
+    PRINT_VARS3(pa->value, pb->value, popres->value)                                     \
   }
 
 #define TEST_OPERATOR_INT_INT(primExprA, primExprB, op, hint)                            \
   {                                                                                      \
-    PRINT_TOP_LINE(hint);                                                                \
-    GET_DLDATATYPE(primExprA, primExprB);                                                \
+    PRINT_TOP_LINE(hint)                                                                 \
+    GET_DLDATATYPE(primExprA, primExprB)                                                 \
     ASSERT_INT_DLDATATYPE(dldtypeA);                                                     \
     ASSERT_INT_DLDATATYPE(dldtypeB);                                                     \
     PrimExpr primExprOp = primExprA op primExprB;                                        \
-    CAST_TO_NODE(primExprA, pa, IntImmNode)                                              \
-    CAST_TO_NODE(primExprB, pb, IntImmNode)                                              \
-    CAST_TO_NODE(primExprOp, popres, IntImmNode)                                         \
-    PRINT_VARS3(pa->value, pb->value, popres->value);                                    \
+    CAST_TO_NODE(primExprA, pa, IntImmNode);                                             \
+    CAST_TO_NODE(primExprB, pb, IntImmNode);                                             \
+    CAST_TO_NODE(primExprOp, popres, IntImmNode);                                        \
+    PRINT_VARS3(pa->value, pb->value, popres->value)                                     \
   }
 
 #define TEST_OPERATOR_INT(primExprA, op, hint)                                           \
   {                                                                                      \
-    PRINT_TOP_LINE(hint);                                                                \
-    GET_DLDATATYPE(primExprA, primExprA);                                                \
+    PRINT_TOP_LINE(hint)                                                                 \
+    GET_DLDATATYPE(primExprA, primExprA)                                                 \
     ASSERT_INT_DLDATATYPE(dldtypeA);                                                     \
     PrimExpr primExprOp = op primExprA;                                                  \
-    CAST_TO_NODE(primExprA, pa, IntImmNode)                                              \
-    CAST_TO_NODE(primExprOp, popres, IntImmNode)                                         \
-    PRINT_VARS2(pa->value, popres->value);                                               \
+    CAST_TO_NODE(primExprA, pa, IntImmNode);                                             \
+    CAST_TO_NODE(primExprOp, popres, IntImmNode);                                        \
+    PRINT_VARS2(pa->value, popres->value)                                                \
   }
 
 #define TEST_OPERATOR_BOOL_BOOL(primExprA, primExprB, op, hint)                          \
   {                                                                                      \
-    PRINT_TOP_LINE(hint);                                                                \
+    PRINT_TOP_LINE(hint)                                                                 \
     ASSERT_BOOL_DLDATATYPE(primExprA);                                                   \
     ASSERT_BOOL_DLDATATYPE(primExprB);                                                   \
     PrimExpr primExprOp = primExprA op primExprB;                                        \
-    CAST_TO_NODE(primExprA, pa, IntImmNode)                                              \
-    CAST_TO_NODE(primExprB, pb, IntImmNode)                                              \
-    CAST_TO_NODE(primExprOp, popres, IntImmNode)                                         \
-    PRINT_VARS3(pa->value, pb->value, popres->value);                                    \
+    CAST_TO_NODE(primExprA, pa, IntImmNode);                                             \
+    CAST_TO_NODE(primExprB, pb, IntImmNode);                                             \
+    CAST_TO_NODE(primExprOp, popres, IntImmNode);                                        \
+    PRINT_VARS3(pa->value, pb->value, popres->value)                                     \
   }
 
 #define TEST_OPERATOR_BOOL(primExprA, op, hint)                                          \
   {                                                                                      \
-    PRINT_TOP_LINE(hint);                                                                \
+    PRINT_TOP_LINE(hint)                                                                 \
     ASSERT_BOOL_DLDATATYPE(primExprA);                                                   \
     PrimExpr primExprOp = op primExprA;                                                  \
-    CAST_TO_NODE(primExprA, pa, IntImmNode)                                              \
-    CAST_TO_NODE(primExprOp, popres, IntImmNode)                                         \
-    PRINT_VARS2(pa->value, popres->value);                                               \
+    CAST_TO_NODE(primExprA, pa, IntImmNode);                                             \
+    CAST_TO_NODE(primExprOp, popres, IntImmNode);                                        \
+    PRINT_VARS2(pa->value, popres->value)                                                \
   }
 
 void PrimExprTest() {
@@ -177,7 +177,7 @@ void IntegerTest() {
   LOG_SPLIT_LINE("IntegerTest");
   Integer a = Integer(23);
   LOG_PRINT_VAR(a.IntValue());
-  enum class X {aa = 20, bb = 21, cc = 22, SIZE = 23};
+  enum class X { aa = 20, bb = 21, cc = 22, SIZE = 23 };
   Integer b = Integer(X::SIZE);
   LOG_PRINT_VAR(b.IntValue());
   LOG_PRINT_VAR(b == a);
