@@ -8,6 +8,10 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(CMAKE_BUILD_TYPE Debug)
+add_compile_options(-g -O0)
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+
 option(BUILD_STATIC_RUNTIME "Build with static runtime" OFF)
 option(CMAKE_POSITION_INDEPENDENT_CODE "Build with position independent code" OFF)
 option(CLANG_TIDY "Build with clang-tidy" OFF)
