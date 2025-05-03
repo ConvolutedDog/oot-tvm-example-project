@@ -1,4 +1,4 @@
-#include "../include/pass-test.h"
+#include "ir/pass-test.h"
 #include "tvm/runtime/container/map.h"
 #include "tvm/runtime/container/string.h"
 

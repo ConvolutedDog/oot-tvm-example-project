@@ -1,4 +1,4 @@
-#include "../include/ndarrayutils-test.h"
+#include "runtime/ndarrayutils-test.h"
 #include <tvm/runtime/container/shape_tuple.h>
 
 namespace tvm::runtime {

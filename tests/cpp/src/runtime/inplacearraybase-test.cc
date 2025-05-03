@@ -1,4 +1,4 @@
-#include "../include/inplacearraybase-test.h"
+#include "runtime/inplacearraybase-test.h"
 
 using namespace tvm::runtime;
 

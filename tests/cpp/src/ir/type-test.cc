@@ -1,4 +1,4 @@
-#include "../include/type-test.h"
+#include "ir/type-test.h"
 
 #define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n'
 #define LOG_SPLIT_LINE(stmt) std::cout << "==============" << (stmt) << "==============\n"

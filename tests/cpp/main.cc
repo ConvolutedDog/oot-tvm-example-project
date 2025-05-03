@@ -1,9 +1,9 @@
-#include "./include/expr-test.h"
-#include "./include/inplacearraybase-test.h"
-#include "./include/ndarrayutils-test.h"
-#include "./include/object-test.h"
-#include "./include/pass-test.h"
-#include "./include/type-test.h"
+#include "ir/expr-test.h"
+#include "ir/pass-test.h"
+#include "ir/type-test.h"
+#include "runtime/inplacearraybase-test.h"
+#include "runtime/ndarrayutils-test.h"
+#include "runtime/object-test.h"
 
 int main() {
   std::cout << "Running NDArrayTest...\n";

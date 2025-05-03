@@ -1,4 +1,4 @@
-#include "../include/object-test.h"
+#include "runtime/object-test.h"
 #include "tvm/runtime/memory.h"
 #include <tvm/runtime/object.h>
 

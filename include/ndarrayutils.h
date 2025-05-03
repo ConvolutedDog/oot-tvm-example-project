@@ -17,13 +17,13 @@
 /// ```c++
 /// ASSERT_WITH_MSG(x > 0, "x must be positive");
 /// ```
-#define ASSERT_WITH_MSG(condition, message)                                    \
-  do {                                                                         \
-    if (!(condition)) {                                                        \
-      std::cerr << "Assertion failed: " << #condition << ", "                  \
-                << "message: " << message << "\n";                             \
-      assert(false);                                                           \
-    }                                                                          \
+#define ASSERT_WITH_MSG(condition, message)                                              \
+  do {                                                                                   \
+    if (!(condition)) {                                                                  \
+      std::cerr << "Assertion failed: " << #condition << ", "                            \
+                << "message: " << message << "\n";                                       \
+      assert(false);                                                                     \
+    }                                                                                    \
   } while (false)
 
 namespace tvm::runtime {
@@ -95,19 +95,16 @@ void NDArrayPrinter<Derived>::PrintData(void *data, size_t size,
   std::cout << std::endl;
 }
 
-template <typename Derived>
-std::string NDArrayPrinter<Derived>::DataType2String() {
+template <typename Derived> std::string NDArrayPrinter<Derived>::DataType2String() {
   const auto *self = static_cast<Derived *>(this);
-  return DLDataType2String(
-      DLDataType({static_cast<uint8_t>(self->DataType().code()),
-                  static_cast<uint8_t>(self->DataType().bits()),
-                  static_cast<uint16_t>(self->DataType().lanes())}));
+  return DLDataType2String(DLDataType({static_cast<uint8_t>(self->DataType().code()),
+                                       static_cast<uint8_t>(self->DataType().bits()),
+                                       static_cast<uint16_t>(self->DataType().lanes())}));
 }
 
 /// A class that combines NDArray functionality with a printer. Inherits from
 /// both NDArray and NDArrayPrinter to enable printing of NDArray data.
-class NDArrayWithPrinter : public NDArray,
-                           public NDArrayPrinter<NDArrayWithPrinter> {
+class NDArrayWithPrinter : public NDArray, public NDArrayPrinter<NDArrayWithPrinter> {
 public:
   /// Default constructor.
   NDArrayWithPrinter() : NDArray() {}

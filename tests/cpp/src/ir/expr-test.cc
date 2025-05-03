@@ -1,4 +1,4 @@
-#include "../include/expr-test.h"
+#include "ir/expr-test.h"
 
 #define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
 #define LOG_SPLIT_LINE(stmt)                                                             \

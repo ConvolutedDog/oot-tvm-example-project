@@ -56,12 +56,8 @@ void NDArrayWithPrinter::PrintImpl() {
     case DataType::kUInt:
       switch (type.bits()) {
         case kInt8: PrintData<int8_t>(dlTensorData, numElements, "Int8"); break;
-        case kInt16:
-          PrintData<int16_t>(dlTensorData, numElements, "Int16");
-          break;
-        case kInt32:
-          PrintData<int32_t>(dlTensorData, numElements, "Int32");
-          break;
+        case kInt16: PrintData<int16_t>(dlTensorData, numElements, "Int16"); break;
+        case kInt32: PrintData<int32_t>(dlTensorData, numElements, "Int32"); break;
         default:
           throw std::runtime_error("Unsupported integer bit width: " +
                                    std::to_string(type.bits()));
@@ -69,19 +65,14 @@ void NDArrayWithPrinter::PrintImpl() {
       break;
     case DataType::kFloat:
       switch (type.bits()) {
-        case kFloat32:
-          PrintData<float>(dlTensorData, numElements, "Float32");
-          break;
-        case kFloat64:
-          PrintData<double>(dlTensorData, numElements, "Float64");
-          break;
+        case kFloat32: PrintData<float>(dlTensorData, numElements, "Float32"); break;
+        case kFloat64: PrintData<double>(dlTensorData, numElements, "Float64"); break;
         default:
           throw std::runtime_error("Unsupported float bit width: " +
                                    std::to_string(type.bits()));
       }
       break;
-    default:
-      throw std::runtime_error("Unsupported data type code: " + nDarrayDtype);
+    default: throw std::runtime_error("Unsupported data type code: " + nDarrayDtype);
   }
 }
 

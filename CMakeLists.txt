@@ -96,9 +96,8 @@ add_library(${PROJECT_NAME} SHARED ${SOURCES})
 target_link_libraries(${PROJECT_NAME} PRIVATE tvm)
 
 # Step 5. Add your own test source files
-file(GLOB TEST_SOURCES
+file(GLOB_RECURSE TEST_SOURCES
   ${CMAKE_SOURCE_DIR}/tests/cpp/*.cc
-  ${CMAKE_SOURCE_DIR}/tests/cpp/src/*.cc
 )
 
 # Step 6. Create an executable for the test
