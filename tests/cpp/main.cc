@@ -4,6 +4,7 @@
 #include "runtime/inplacearraybase-test.h"
 #include "runtime/ndarrayutils-test.h"
 #include "runtime/object-test.h"
+#include "tir/var-test.h"
 
 int main() {
   std::cout << "Running NDArrayTest...\n";
@@ -39,6 +40,12 @@ int main() {
   TupleTypeTest();
   FuncTypeTest();
   std::cout << "TypeTest passed!\n\n";
+
+  // std::cout << "Running VarTest...\n";
+  VarTest();
+  SizeVarTest();
+  IterVarTest();
+  // std::cout << "VarTest passed!\n\n";
 
   std::cout << "All tests passed!\n";
   return 0;
