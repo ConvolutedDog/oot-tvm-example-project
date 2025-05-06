@@ -56,6 +56,9 @@ int main() {
 
   std::cout << "Running AttrTests...\n";
   AttrUtilsTests();
+  AttrFieldInfoTest();
+  AttrsTest();
+  DictAttrsTest();
   std::cout << "AttrTests passed!\n\n";
 
   std::cout << "All tests passed!\n";
