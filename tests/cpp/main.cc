@@ -1,6 +1,8 @@
+#include "ir/attrs-test.h"
 #include "ir/expr-test.h"
 #include "ir/pass-test.h"
 #include "ir/type-test.h"
+#include "node/reflection-test.h"
 #include "runtime/inplacearraybase-test.h"
 #include "runtime/ndarrayutils-test.h"
 #include "runtime/object-test.h"
@@ -41,11 +43,20 @@ int main() {
   FuncTypeTest();
   std::cout << "TypeTest passed!\n\n";
 
-  // std::cout << "Running VarTest...\n";
+  std::cout << "Running VarTest...\n";
   VarTest();
   SizeVarTest();
   IterVarTest();
-  // std::cout << "VarTest passed!\n\n";
+  std::cout << "VarTest passed!\n\n";
+
+  std::cout << "Running ReflectionTest...\n";
+  AttrVisitorTest();
+  ReflectionVTableTest();
+  std::cout << "ReflectionTest passed!\n\n";
+
+  std::cout << "Running AttrTests...\n";
+  AttrUtilsTests();
+  std::cout << "AttrTests passed!\n\n";
 
   std::cout << "All tests passed!\n";
   return 0;
