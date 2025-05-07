@@ -8,6 +8,7 @@
 #include "runtime/ndarrayutils-test.h"
 #include "runtime/object-test.h"
 #include "tir/var-test.h"
+#include "ir/source-map-test.h"
 
 int main() {
   // std::cout << "Running NDArrayTest...\n";
@@ -65,6 +66,11 @@ int main() {
   std::cout << "Running BaseFuncTest...\n";
   BaseFuncTest();
   std::cout << "BaseFuncTest passed!\n\n";
+
+  std::cout << "Running SourceMapTest...\n";
+  SpanTest();
+  SourceTest();
+  std::cout << "SourceMapTest passed!\n\n";
 
   std::cout << "All tests passed!\n";
   return 0;
