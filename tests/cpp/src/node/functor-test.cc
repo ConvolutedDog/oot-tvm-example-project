@@ -11,7 +11,7 @@ namespace functor_test {
 void NodeFunctorTest() {
   LOG_SPLIT_LINE("NodeFunctorTest");
 
-  NodeFunctor<std::string (const ObjectRef &n, std::string s)> nodefunctor;
+  NodeFunctor<std::string(const ObjectRef &n, std::string s)> nodefunctor;
   nodefunctor.set_dispatch<tvm::IntImmNode>([](const ObjectRef &n, std::string s) {
     return n->GetTypeKey() + " : IntImmNode -> " + std::move(s);
   });
