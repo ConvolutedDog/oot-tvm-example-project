@@ -1,20 +1,20 @@
 #include "tvm/ir/source_map.h"
+#include "tvm/runtime/container/array.h"
 #include "tvm/runtime/memory.h"
 #include <tvm/runtime/object.h>
-#include "tvm/runtime/container/array.h"
 
 namespace source_map_test {
-  
-using tvm::SourceNameNode;
-using tvm::SourceName;
-using tvm::SpanNode;
-using tvm::Span;
-using tvm::SequentialSpanNode;
+
 using tvm::SequentialSpan;
-using tvm::SourceNode;
+using tvm::SequentialSpanNode;
 using tvm::Source;
-using tvm::SourceMapNode;
 using tvm::SourceMap;
+using tvm::SourceMapNode;
+using tvm::SourceName;
+using tvm::SourceNameNode;
+using tvm::SourceNode;
+using tvm::Span;
+using tvm::SpanNode;
 
 using tvm::runtime::Object;
 using tvm::runtime::ObjectPtr;
@@ -27,7 +27,7 @@ using tvm::runtime::Array;
 void SpanTest();
 void SourceTest();
 
-}
+}  // namespace source_map_test
 
 void SpanTest();
 void SourceTest();

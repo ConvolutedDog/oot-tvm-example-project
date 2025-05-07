@@ -26,13 +26,17 @@ void SpanTest() {
   Span span2(sourcename, 1, 2, 4, 5);
   LOG_PRINT_VAR(span2);
 
-  Array<Span> arr{{span1, span2}};
+  Array<Span> arr{
+      {span1, span2}
+  };
   LOG_PRINT_VAR(arr);
 
   SequentialSpan seqspan1{arr};
   LOG_PRINT_VAR(seqspan1);
 
-  SequentialSpan seqspan2{{span1, span2}};
+  SequentialSpan seqspan2{
+      {span1, span2}
+  };
   LOG_PRINT_VAR(seqspan2);
 }
 
@@ -50,11 +54,15 @@ void SourceTest() {
   LOG_PRINT_VAR(source.get()->line_map.size());
   LOG_PRINT_VAR(source.GetLine(1));
 
-  SourceMap sourcemap{{{sourcename, source}, }};
+  SourceMap sourcemap{
+      {
+       {sourcename, source},
+       }
+  };
   LOG_PRINT_VAR(sourcemap);
 }
 
-}
+}  // namespace source_map_test
 
 void SpanTest() { source_map_test::SpanTest(); }
 void SourceTest() { source_map_test::SourceTest(); }

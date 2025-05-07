@@ -2,13 +2,13 @@
 #include "ir/expr-test.h"
 #include "ir/function-test.h"
 #include "ir/pass-test.h"
+#include "ir/source-map-test.h"
 #include "ir/type-test.h"
 #include "node/reflection-test.h"
 #include "runtime/inplacearraybase-test.h"
 #include "runtime/ndarrayutils-test.h"
 #include "runtime/object-test.h"
 #include "tir/var-test.h"
-#include "ir/source-map-test.h"
 
 int main() {
   // std::cout << "Running NDArrayTest...\n";
