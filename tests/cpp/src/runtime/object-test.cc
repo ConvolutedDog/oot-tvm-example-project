@@ -162,4 +162,8 @@ void ObjectRefTest() {
   std::cout << testDerived3Ref << '\n';
   LOG_PRINT_VAR(testDerived3Ref.get()->nameHint);
   LOG_PRINT_VAR(testDerived3Ref.get()->extraNameHint);
+
+  /// @important `Ref.get()->` can be written to `Ref->`. 
+  LOG_PRINT_VAR(testDerived3Ref.get()->nameHint);
+  LOG_PRINT_VAR(testDerived3Ref->extraNameHint);
 }
