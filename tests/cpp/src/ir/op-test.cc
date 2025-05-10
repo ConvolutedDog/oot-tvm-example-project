@@ -12,6 +12,16 @@ std::ostream &operator<<(std::ostream &os, const tvm::runtime::NDArray &arr) {  
   return os;
 }
 
+/// @brief Not safe.
+std::ostream& operator<<(std::ostream& os, const TVMValue& tv) {
+  const uint8_t* bytes = reinterpret_cast<const uint8_t*>(&tv);
+  for (size_t i = 0; i < sizeof(TVMValue); ++i) {
+      os << std::hex << std::setw(2) << std::setfill('0') 
+         << static_cast<int>(bytes[i]) << " ";
+  }
+  return os;
+}
+
 void OpNodeTest() {
   LOG_SPLIT_LINE("OpNodeTest");
 
@@ -137,6 +147,12 @@ void OpNodeTest() {
 void OpTest() {
   LOG_SPLIT_LINE("OpTest");
 
+  /// @brief We can use `OpRegistry::ListAllNames()` to get all the operator names that
+  /// are registered in the system.
+  OpRegistry *opregistry = OpRegistry::Global();
+  LOG_PRINT_VAR(opregistry->ListAllNames());
+
+  /// @brief We can use `Op::Get()` to get the `Op` operator by its name.
   Op op = Op::Get("relax.nn.conv2d");
 
   MyIRSerializer serializer;
@@ -147,20 +163,48 @@ void OpTest() {
   LOG_PRINT_VAR(Op::HasAttrMap("FInferMixedPrecision"));
   LOG_PRINT_VAR(Op::HasAttrMap("FPurity"));
 
-  // LOG_PRINT_VAR(Op::GetAttrMap<tvm::Bool>("FPurity"));
+  /// @brief Here, `Op::GetAttrMap` is used to get the generic attribute map. We have
+  /// to say that `OpAttrMap<tvm::Bool>` inherits from `AttrRegistryMap<Op, tvm::Bool>`
+  /// which is a map from `Op` to `tvm::Bool`. In fact, when we call `Op::GetAttrMap`,
+  /// it actually will call `OpAttrMap<tvm::Bool>(Op::GetAttrMapContainer(key))`, where
+  /// the `key` is the attribute name. And we have also discussed `OpRegistry::attrs_`
+  /// stores the generic attribute map, so `Op::GetAttrMapContainer(key)` actually get
+  /// `AttrRegistryMapContainerMap<Op>*` instance and initialize `OpAttrMap<tvm::Bool>`
+  /// with it.
+  ///
+  /// So, `Op::GetAttrMap` access the generic attribute map, this map corresponds to an
+  /// attribute named "FPurity" and it stores the `tvm::Bool` value for each operator.
+  const OpAttrMap<tvm::Bool> &opattrmap = Op::GetAttrMap<tvm::Bool>("FPurity");
+  /// @brief We can use `Op` operator to get the attribute value.
+  LOG_PRINT_VAR(opattrmap.count(op));
+  LOG_PRINT_VAR(opattrmap[op]);
+
+  /// @brief Set a test operator.
+  TVM_REGISTER_OP("testop").set_name();
+
+  OpRegEntry &opregentry = OpRegEntry::RegisterOrGet("testop");
+  opregentry = *(opregistry->Get("testop"));
+  opregentry.describe("Description of testop");
+  opregentry.set_num_inputs(4);
+  opregentry.set_support_level(11);
+  opregentry.add_argument("testa", "int", "desca");
+  opregentry.add_argument("testb", "int", "descb");
+  opregentry.set_attrs_type<Conv2DAttrs>();
+  opregentry.set_attr<TMixedPrecisionPolicy>("TMixedPrecisionPolicy",
+                                             MixedPrecisionPolicyKind::kAlways);
+  opregentry.set_attr<tvm::Bool>("FPurity", tvm::Bool(true));
+
+  Op testop = Op::Get("testop");
+  const_cast<OpNode *>(testop.get())->VisitAttrs(&serializer);
+
+  using OpRegistry = AttrRegistry<OpRegEntry, Op>;
+  const AttrRegistryMapContainerMap<Op> &attrregmapcontainermap =
+      opregistry->GetAttrMap("FPurity");
+  LOG_PRINT_VAR(attrregmapcontainermap.count(testop));
+  const tvm::runtime::TVMRetValue &retval = attrregmapcontainermap[testop];
 }
-
-void OpRegEntryTest() {
-  LOG_SPLIT_LINE("OpRegEntryTest");
-
-  // auto &attrregistry = Op::GetAttrRegistry();
-}
-
-void OpRegistryTest() { LOG_SPLIT_LINE("OpRegistryTest"); }
 
 }  // namespace op_test
 
 void OpNodeTest() { op_test::OpNodeTest(); }
-void OpRegistryTest() { op_test::OpRegistryTest(); }
 void OpTest() { op_test::OpTest(); }
-void OpRegEntryTest() { op_test::OpRegEntryTest(); }

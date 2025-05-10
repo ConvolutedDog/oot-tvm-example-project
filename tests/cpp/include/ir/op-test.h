@@ -5,12 +5,17 @@
 #include "tvm/ir/type.h"
 #include "tvm/relax/op_attr_types.h"
 #include "tvm/runtime/data_type.h"
+#include "tvm/../../src/node/attr_registry.h"
+#include "tvm/relax/attrs/nn.h"
+#include "tvm/../../src/relax/transform/infer_amp_utils.h"
+#include "tvm/node/attr_registry_map.h"
 
 namespace op_test {
 
 using tvm::Op;
 using tvm::OpNode;
 using tvm::OpRegEntry;
+using tvm::OpAttrMap;
 
 using tvm::FuncType;
 using tvm::FuncTypeNode;
@@ -28,12 +33,17 @@ using tvm::runtime::DataType;
 using tvm::AttrFieldInfo;
 using tvm::AttrFieldInfoNode;
 
-// using tvm::AttrRegistry;
-// using OpRegistry = AttrRegistry<OpRegEntry, Op>;
+using tvm::AttrRegistry;
+using OpRegistry = AttrRegistry<OpRegEntry, Op>;
+
+using tvm::relax::Conv2DAttrs;
+using tvm::relax::FInferStructInfo;
+using tvm::relax::MixedPrecisionPolicyKind;
+using tvm::relax::TMixedPrecisionPolicy;
+
+using tvm::AttrRegistryMapContainerMap;
 
 using tvm::AttrVisitor;
-
-using tvm::relax::FInferStructInfo;
 
 std::ostream &operator<<(std::ostream &os, const tvm::runtime::NDArray &arr);
 
@@ -72,12 +82,8 @@ class MyIRSerializer : public AttrVisitor {
 
 void OpNodeTest();
 void OpTest();
-void OpRegEntryTest();
-void OpRegistryTest();
 
 }  // namespace op_test
 
 void OpNodeTest();
 void OpTest();
-void OpRegEntryTest();
-void OpRegistryTest();
