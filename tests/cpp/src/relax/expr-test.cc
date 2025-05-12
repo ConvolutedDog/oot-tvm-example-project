@@ -1,6 +1,7 @@
 #include "relax/expr-test.h"
 #include "dlpack/dlpack.h"
 #include "tvm/relax/struct_info.h"
+#include <tvm/node/script_printer.h>
 
 #define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
 #define LOG_SPLIT_LINE(stmt)                                                             \
@@ -126,7 +127,151 @@ void LeafExprTest() {
 void BindTest() {
   LOG_SPLIT_LINE("BindTest");
 
-  /// Bind
+  /// Binding
+  /// `BindingNode` is the base class of a variable binding in Relax.
+
+  /// MatchCast
+  ///
+  /// @code{.python}
+  /// import tvm.relax as rx
+  /// from tvm import tir
+  /// from tvm.script import ir as I, relax as R, tir as T
+  ///
+  /// m = tir.Var("m", dtype="int64")
+  /// n = tir.Var("n", dtype="int64")
+  /// shape = rx.const([16, 8], "int32")
+  /// var = rx.Var("v0", R.Shape())
+  /// b0 = rx.MatchCast(var, shape, R.Tensor([m, n], "int32"))
+  ///
+  /// b0.show()
+  /// # Output:
+  /// # m = T.int64()
+  /// # n = T.int64()
+  /// # v0: R.Shape(ndim=-1) = R.match_cast(
+  /// #     metadata["relax.expr.Constant"][0],
+  /// #     R.Tensor((m, n), dtype="int32")
+  /// # )
+  /// @endcode
+  {
+    tvm::tir::Var m{"m", DataType::Int(64)};
+    tvm::tir::Var n{"n", DataType::Int(64)};
+    Var var{"v0", ShapeStructInfo{-1}};
+    NDArray ndarray =
+        NDArray::Empty(ShapeTuple{16, 8}, DLDataType{DLDataTypeCode::kDLInt, 64, 1},
+                       DLDevice{DLDeviceType::kDLCPU, 0});
+    Constant shape{ndarray};
+    MatchCast b0{
+        var, shape, TensorStructInfo{ShapeExpr{{m, n}}, DataType::Int(32)}
+    };
+    LOG_PRINT_VAR(tvm::TVMScriptPrinter::Script(b0, tvm::PrinterConfig{}));
+    /// Output:
+    /// m = T.int64()
+    /// n = T.int64()
+    /// v0: R.Shape(ndim=-1) = R.match_cast(
+    ///     metadata["relax.expr.Constant"][0],
+    ///     R.Tensor((m, n), dtype="int32")
+    /// )
+  }
+
+  /// VarBinding & BindingBlock & SeqExpr
+  ///
+  /// @code{.python}
+  /// import tvm.relax as rx
+  /// from tvm import tir
+  /// from tvm.script import ir as I, relax as R, tir as T
+  ///
+  /// m = tir.Var("m", "int64")
+  /// n = tir.Var("n", "int64")
+  /// x = rx.Var("x", R.Tensor([m, n], "float32"))
+  ///
+  /// gv0 = rx.Var("gv0", R.Tensor([m, n], "float32"))
+  /// gv1 = rx.Var("gv1", R.Tensor([m, n], "float32"))
+  /// call_node = rx.op.add(x, gv0)
+  /// _bindings = [rx.VarBinding(gv1, call_node)]
+  /// _blocks = [rx.BindingBlock(_bindings)]
+  /// _seq_expr = rx.SeqExpr(_blocks, gv1)
+  ///
+  /// call_node.show()
+  /// # Output:
+  /// # R.add(x, gv0)
+  ///
+  /// _bindings[0].show()
+  /// # Output:
+  /// # m = T.int64()
+  /// # n = T.int64()
+  /// # x: R.Tensor((m, n), dtype="float32")
+  /// # gv0: R.Tensor((m, n), dtype="float32")
+  /// # gv1: R.Tensor((m, n), dtype="float32") = R.add(x, gv0)
+  ///
+  /// _blocks[0].show()
+  /// # Output:
+  /// # m = T.int64()
+  /// # n = T.int64()
+  /// # x: R.Tensor((m, n), dtype="float32")
+  /// # gv0: R.Tensor((m, n), dtype="float32")
+  /// # gv1: R.Tensor((m, n), dtype="float32") = R.add(x, gv0)
+  ///
+  /// _seq_expr.show()
+  /// # Output:
+  /// # m = T.int64()
+  /// # n = T.int64()
+  /// # x: R.Tensor((m, n), dtype="float32")
+  /// # gv0: R.Tensor((m, n), dtype="float32")
+  /// # gv1: R.Tensor((m, n), dtype="float32") = R.add(x, gv0)
+  /// # gv1
+  /// @endcode
+  {
+    tvm::tir::Var m{"m", DataType::Int(64)};
+    tvm::tir::Var n{"n", DataType::Int(64)};
+    Var x{
+        "x", TensorStructInfo{ShapeExpr{{m, n}}, DataType::Float(32)}
+    };
+    Var gv0{
+        "gv0", TensorStructInfo{ShapeExpr{{m, n}}, DataType::Float(32)}
+    };
+    Var gv1{
+        "gv1", TensorStructInfo{ShapeExpr{{m, n}}, DataType::Float(32)}
+    };
+
+    OpRegistry *opregistry = OpRegistry::Global();
+    // LOG_PRINT_VAR(opregistry->ListAllNames());
+    // NOLINTNEXTLINE
+    Call call_node{
+        Op::Get("relax.add"), {x, gv0}
+    };
+
+    // NOLINTNEXTLINE
+    tvm::Array<Binding> _bindings{{VarBinding(gv1, call_node)}};
+    // NOLINTNEXTLINE
+    tvm::Array<BindingBlock> _blocks{{BindingBlock(_bindings)}};
+    // NOLINTNEXTLINE
+    SeqExpr seq_expr(_blocks, gv1);
+
+    LOG_PRINT_VAR(tvm::TVMScriptPrinter::Script(_bindings[0], tvm::PrinterConfig{}));
+    /// Output:
+    /// m = T.int64()
+    /// n = T.int64()
+    /// x: R.Tensor((m, n), dtype="float32")
+    /// gv0: R.Tensor((m, n), dtype="float32")
+    /// gv1: R.Tensor((m, n), dtype="float32") = R.add(x, gv0)
+
+    LOG_PRINT_VAR(tvm::TVMScriptPrinter::Script(_blocks[0], tvm::PrinterConfig{}));
+    /// Output:
+    /// m = T.int64()
+    /// n = T.int64()
+    /// x: R.Tensor((m, n), dtype="float32")
+    /// gv0: R.Tensor((m, n), dtype="float32")
+    /// gv1: R.Tensor((m, n), dtype="float32") = R.add(x, gv0)
+
+    LOG_PRINT_VAR(tvm::TVMScriptPrinter::Script(seq_expr, tvm::PrinterConfig{}));
+    /// Output:
+    /// m = T.int64()
+    /// n = T.int64()
+    /// x: R.Tensor((m, n), dtype="float32")
+    /// gv0: R.Tensor((m, n), dtype="float32")
+    /// gv1: R.Tensor((m, n), dtype="float32") = R.add(x, gv0)
+    /// gv1
+  }
 }
 
 }  // namespace expr_test
