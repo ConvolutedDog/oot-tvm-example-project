@@ -1,4 +1,4 @@
-# This bash script formats code using clang-format
+# This bash script formats C++ code using clang-format
 
 THIS_DIR="$( cd "$( dirname "$BASH_SOURCE" )" && pwd )"
 

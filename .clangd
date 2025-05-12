@@ -1,2 +1,3 @@
+# Read `compile_commands.json`.
 CompileFlags:
   CompilationDatabase: build/

@@ -1,3 +1,4 @@
+# Change from the LLVM style.
 Checks: >
     misc-unused-parameters,
     misc-non-private-member-variables-in-classes,

@@ -1,6 +1,6 @@
 # Out-of-tree TVM Example Project
 
-This project demonstrates how to build an **out-of-tree TVM project** using CMake.
+This project demonstrates how to build an **out-of-tree TVM example project** using CMake.
 It provides a minimal example of how to link against the TVM library and use
 its headers in an external project.
 
@@ -59,20 +59,51 @@ example steps in this file to add your own source files and dependencies.
 
 ## Customizing the Project
 
-- **Adding new source files**: Add your source files to the `SOURCES` variable
-in `CMakeLists.txt`.
-
+- **Step 1. Add some useful 3rdparty include directories**
   ```cmake
-  file(GLOB_RECURSE SOURCES
+  include_directories(${TVM_SOURCE_DIR}/3rdparty/dmlc-core/include)
+  include_directories(${TVM_SOURCE_DIR}/3rdparty/dlpack/include)
+  ```
+
+- **Step 2. Add your own include directory**
+  ```cmake
+  include_directories(${CMAKE_SOURCE_DIR}/include)
+  # Add test include directory
+  include_directories(${CMAKE_SOURCE_DIR}/tests/cpp/include)
+  ```
+
+- **Step 3. Add your own source files**
+  ```cmake
+  file(GLOB SOURCES
     ${CMAKE_SOURCE_DIR}/src/*.cc
   )
   ```
 
-- **Adding new dependencies**: Link against additional libraries by modifying
-`target_link_libraries` in `CMakeLists.txt`.
-
+- **Step 4. Create a shared library**
   ```cmake
-  target_link_libraries(${PROJECT_NAME} PRIVATE tvm your_library)
+  add_library(${PROJECT_NAME} SHARED ${SOURCES})
+  ```
+
+- **Step 5. Link libraries for the shared library**
+  ```cmake
+  target_link_libraries(${PROJECT_NAME} PRIVATE tvm)
+  ```
+
+- **Step 6. Add your own test source files**
+  ```cmake
+  file(GLOB_RECURSE TEST_SOURCES
+    ${CMAKE_SOURCE_DIR}/tests/cpp/*.cc
+  )
+  ```
+
+- **Step 7. Create an executable for the test**
+  ```cmake
+  add_executable(${PROJECT_NAME}_test ${TEST_SOURCES})
+  ```
+
+- **Step 8. Link libraries for the test executable**
+  ```cmake
+  target_link_libraries(${PROJECT_NAME}_test PRIVATE ${PROJECT_NAME} tvm)
   ```
 
 ## Troubleshooting

@@ -76,32 +76,32 @@ if (NOT DEFINED TVM_SOURCE_DIR)
   endif()
 endif()
 
-# Step 0. Add some useful 3rdparty include directories
+# Step 1. Add some useful 3rdparty include directories
 include_directories(${TVM_SOURCE_DIR}/3rdparty/dmlc-core/include)
 include_directories(${TVM_SOURCE_DIR}/3rdparty/dlpack/include)
 
-# Step 1. Add your own include directory
+# Step 2. Add your own include directory
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_SOURCE_DIR}/tests/cpp/include)  # Add test include directory
 
-# Step 2. Add your own source files
+# Step 3. Add your own source files
 file(GLOB SOURCES
   ${CMAKE_SOURCE_DIR}/src/*.cc
 )
 
-# Step 3. Create a shared library
+# Step 4. Create a shared library
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
-# Step 4. Link libraries for the shared library
+# Step 5. Link libraries for the shared library
 target_link_libraries(${PROJECT_NAME} PRIVATE tvm)
 
-# Step 5. Add your own test source files
+# Step 6. Add your own test source files
 file(GLOB_RECURSE TEST_SOURCES
   ${CMAKE_SOURCE_DIR}/tests/cpp/*.cc
 )
 
-# Step 6. Create an executable for the test
+# Step 7. Create an executable for the test
 add_executable(${PROJECT_NAME}_test ${TEST_SOURCES})
 
-# Step 7. Link libraries for the test executable
+# Step 8. Link libraries for the test executable
 target_link_libraries(${PROJECT_NAME}_test PRIVATE ${PROJECT_NAME} tvm)

@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Script: gitpull.sh
+# Purpose: Automatically retry `git pull` until success or max retries reached.
+# Handles timeouts (e.g., due to network provider) and other failures.
+# Note: Only works well on Linux systems. We have not test it on MacOS.
+
 # Maximum number of retries
 MAX_RETRIES=100
 retry_count=0
