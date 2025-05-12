@@ -1,3 +1,4 @@
+// clang-format off
 #include "dlpack/dlpack.h"
 #include "tvm/ir/attrs.h"
 #include "tvm/ir/expr.h"
@@ -9,13 +10,14 @@
 #include "tvm/relax/attrs/nn.h"
 #include "tvm/../../src/relax/transform/infer_amp_utils.h"
 #include "tvm/node/attr_registry_map.h"
+// clang-format on
 
 namespace op_test {
 
 using tvm::Op;
+using tvm::OpAttrMap;
 using tvm::OpNode;
 using tvm::OpRegEntry;
-using tvm::OpAttrMap;
 
 using tvm::FuncType;
 using tvm::FuncTypeNode;

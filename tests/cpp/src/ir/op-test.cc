@@ -13,11 +13,11 @@ std::ostream &operator<<(std::ostream &os, const tvm::runtime::NDArray &arr) {  
 }
 
 /// @brief Not safe.
-std::ostream& operator<<(std::ostream& os, const TVMValue& tv) {
-  const uint8_t* bytes = reinterpret_cast<const uint8_t*>(&tv);
+std::ostream &operator<<(std::ostream &os, const TVMValue &tv) {
+  const uint8_t *bytes = reinterpret_cast<const uint8_t *>(&tv);
   for (size_t i = 0; i < sizeof(TVMValue); ++i) {
-      os << std::hex << std::setw(2) << std::setfill('0') 
-         << static_cast<int>(bytes[i]) << " ";
+    os << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(bytes[i])
+       << " ";
   }
   return os;
 }

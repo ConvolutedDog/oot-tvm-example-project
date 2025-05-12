@@ -163,7 +163,7 @@ void ObjectRefTest() {
   LOG_PRINT_VAR(testDerived3Ref.get()->nameHint);
   LOG_PRINT_VAR(testDerived3Ref.get()->extraNameHint);
 
-  /// @important `Ref.get()->` can be written to `Ref->`. 
+  /// @important `Ref.get()->` can be written to `Ref->`.
   LOG_PRINT_VAR(testDerived3Ref.get()->nameHint);
   LOG_PRINT_VAR(testDerived3Ref->extraNameHint);
 }

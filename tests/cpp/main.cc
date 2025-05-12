@@ -1,18 +1,20 @@
 #include "ir/attrs-test.h"
 #include "ir/expr-test.h"
 #include "ir/function-test.h"
+#include "ir/module-test.h"
+#include "ir/op-test.h"
 #include "ir/pass-test.h"
 #include "ir/source-map-test.h"
 #include "ir/type-functor-test.h"
 #include "ir/type-test.h"
 #include "node/functor-test.h"
 #include "node/reflection-test.h"
+#include "relax/expr-test.h"
 #include "runtime/inplacearraybase-test.h"
 #include "runtime/ndarrayutils-test.h"
 #include "runtime/object-test.h"
-#include "tir/var-test.h"
 #include "runtime/tvmpodvalue-test.h"
-#include "ir/op-test.h"
+#include "tir/var-test.h"
 
 int main() {
   // std::cout << "Running NDArrayTest...\n";
@@ -88,10 +90,22 @@ int main() {
   // TvmPodValueTest();
   // std::cout << "TvmPodValueTest passed!\n\n";
 
-  std::cout << "Running OpTest...\n";
-  OpNodeTest();
-  OpTest();
-  std::cout << "OpTest passed!\n\n";
+  // std::cout << "Running OpTest...\n";
+  // OpNodeTest();
+  // OpTest();
+  // std::cout << "OpTest passed!\n\n";
+
+  std::cout << "Running RelaxExprTest...\n";
+  CallTest();
+  TupleTest();
+  TupleGetItemTest();
+  LeafExprTest();
+  BindTest();
+  std::cout << "RelaxExprTest passed!\n\n";
+
+  // std::cout << "Running ModuleTest...\n";
+  // ModuleTest();
+  // std::cout << "ModuleTest passed!\n\n";
 
   std::cout << "All tests passed!\n";
   return 0;
