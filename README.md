@@ -27,7 +27,7 @@ This project relies on the following environment variables:
 - **Clone the repository**:
 
   ```bash
-  git clone https://github.com/your-username/oot-tvm-example.git
+  git clone https://github.com/ConvolutedDog/oot-tvm-example.git
   cd oot-tvm-example
   ```
 
@@ -63,7 +63,7 @@ example steps in this file to add your own source files and dependencies.
 in `CMakeLists.txt`.
 
   ```cmake
-  file(GLOB SOURCES
+  file(GLOB_RECURSE SOURCES
     ${CMAKE_SOURCE_DIR}/src/*.cc
   )
   ```
@@ -79,8 +79,3 @@ in `CMakeLists.txt`.
 
 **Library not found**: Ensure `TVM_LIBRARY_PATH` points to the directory
 containing `libtvm.so` and `libtvm_runtime.so`.
-
-## Acknowledgments
-
-- This project is based on the TVM project.
-- Special thanks to the TVM community for their support and resources.
