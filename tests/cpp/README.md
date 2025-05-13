@@ -95,6 +95,40 @@ flowchart LR
     tvm::transform::Pass --> tvm::transform::Sequential
 ```
 
+### tvm::tir::Stmt
+
+```mermaid
+flowchart LR
+    tvm::tir::Stmt --> tvm::tir::LetStmt
+    tvm::tir::Stmt --> tvm::tir::AttrStmt
+    tvm::tir::Stmt --> tvm::tir::AssertStmt
+    tvm::tir::Stmt --> tvm::tir::BufferStore
+    tvm::tir::Stmt --> tvm::tir::BufferRealize
+    tvm::tir::Stmt --> tvm::tir::ProducerStore
+    tvm::tir::Stmt --> tvm::tir::ProducerRealize
+    tvm::tir::Stmt --> tvm::tir::Allocate
+    tvm::tir::Stmt --> tvm::tir::AllocateConst
+    tvm::tir::Stmt --> tvm::tir::DeclBuffer
+    tvm::tir::Stmt --> tvm::tir::Evaluate
+    tvm::tir::Stmt --> tvm::tir::SeqStmt
+    tvm::tir::Stmt --> tvm::tir::IfThenElse
+    tvm::tir::Stmt --> tvm::tir::For
+    tvm::tir::Stmt --> tvm::tir::While
+    tvm::tir::Stmt --> tvm::tir::Prefetch
+    tvm::tir::Stmt --> tvm::tir::Block
+    tvm::tir::Stmt --> tvm::tir::BlockRealize
+```
+
+### tvm::te::Operation
+
+```mermaid
+flowchart LR
+    tvm::te::Operation --> tvm::te::PlaceholderOp
+    tvm::te::Operation --> tvm::te::ExternOp
+    tvm::te::Operation --> tvm::te::ComputeOp
+    tvm::te::Operation --> tvm::te::ScanOp
+```
+
 ### tvm::tir::ExprFunctor\<FType\> & vm::tir::StmtFunctor\<FType\>
 
 ```mermaid
@@ -198,3 +232,19 @@ flowchart LR
 flowchart LR
     tvm::AttrRegistryMap&ltKeyType,ValueType&gt --> tvm::TargetKindAttrMap&ltValueType&gt
 ```
+
+### tvm::tir::BlockScope
+
+```mermaid
+flowchart LR
+    tvm::tir::BlockScope --> tvm::tir::BlockInfo
+```
+
+### Others
+- Under namespace `tvm::script`
+- Under namespace `tvm::relax`
+- Under namespace `tvm::runtime`
+- Under namespace `tvm::meta_schedule`
+- Under namespace `tvm::ffi`
+- Under namespace `tvm::detail`
+- Under namespace `tvm::support`
