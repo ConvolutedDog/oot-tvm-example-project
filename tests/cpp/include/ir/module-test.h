@@ -1,6 +1,8 @@
 #include "tvm/ir/expr.h"
 #include "tvm/ir/function.h"
 #include "tvm/ir/module.h"
+#include "tvm/relax/expr.h"
+#include "tvm/relax/struct_info.h"
 
 namespace module_test {
 
@@ -29,6 +31,15 @@ using tvm::IRModule;
 using tvm::IRModuleNode;
 
 using tvm::GlobalVar;
+
+
+using tvm::relax::Function;
+using Expr = tvm::RelaxExpr;
+using tvm::relax::Var;
+using tvm::relax::Call;
+using tvm::relax::FuncStructInfo;
+using tvm::relax::ShapeStructInfo;
+using tvm::relax::TensorStructInfo;
 
 void ModuleTest();
 

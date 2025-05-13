@@ -95,16 +95,16 @@ int main() {
   // OpTest();
   // std::cout << "OpTest passed!\n\n";
 
-  std::cout << "Running RelaxExprTest...\n";
-  CallTest();
-  TupleTest();
-  TupleGetItemTest();
-  LeafExprTest();
-  BindTest();
-  std::cout << "RelaxExprTest passed!\n\n";
+  // std::cout << "Running RelaxExprTest...\n";
+  // CallTest();
+  // TupleTest();
+  // TupleGetItemTest();
+  // LeafExprTest();
+  // BindTest();
+  // std::cout << "RelaxExprTest passed!\n\n";
 
   // std::cout << "Running ModuleTest...\n";
-  // ModuleTest();
+  ModuleTest();
   // std::cout << "ModuleTest passed!\n\n";
 
   std::cout << "All tests passed!\n";

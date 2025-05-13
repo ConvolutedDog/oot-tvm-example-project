@@ -29,15 +29,113 @@ void ModuleTest() {
   DictAttrs dict(map);
   basefuncnodeptr->attrs = dict;
   BaseFunc basefunc(basefuncnodeptr);
+  IRModule irmodule1 = IRModule::FromExpr(basefunc);
+  LOG_PRINT_VAR(irmodule1);
+  LOG_SPLIT_LINE("");
 
   /// @brief Define a GlobalVar.
   GlobalVar globalvar("globalvar");
 
-  IRModule irmodule = IRModule::FromExpr(basefunc);
-  /// @note TVMScript cannot print functions of type: BaseFunc
-  /// IRModule irmodule{{std::pair<GlobalVar, BaseFunc>{globalvar, basefunc}}};
+  /// Create tvm::relax::Function
+  Expr opexpr = tvm::Op::Get("relax.nn.conv2d");
+  Var arg1{"arg1", tvm::relax::ShapeStructInfo{4}};
+  Var arg2{"arg2", tvm::relax::ShapeStructInfo{4}};
+  Call call{
+      opexpr, {arg1, arg2}
+  };
+  Function func{
+      {arg1, arg2},
+      call,
+      tvm::relax::ShapeStructInfo{4},
+      true,
+  };
 
-  LOG_PRINT_VAR(irmodule);
+  /// @note TVMScript cannot print functions of type: BaseFunc
+  IRModule irmodule2{{std::pair<GlobalVar, BaseFunc>{globalvar, func}}};
+  LOG_PRINT_VAR(irmodule2);
+  LOG_SPLIT_LINE("");
+  /// Output:
+  /// irmodule2: # from tvm.script import ir as I
+  /// # from tvm.script import relax as R
+  ///
+  /// @I.ir_module
+  /// class Module:
+  ///     @R.function(private=True)
+  ///     def globalvar(arg1: R.Shape(ndim=4), arg2: R.Shape(ndim=4)) -> R.Shape(ndim=4):
+  ///         return R.nn.conv2d(arg1, arg2)
+
+  /// @brief
+  IRModule irmodule3 = IRModule::FromExpr(func);
+  LOG_PRINT_VAR(irmodule3);
+  LOG_SPLIT_LINE("");
+  /// Output:
+  /// irmodule2: # from tvm.script import ir as I
+  /// # from tvm.script import relax as R
+  ///
+  /// @I.ir_module
+  /// class Module:
+  ///     @R.function(private=True)
+  ///     def main(arg1: R.Shape(ndim=4), arg2: R.Shape(ndim=4)) -> R.Shape(ndim=4):
+  ///         return R.nn.conv2d(arg1, arg2)
+
+  LOG_PRINT_VAR(irmodule2->functions);
+  LOG_PRINT_VAR(irmodule2->source_map->source_map);
+  LOG_PRINT_VAR(irmodule2->attrs);
+  LOG_PRINT_VAR(irmodule2->global_infos);
+  LOG_PRINT_VAR(irmodule2->global_var_map_);
+
+  /// Add a function
+  GlobalVar globalvar2("globalvar2");
+  irmodule2->Add(globalvar2, func);
+  LOG_PRINT_VAR(irmodule2);
+  LOG_SPLIT_LINE("");
+
+  /// Add a function
+  GlobalVar globalvar3("globalvar3");
+  irmodule2->AddUnchecked(globalvar3, func);
+  LOG_PRINT_VAR(irmodule2);
+  LOG_SPLIT_LINE("");
+
+  /// Update a function
+  Expr opexpr2 = tvm::Op::Get("relax.max");
+  Call call2{
+      opexpr2, {arg1, arg2}
+  };
+  Function func2{
+      {arg1, arg2},
+      call2,
+      tvm::relax::ShapeStructInfo{4},
+      true,
+  };
+  irmodule2->Update(globalvar3, func2);
+  LOG_PRINT_VAR(irmodule2);
+  LOG_SPLIT_LINE("");
+
+  /// Remove a function
+  irmodule2->Remove(globalvar3);
+  LOG_PRINT_VAR(irmodule2);
+  LOG_SPLIT_LINE("");
+
+  LOG_PRINT_VAR(irmodule2->ContainGlobalVar("globalvar"));
+  LOG_PRINT_VAR(irmodule2->ContainGlobalVar("globalvar2"));
+  LOG_PRINT_VAR(irmodule2->ContainGlobalVar("globalvar3"));
+
+  LOG_PRINT_VAR(irmodule2->GetGlobalVar("globalvar"));
+  LOG_PRINT_VAR(irmodule2->GetGlobalVars());
+
+  LOG_PRINT_VAR(irmodule2->Lookup(globalvar));
+  LOG_PRINT_VAR(irmodule2->Lookup("globalvar"));
+
+  /// Update a IRModule
+  LOG_SPLIT_LINE("irmodule1 before update:");
+  LOG_PRINT_VAR(irmodule1);
+  irmodule1->Update(irmodule2);
+  LOG_SPLIT_LINE("irmodule1 after update:");
+  LOG_PRINT_VAR(irmodule1);
+
+  /// Shallow copy
+  irmodule3 = irmodule1->ShallowCopy();
+  LOG_PRINT_VAR(irmodule3);
 }
 
 }  // namespace module_test
