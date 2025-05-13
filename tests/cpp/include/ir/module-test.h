@@ -32,14 +32,13 @@ using tvm::IRModuleNode;
 
 using tvm::GlobalVar;
 
-
 using tvm::relax::Function;
 using Expr = tvm::RelaxExpr;
-using tvm::relax::Var;
 using tvm::relax::Call;
 using tvm::relax::FuncStructInfo;
 using tvm::relax::ShapeStructInfo;
 using tvm::relax::TensorStructInfo;
+using tvm::relax::Var;
 
 void ModuleTest();
 

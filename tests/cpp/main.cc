@@ -1,6 +1,7 @@
 #include "ir/attrs-test.h"
 #include "ir/expr-test.h"
 #include "ir/function-test.h"
+#include "ir/global-info-test.h"
 #include "ir/module-test.h"
 #include "ir/op-test.h"
 #include "ir/pass-test.h"
@@ -14,6 +15,8 @@
 #include "runtime/ndarrayutils-test.h"
 #include "runtime/object-test.h"
 #include "runtime/tvmpodvalue-test.h"
+#include "target/target-kind-test.h"
+#include "target/target-test.h"
 #include "tir/var-test.h"
 
 int main() {
@@ -104,8 +107,22 @@ int main() {
   // std::cout << "RelaxExprTest passed!\n\n";
 
   // std::cout << "Running ModuleTest...\n";
-  ModuleTest();
+  // ModuleTest();
   // std::cout << "ModuleTest passed!\n\n";
+
+  // std::cout << "Running TargetTest...\n";
+  // TargetKindTest();
+  // std::cout << "TargetTest passed!\n\n";
+
+  // std::cout << "Running TargetTest...\n";
+  // TargetTest();
+  // std::cout << "TargetTest passed!\n\n";
+
+  std::cout << "Running GlobalInfoTest...\n";
+  GlobalInfoTest();
+  VDeviceTest();
+  DummyGlobalInfoTest();
+  std::cout << "GlobalInfoTest passed!\n\n";
 
   std::cout << "All tests passed!\n";
   return 0;
