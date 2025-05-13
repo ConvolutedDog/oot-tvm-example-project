@@ -11,6 +11,7 @@
 
 namespace expr_test {
 
+using tvm::PrimExpr;
 using tvm::RelaxExpr;
 using Expr = tvm::RelaxExpr;
 
@@ -32,10 +33,12 @@ using tvm::relax::StringImm;
 
 using tvm::relax::Binding;
 using tvm::relax::BindingBlock;
+using tvm::relax::ExternFunc;
+using tvm::relax::GetShapeOf;
+using tvm::relax::If;
+using tvm::relax::MatchCast;
 using tvm::relax::SeqExpr;
 using tvm::relax::VarBinding;
-
-using tvm::relax::MatchCast;
 
 using tvm::AttrRegistry;
 using tvm::Op;
@@ -47,6 +50,7 @@ using tvm::DataType;
 using tvm::runtime::NDArray;
 using tvm::runtime::ShapeTuple;
 
+using tvm::relax::FuncStructInfo;
 using tvm::relax::ShapeStructInfo;
 using tvm::relax::TensorStructInfo;
 
