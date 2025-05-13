@@ -1,6 +1,6 @@
 ## Inheritance Diagram
 
-### 1. tvm::tvm::RelaxExpr
+### tvm::RelaxExpr
 
 ```mermaid
 flowchart LR
@@ -73,7 +73,7 @@ flowchart LR
     tvm::tir::Var --> tvm::tir::SizeVar
 ```
 
-### 2. tvm::Type
+### tvm::Type
 
 ```mermaid
 flowchart LR
@@ -88,3 +88,113 @@ flowchart LR
     tvm::Type --> tvm::relax::PackedFuncType    
 ```
 
+### tvm::transform::Pass
+
+```mermaid
+flowchart LR
+    tvm::transform::Pass --> tvm::transform::Sequential
+```
+
+### tvm::tir::ExprFunctor\<FType\> & vm::tir::StmtFunctor\<FType\>
+
+```mermaid
+flowchart LR
+    tvm::tir::ExprFunctor&ltFType&gt --> tvm::tir::ExprVisitor
+    tvm::tir::StmtFunctor&ltFType&gt --> tvm::tir::StmtVisitor
+    tvm::tir::ExprVisitor --> tvm::tir::StmtExprVisitor
+    tvm::tir::StmtVisitor --> tvm::tir::StmtExprVisitor
+    tvm::tir::StmtVisitor --> tvm::tir::SRefTreeCreator
+    tvm::tir::StmtExprVisitor --> tvm::tir::BufferAxisGraphExtractor
+
+    tvm::tir::ExprFunctor&ltFType&gt --> tvm::tir::ExprMutator
+    tvm::tir::StmtFunctor&ltFType&gt --> tvm::tir::StmtMutator
+    tvm::tir::ExprMutator --> tvm::tir::StmtExprMutator
+    tvm::tir::StmtMutator --> tvm::tir::StmtExprMutator
+    tvm::tir::StmtExprMutator --> tvm::tir::DataTypeLegalizer
+    tvm::tir::DataTypeLegalizer --> tvm::tir::IndexDataTypeRewriter
+    tvm::tir::IndexDataTypeRewriter --> tvm::tir::IndexDataTypeNormalizer
+```
+
+### tvm::GlobalInfo
+
+```mermaid
+flowchart LR
+    tvm::GlobalInfo --> tvm::VDevice
+    tvm::GlobalInfo --> tvm::DummyGlobalInfo
+    tvm::GlobalInfo --> tvm::relax::distributed::DeviceMesh
+```
+
+### tvm::Attrs
+
+```mermaid
+flowchart LR
+    tvm::Attrs --> tvm::DictAttrs
+```
+
+### tvm::PrimExprConvertible
+
+```mermaid
+flowchart LR
+    tvm::PrimExprConvertible --> tvm::tir::BufferRegion
+    tvm::PrimExprConvertible --> tvm::tir::DataProducer
+    tvm::PrimExprConvertible --> tvm::tir::IterVar
+
+    tvm::tir::BufferRegion --> tvm::tir::MemCpyDetails
+
+    tvm::tir::DataProducer --> tvm::te::Tensor
+```
+
+### tvm::Span
+
+```mermaid
+flowchart LR
+    tvm::Span --> tvm::SequentialSpan
+```
+
+### tvm::ObjectPath
+
+```mermaid
+flowchart LR
+    tvm::ObjectPath --> tvm::ArrayIndexPath
+    tvm::ObjectPath --> tvm::AttributeAccessPath
+    tvm::ObjectPath --> tvm::MapValuePath
+    tvm::ObjectPath --> tvm::MissingArrayElementPath
+    tvm::ObjectPath --> tvm::MissingMapEntryPath
+    tvm::ObjectPath --> tvm::RootPath
+    tvm::ObjectPath --> tvm::UnknownattributeAccessPath
+```
+
+### tvm::BaseValueEqual
+
+```mermaid
+flowchart LR
+    tvm::BaseValueEqual --> tvm::StructuralEqual
+```
+
+### tvm::SEqualReducer::Handler
+
+```mermaid
+flowchart LR
+    tvm::SEqualReducer::Handler --> tvm::SEqualHandlerDefault
+```
+
+### tvm::BaseValueHash
+
+```mermaid
+flowchart LR
+    tvm::BaseValueHash --> tvm::StructuralHash
+```
+
+### tvm::SHashReducer::Handler
+
+```mermaid
+flowchart LR
+    tvm::SHashReducer::Handler --> tvm::SHashHandlerDefault
+```
+
+### tvm::AttrRegistryMap\<KeyType, ValueType\>
+
+```mermaid
+flowchart LR
+    tvm::AttrRegistryMap&ltKeyType,ValueType&gt --> tvm::TargetKindAttrMap&ltValueType&gt
+```
