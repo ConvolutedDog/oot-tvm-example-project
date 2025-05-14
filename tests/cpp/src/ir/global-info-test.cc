@@ -6,9 +6,17 @@
 
 namespace global_info_test {
 
-void GlobalInfoTest() { LOG_SPLIT_LINE("GlobalInfoTest"); }
-void VDeviceTest() { LOG_SPLIT_LINE("VDeviceTest"); }
-void DummyGlobalInfoTest() { LOG_SPLIT_LINE("DummyGlobalInfoTest"); }
+void GlobalInfoTest() {}
+
+void VDeviceTest() {
+  LOG_SPLIT_LINE("VDeviceTest");
+
+  Target target{"vulkan"};
+  VDevice vd{target, 0, "memorycopeofvulkan"};
+  LOG_PRINT_VAR(vd);
+}
+
+void DummyGlobalInfoTest() {}
 
 }  // namespace global_info_test
 

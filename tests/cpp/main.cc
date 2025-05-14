@@ -1,10 +1,15 @@
+#include "ir/analysis-test.h"
 #include "ir/attrs-test.h"
+#include "ir/diagnostic-test.h"
 #include "ir/expr-test.h"
 #include "ir/function-test.h"
 #include "ir/global-info-test.h"
+#include "ir/global-var-supply-test.h"
 #include "ir/module-test.h"
+#include "ir/name-supply-test.h"
 #include "ir/op-test.h"
 #include "ir/pass-test.h"
+#include "ir/replace-global-vars-test.h"
 #include "ir/source-map-test.h"
 #include "ir/type-functor-test.h"
 #include "ir/type-test.h"
@@ -118,11 +123,32 @@ int main() {
   // TargetTest();
   // std::cout << "TargetTest passed!\n\n";
 
-  std::cout << "Running GlobalInfoTest...\n";
-  GlobalInfoTest();
-  VDeviceTest();
-  DummyGlobalInfoTest();
-  std::cout << "GlobalInfoTest passed!\n\n";
+  // std::cout << "Running GlobalInfoTest...\n";
+  // GlobalInfoTest();
+  // VDeviceTest();
+  // DummyGlobalInfoTest();
+  // std::cout << "GlobalInfoTest passed!\n\n";
+
+  // std::cout << "Running AnalysisTest...\n";
+  // AnalysisTest();
+  // std::cout << "AnalysisTest passed!\n\n";
+
+  // std::cout << "Running DiagnosticTest...\n";
+  // DiagnosticTest();
+  // DiagnosticContextTest();
+  // std::cout << "DiagnosticTest passed!\n\n";
+
+  // std::cout << "Running NameSupplyTest...\n";
+  // NameSupplyTest();
+  // std::cout << "NameSupplyTest passed!\n\n";
+
+  // std::cout << "Running GlobalVarSupplyTest...\n";
+  // GlobalVarSupplyTest();
+  // std::cout << "GlobalVarSupplyTest passed!\n\n";
+
+  std::cout << "Running ReplaceGlobalVarsTest...\n";
+  ReplaceGlobalVarsTest();
+  std::cout << "ReplaceGlobalVarsTest passed!\n\n";
 
   std::cout << "All tests passed!\n";
   return 0;

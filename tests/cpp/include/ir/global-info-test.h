@@ -6,6 +6,9 @@ using tvm::DummyGlobalInfo;
 using tvm::GlobalInfo;
 using tvm::VDevice;
 
+using tvm::Target;
+using tvm::TargetKind;
+
 void GlobalInfoTest();
 void VDeviceTest();
 void DummyGlobalInfoTest();
