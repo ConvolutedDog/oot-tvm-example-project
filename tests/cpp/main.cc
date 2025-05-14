@@ -30,7 +30,7 @@ int main() {
   // std::cout << "NDArrayTest passed!\n\n";
 
   // std::cout << "Running AutoSchedulerTest...\n";
-  // // InplaceArrayBaseTest(); // Bug in MacOS
+  // // InplaceArrayBaseTest(); // May have Bug in MacOS
   // std::cout << "AutoSchedulerTest passed!\n\n";
 
   // std::cout << "Running ObjectTest...\n";
