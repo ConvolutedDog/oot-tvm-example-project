@@ -11,6 +11,7 @@
 #include "ir/pass-test.h"
 #include "ir/replace-global-vars-test.h"
 #include "ir/source-map-test.h"
+#include "ir/transform-test.h"
 #include "ir/type-functor-test.h"
 #include "ir/type-test.h"
 #include "node/functor-test.h"
@@ -30,7 +31,7 @@ int main() {
   // std::cout << "NDArrayTest passed!\n\n";
 
   // std::cout << "Running AutoSchedulerTest...\n";
-  // // InplaceArrayBaseTest(); // May have Bug in MacOS
+  // InplaceArrayBaseTest(); // Bug on MacOS
   // std::cout << "AutoSchedulerTest passed!\n\n";
 
   // std::cout << "Running ObjectTest...\n";
@@ -42,7 +43,7 @@ int main() {
   // std::cout << "ObjectRefTest passed!\n\n";
 
   // std::cout << "Running PassTest...\n";
-  // PassTest();
+  // PassTestTemp();
   // std::cout << "PassTest passed!\n\n";
 
   // std::cout << "Running ExprTest...\n";
@@ -146,9 +147,14 @@ int main() {
   // GlobalVarSupplyTest();
   // std::cout << "GlobalVarSupplyTest passed!\n\n";
 
-  std::cout << "Running ReplaceGlobalVarsTest...\n";
-  ReplaceGlobalVarsTest();
-  std::cout << "ReplaceGlobalVarsTest passed!\n\n";
+  // std::cout << "Running ReplaceGlobalVarsTest...\n";
+  // ReplaceGlobalVarsTest();
+  // std::cout << "ReplaceGlobalVarsTest passed!\n\n";
+
+  std::cout << "Running PassTest...\n";
+  PassContextTest();
+  PassTest();
+  std::cout << "PassTest passed!\n\n";
 
   std::cout << "All tests passed!\n";
   return 0;

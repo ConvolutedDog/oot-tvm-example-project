@@ -45,7 +45,7 @@ std::ostream &operator<<(std::ostream &os, const PassContext &ctx) {
 
 }  // namespace pass_test
 
-void PassTest() {
+void PassTestTemp() {
   PassContext passctx;
   passctx = PassContext::Create();
 
