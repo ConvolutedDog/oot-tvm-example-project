@@ -1,8 +1,5 @@
 #include "ir/expr-test.h"
-
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
-#define LOG_SPLIT_LINE(stmt)                                                             \
-  std::cout << "==============" << (stmt) << "==============\n";
+#include "test-func-registry.h"
 
 using std::string;
 
@@ -200,3 +197,12 @@ void RangeTest() {
   LOG_PRINT_VAR(rnode.extent);
   LOG_PRINT_VAR(primExprA * 2 * primExprB + primExprC - primExprA * primExprB);
 }
+
+namespace {
+
+REGISTER_TEST_SUITE(PrimExprTest);
+REGISTER_TEST_SUITE(RangeTest);
+REGISTER_TEST_SUITE(IntegerTest);
+REGISTER_TEST_SUITE(BoolTest);
+
+}  // namespace

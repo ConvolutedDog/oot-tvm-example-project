@@ -1,8 +1,5 @@
 #include "ir/type-functor-test.h"
-
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
-#define LOG_SPLIT_LINE(stmt)                                                             \
-  std::cout << "==============" << (stmt) << "==============\n";
+#include "test-func-registry.h"
 
 namespace type_functor_test {
 
@@ -36,3 +33,9 @@ void TypeFunctorTest() {
 }  // namespace type_functor_test
 
 void TypeFunctorTest() { type_functor_test::TypeFunctorTest(); }
+
+namespace {
+
+REGISTER_TEST_SUITE(TypeFunctorTest);
+
+}

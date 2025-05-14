@@ -1,10 +1,7 @@
 #include "ir/transform-test.h"
+#include "test-func-registry.h"
 #include <tvm/ir/transform.h>
 #include <tvm/runtime/logging.h>
-
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
-#define LOG_SPLIT_LINE(stmt)                                                             \
-  std::cout << "==============" << (stmt) << "==============\n";
 
 namespace transform_test {
 
@@ -140,3 +137,10 @@ void PassTest() {
 
 void PassContextTest() { transform_test::PassContextTest(); }
 void PassTest() { transform_test::PassTest(); }
+
+namespace {
+
+REGISTER_TEST_SUITE(PassContextTest);
+REGISTER_TEST_SUITE(PassTest);
+
+}  // namespace

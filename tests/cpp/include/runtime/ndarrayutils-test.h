@@ -8,3 +8,5 @@ namespace tvm::runtime {
 void NDArrayTest();
 
 }  // namespace tvm::runtime
+
+void NDArrayTest();

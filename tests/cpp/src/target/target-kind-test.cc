@@ -1,9 +1,6 @@
 #include "target/target-kind-test.h"
+#include "test-func-registry.h"
 #include <tvm/runtime/logging.h>
-
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
-#define LOG_SPLIT_LINE(stmt)                                                             \
-  std::cout << "==============" << (stmt) << "==============\n";
 
 namespace target_kind_test {
 
@@ -38,3 +35,9 @@ void TargetKindTest() {
 }  // namespace target_kind_test
 
 void TargetKindTest() { target_kind_test::TargetKindTest(); }
+
+namespace {
+
+REGISTER_TEST_SUITE(TargetKindTest);
+
+}

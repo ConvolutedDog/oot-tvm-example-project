@@ -1,9 +1,6 @@
 #include "node/reflection-test.h"
+#include "test-func-registry.h"
 #include "tvm/ir/expr.h"
-
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
-#define LOG_SPLIT_LINE(stmt)                                                             \
-  std::cout << "==============" << (stmt) << "==============\n";
 
 namespace reflection_test {
 
@@ -76,3 +73,10 @@ void ReflectionVTableTest() {
 
 void AttrVisitorTest() { reflection_test::AttrVisitorTest(); }
 void ReflectionVTableTest() { reflection_test::ReflectionVTableTest(); }
+
+namespace {
+
+REGISTER_TEST_SUITE(AttrVisitorTest);
+REGISTER_TEST_SUITE(ReflectionVTableTest);
+
+}  // namespace

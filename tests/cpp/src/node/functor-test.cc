@@ -1,10 +1,7 @@
 #include "node/functor-test.h"
+#include "test-func-registry.h"
 #include <string>
 #include <tvm/ir/expr.h>
-
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
-#define LOG_SPLIT_LINE(stmt)                                                             \
-  std::cout << "==============" << (stmt) << "==============\n";
 
 namespace functor_test {
 
@@ -41,3 +38,9 @@ void NodeFunctorTest() {
 }  // namespace functor_test
 
 void NodeFunctorTest() { functor_test::NodeFunctorTest(); }
+
+namespace {
+
+REGISTER_TEST_SUITE(NodeFunctorTest);
+
+}

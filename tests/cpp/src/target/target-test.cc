@@ -1,9 +1,6 @@
 #include "target/target-test.h"
+#include "test-func-registry.h"
 #include <tvm/runtime/logging.h>
-
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
-#define LOG_SPLIT_LINE(stmt)                                                             \
-  std::cout << "==============" << (stmt) << "==============\n";
 
 namespace target_test {
 
@@ -95,3 +92,9 @@ void TargetTest() {
 }  // namespace target_test
 
 void TargetTest() { target_test::TargetTest(); }
+
+namespace {
+
+REGISTER_TEST_SUITE(TargetTest);
+
+}

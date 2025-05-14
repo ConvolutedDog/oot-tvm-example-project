@@ -1,8 +1,5 @@
 #include "ir/replace-global-vars-test.h"
-
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
-#define LOG_SPLIT_LINE(stmt)                                                             \
-  std::cout << "==============" << (stmt) << "==============\n";
+#include "test-func-registry.h"
 
 namespace replace_global_vars_test {
 
@@ -55,3 +52,9 @@ void ReplaceGlobalVarsTest() {
 }  // namespace replace_global_vars_test
 
 void ReplaceGlobalVarsTest() { replace_global_vars_test::ReplaceGlobalVarsTest(); }
+
+namespace {
+
+REGISTER_TEST_SUITE(ReplaceGlobalVarsTest);
+
+}

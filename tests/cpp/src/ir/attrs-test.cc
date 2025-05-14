@@ -1,8 +1,5 @@
 #include "ir/attrs-test.h"
-
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
-#define LOG_SPLIT_LINE(stmt)                                                             \
-  std::cout << "==============" << (stmt) << "==============\n";
+#include "test-func-registry.h"
 
 namespace attrs_test {
 
@@ -118,3 +115,12 @@ void AttrUtilsTests() { attrs_test::AttrUtilsTests(); }
 void AttrFieldInfoTest() { attrs_test::AttrFieldInfoTest(); }
 void AttrsTest() { attrs_test::AttrsTest(); }
 void DictAttrsTest() { attrs_test::DictAttrsTest(); }
+
+namespace {
+
+REGISTER_TEST_SUITE(AttrUtilsTests);
+REGISTER_TEST_SUITE(AttrFieldInfoTest);
+REGISTER_TEST_SUITE(AttrsTest);
+REGISTER_TEST_SUITE(DictAttrsTest);
+
+}  // namespace

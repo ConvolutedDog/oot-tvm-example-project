@@ -1,8 +1,5 @@
 #include "runtime/tvmpodvalue-test.h"
-
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
-#define LOG_SPLIT_LINE(stmt)                                                             \
-  std::cout << "==============" << (stmt) << "==============\n";
+#include "test-func-registry.h"
 
 namespace tvmpodvalue_test {
 
@@ -63,3 +60,9 @@ void TvmPodValueTest() {
 }  // namespace tvmpodvalue_test
 
 void TvmPodValueTest() { return tvmpodvalue_test::TvmPodValueTest(); }
+
+namespace {
+
+REGISTER_TEST_SUITE(TvmPodValueTest);
+
+}

@@ -1,12 +1,9 @@
 #include "relax/expr-test.h"
 #include "dlpack/dlpack.h"
+#include "test-func-registry.h"
 #include "tvm/relax/struct_info.h"
 #include <tvm/node/script_printer.h>
 #include <tvm/relax/expr.h>
-
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
-#define LOG_SPLIT_LINE(stmt)                                                             \
-  std::cout << "==============" << (stmt) << "==============\n";
 
 namespace expr_test {
 
@@ -521,3 +518,13 @@ void TupleTest() { expr_test::TupleTest(); }
 void TupleGetItemTest() { expr_test::TupleGetItemTest(); }
 void LeafExprTest() { expr_test::LeafExprTest(); }
 void BindTest() { expr_test::BindTest(); }
+
+namespace {
+
+REGISTER_TEST_SUITE(CallTest);
+REGISTER_TEST_SUITE(TupleTest);
+REGISTER_TEST_SUITE(TupleGetItemTest);
+REGISTER_TEST_SUITE(LeafExprTest);
+REGISTER_TEST_SUITE(BindTest);
+
+}  // namespace

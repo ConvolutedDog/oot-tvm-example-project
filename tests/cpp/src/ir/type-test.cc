@@ -1,7 +1,5 @@
 #include "ir/type-test.h"
-
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n'
-#define LOG_SPLIT_LINE(stmt) std::cout << "==============" << (stmt) << "==============\n"
+#include "test-func-registry.h"
 
 using tvm::Span;
 
@@ -101,3 +99,12 @@ void FuncTypeTest() {
   LOG_PRINT_VAR(functype.get()->arg_types);
   LOG_PRINT_VAR(functype.get()->ret_type);
 }
+
+namespace {
+
+REGISTER_TEST_SUITE(PrimTypeTest);
+REGISTER_TEST_SUITE(PointerTypeTest);
+REGISTER_TEST_SUITE(TupleTypeTest);
+REGISTER_TEST_SUITE(FuncTypeTest);
+
+}  // namespace

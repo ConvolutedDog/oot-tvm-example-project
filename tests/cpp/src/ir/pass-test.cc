@@ -1,10 +1,7 @@
 #include "ir/pass-test.h"
+#include "test-func-registry.h"
 #include "tvm/runtime/container/map.h"
 #include "tvm/runtime/container/string.h"
-
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
-#define LOG_SPLIT_LINE(stmt)                                                             \
-  std::cout << "==============" << (stmt) << "==============\n";
 
 using tvm::runtime::Map;
 using tvm::runtime::String;
@@ -64,4 +61,10 @@ void PassTestTemp() {
 
   pass_test::operator<<(std::cout, passctx);
   pass_test::operator<<(std::cout, PassContext::Current());
+}
+
+namespace {
+
+REGISTER_TEST_SUITE(PassTestTemp);
+
 }

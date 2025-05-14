@@ -1,4 +1,5 @@
 #include "runtime/ndarrayutils-test.h"
+#include "test-func-registry.h"
 #include <tvm/runtime/container/shape_tuple.h>
 
 namespace tvm::runtime {
@@ -103,3 +104,11 @@ void NDArrayTest() {
 }
 
 }  // namespace tvm::runtime
+
+void NDArrayTest() { tvm::runtime::NDArrayTest(); }
+
+namespace {
+
+REGISTER_TEST_SUITE(NDArrayTest);
+
+}

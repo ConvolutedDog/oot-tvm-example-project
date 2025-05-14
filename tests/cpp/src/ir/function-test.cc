@@ -1,8 +1,5 @@
 #include "ir/function-test.h"
-
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
-#define LOG_SPLIT_LINE(stmt)                                                             \
-  std::cout << "==============" << (stmt) << "==============\n";
+#include "test-func-registry.h"
 
 namespace function_test {
 
@@ -56,3 +53,9 @@ void BaseFuncTest() {
 }  // namespace function_test
 
 void BaseFuncTest() { function_test::BaseFuncTest(); }
+
+namespace {
+
+REGISTER_TEST_SUITE(BaseFuncTest);
+
+}

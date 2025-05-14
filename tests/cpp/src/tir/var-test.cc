@@ -1,10 +1,7 @@
 #include "tir/var-test.h"
+#include "test-func-registry.h"
 #include <tvm/ir/expr.h>
 #include <tvm/runtime/logging.h>
-
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
-#define LOG_SPLIT_LINE(stmt)                                                             \
-  std::cout << "==============" << (stmt) << "==============\n";
 
 namespace var_test {
 
@@ -109,3 +106,11 @@ void VarTest() { var_test::VarTest(); }
 void SizeVarTest() { var_test::SizeVarTest(); }
 
 void IterVarTest() { var_test::IterVarTest(); }
+
+namespace {
+
+REGISTER_TEST_SUITE(VarTest);
+REGISTER_TEST_SUITE(SizeVarTest);
+REGISTER_TEST_SUITE(IterVarTest);
+
+}  // namespace

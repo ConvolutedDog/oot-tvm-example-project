@@ -1,8 +1,5 @@
 #include "ir/diagnostic-test.h"
-
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
-#define LOG_SPLIT_LINE(stmt)                                                             \
-  std::cout << "==============" << (stmt) << "==============\n";
+#include "test-func-registry.h"
 
 namespace diagnostic_test {
 
@@ -77,3 +74,10 @@ void DiagnosticContextTest() {
 
 void DiagnosticTest() { diagnostic_test::DiagnosticTest(); }
 void DiagnosticContextTest() { diagnostic_test::DiagnosticContextTest(); }
+
+namespace {
+
+REGISTER_TEST_SUITE(DiagnosticTest);
+REGISTER_TEST_SUITE(DiagnosticContextTest);
+
+}  // namespace

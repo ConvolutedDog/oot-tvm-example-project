@@ -1,10 +1,7 @@
 #include "runtime/object-test.h"
+#include "test-func-registry.h"
 #include "tvm/runtime/memory.h"
 #include <tvm/runtime/object.h>
-
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
-#define LOG_SPLIT_LINE(stmt)                                                             \
-  std::cout << "==============" << (stmt) << "==============\n";
 
 namespace object_test {
 
@@ -167,3 +164,10 @@ void ObjectRefTest() {
   LOG_PRINT_VAR(testDerived3Ref.get()->nameHint);
   LOG_PRINT_VAR(testDerived3Ref->extraNameHint);
 }
+
+namespace {
+
+REGISTER_TEST_SUITE(ObjectTest);
+REGISTER_TEST_SUITE(ObjectRefTest);
+
+}  // namespace

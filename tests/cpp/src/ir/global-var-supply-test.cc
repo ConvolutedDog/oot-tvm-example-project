@@ -1,9 +1,6 @@
 #include "ir/global-var-supply-test.h"
+#include "test-func-registry.h"
 #include <tvm/ir/expr.h>
-
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
-#define LOG_SPLIT_LINE(stmt)                                                             \
-  std::cout << "==============" << (stmt) << "==============\n";
 
 namespace global_var_supply_test {
 
@@ -62,3 +59,9 @@ void GlobalVarSupplyTest() {
 }  // namespace global_var_supply_test
 
 void GlobalVarSupplyTest() { global_var_supply_test::GlobalVarSupplyTest(); }
+
+namespace {
+
+REGISTER_TEST_SUITE(GlobalVarSupplyTest);
+
+}

@@ -1,8 +1,5 @@
 #include "ir/source-map-test.h"
-
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
-#define LOG_SPLIT_LINE(stmt)                                                             \
-  std::cout << "==============" << (stmt) << "==============\n";
+#include "test-func-registry.h"
 
 namespace source_map_test {
 
@@ -66,3 +63,10 @@ void SourceTest() {
 
 void SpanTest() { source_map_test::SpanTest(); }
 void SourceTest() { source_map_test::SourceTest(); }
+
+namespace {
+
+REGISTER_TEST_SUITE(SpanTest);
+REGISTER_TEST_SUITE(SourceTest);
+
+}  // namespace

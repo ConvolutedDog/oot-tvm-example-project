@@ -1,9 +1,6 @@
 #include "ir/op-test.h"
 #include "dlpack/dlpack.h"
-
-#define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
-#define LOG_SPLIT_LINE(stmt)                                                             \
-  std::cout << "==============" << (stmt) << "==============\n";
+#include "test-func-registry.h"
 
 namespace op_test {
 
@@ -208,3 +205,10 @@ void OpTest() {
 
 void OpNodeTest() { op_test::OpNodeTest(); }
 void OpTest() { op_test::OpTest(); }
+
+namespace {
+
+REGISTER_TEST_SUITE(OpNodeTest);
+REGISTER_TEST_SUITE(OpTest);
+
+}  // namespace
