@@ -72,9 +72,9 @@ private:
   // Map of test names to functions.
   std::unordered_map<String, TestFuncTy> suites_;  // NOLINT
   // Map of test names to source locations.
-  std::unordered_map<String, Source> span_;        // NOLINT
+  std::unordered_map<String, Source> span_;  // NOLINT
   // Static deleter instance.
-  static InstanceDeleter deleter_;                 // NOLINT
+  static InstanceDeleter deleter_;  // NOLINT
 };
 
 }  // namespace test_func_registry
@@ -92,9 +92,9 @@ using TestSuiteRegistry = test_func_registry::TestSuiteRegistry;
 /// 2. Registers it with the global TestSuiteRegistry.
 ///
 /// Usage:
-/// 1. Define a function with not prefix namespace in a .cc/.cpp file:
+/// 1. Define a function without prefix namespace in a .cc/.cpp file:
 ///    void TestSuiteName() {
-///      ...
+///      ::namespace_x::namespace_y:: ... ::TestSuiteFunc();
 ///    }
 /// 2. Register it with the global TestSuiteRegistry in the same .cc/.cpp file:
 ///    namespace {
