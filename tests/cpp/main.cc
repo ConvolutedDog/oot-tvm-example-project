@@ -79,6 +79,7 @@ void TestMethod3() {
   registry->RunTestSuite("AsLegacyReprTest");
   registry->RunTestSuite("ReprPrinterTest");
   registry->RunTestSuite("ReprLegacyPrinterTest");
+  registry->RunTestSuite("ObjectPathTest");
 }
 
 int main() {
