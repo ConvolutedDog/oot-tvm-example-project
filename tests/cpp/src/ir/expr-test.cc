@@ -122,7 +122,7 @@ void PrimExprTest() {
   DataType dtypeD = primExprD.dtype();
   DLDataType dldtypeD = DLDataType(dtypeD);
   LOG_PRINT_VAR(dldtypeD.code);
-  LOG_PRINT_VAR(DLDataTypeCode::kDLBool);
+  // LOG_PRINT_VAR(DLDataTypeCode::kDLBool);
 
   PrimExpr primExprE = Bool(true);
 

@@ -37,10 +37,8 @@ std::ostream &operator<<(std::ostream &os, const tvm::runtime::Object &cls) {
 
 namespace objectref_test {
 
-TestCanDerivedFrom2::TestCanDerivedFrom2(String name) {
-  ObjectPtr<TestCanDerivedFromNode> n = make_object<TestCanDerivedFromNode>();
-  n->nameHint = std::move(name);
-  data_ = std::move(n);
+TestCanDerivedFrom2::TestCanDerivedFrom2(const String& name) {
+  data_ = make_object<TestCanDerivedFromNode>(name);
 }
 
 /// Although TestDerived3 inherits from TestCanDerivedFrom2, it cannot just
@@ -48,11 +46,8 @@ TestCanDerivedFrom2::TestCanDerivedFrom2(String name) {
 /// has different internal Object type. And to achive the initialization of
 /// name which is inheritted from TestCanDerivedFrom2, we should also provide
 /// a default constructor function for TestCanDerivedFrom2.
-TestDerived3::TestDerived3(String name, String extraName) {
-  ObjectPtr<TestDerived3Node> n = make_object<TestDerived3Node>();
-  n->nameHint = std::move(name);
-  n->extraNameHint = std::move(extraName);
-  data_ = std::move(n);
+TestDerived3::TestDerived3(const String& name, const String& extraName) {
+  data_ = make_object<TestDerived3Node>(name, extraName);
 }
 
 }  // namespace objectref_test
@@ -63,29 +58,25 @@ std::ostream &operator<<(std::ostream &os, const tvm::runtime::ObjectRef &clsref
 }
 
 void ObjectTest() {
-  object_test::TestCanDerivedFromNode testCanDerivedFromObj =
-      object_test::InitObject<object_test::TestCanDerivedFromNode>();
+
+  object_test::TestCanDerivedFromNode testCanDerivedFromObj;
   LOG_SPLIT_LINE("testCanDerivedFromObj");
   std::cout << testCanDerivedFromObj << '\n';
 
-  object_test::TestDerived1Node testDerived1 =
-      object_test::InitObject<object_test::TestDerived1Node>();
+  object_test::TestDerived1Node testDerived1;
   LOG_SPLIT_LINE("testDerived1");
   std::cout << testDerived1 << '\n';
 
-  object_test::TestDerived2Node testDerived2 =
-      object_test::InitObject<object_test::TestDerived2Node>();
+  object_test::TestDerived2Node testDerived2;
   LOG_SPLIT_LINE("testDerived2");
   std::cout << testDerived2 << '\n';
 
-  object_test::TestFinalNode testFinalObj =
-      object_test::InitObject<object_test::TestFinalNode>();
+  object_test::TestFinalNode testFinalObj;
   LOG_SPLIT_LINE("testFinalObj");
   std::cout << testFinalObj << '\n';
 }
 
 void ObjectRefTest() {
-  using object_test::InitObject;
   using object_test::TestCanDerivedFromNode;
   using object_test::TestDerived1Node;
   using object_test::TestDerived2Node;
@@ -115,35 +106,67 @@ void ObjectRefTest() {
   LOG_SPLIT_LINE("testDerived2Ref");
   std::cout << testDerived2Ref << '\n';
 
-  TestFinal testFinalRef(make_object<TestFinalNode>());
+  ObjectPtr<TestFinalNode> objptrFinal = make_object<TestFinalNode>();
+  TestFinal testFinalRef(objptrFinal);
   LOG_SPLIT_LINE("testFinalRef");
   std::cout << testFinalRef << '\n';
 
   /// Different ObjectPtr<TestCanDerivedFromNode>
+  /// In order to test the `use_count`,
+  // make new 2 references to the same object where `testCanDerivedFromRef` refers and `objptr` points.
+
+  /// the 2nd reference
   TestCanDerivedFrom testCanDerivedFromRef2(
       make_object<TestCanDerivedFromNode>(*(testCanDerivedFromRef.get())));
   LOG_PRINT_VAR(testCanDerivedFromRef2 == testCanDerivedFromRef);  // False
 
   /// Same ObjectPtr<TestCanDerivedFromNode>
+  /// the 3rd reference
   TestCanDerivedFrom testCanDerivedFromRef3(objptr);
   LOG_PRINT_VAR(testCanDerivedFromRef3 == testCanDerivedFromRef);        // True
   LOG_PRINT_VAR(testCanDerivedFromRef3.same_as(testCanDerivedFromRef));  // True
   LOG_PRINT_VAR(testCanDerivedFromRef3.use_count());                     // 3
+  std::cout << "ObjectRef behaves like std::shared_ptr" << '\n';
   LOG_PRINT_VAR("\n");
 
   /// as Self
   TestDerived1 testDerived1Ref2(objptrchild1);
   LOG_SPLIT_LINE("testDerived1Ref2");
+  /// We can use `Ref.as<Node>()` to transfer a `ObjectRef` object to a `Node *`
   std::cout << *(testDerived1Ref2.as<TestDerived1Node>()) << '\n';
 
   /// We can use `Ref.as<Node>()` to transfer a `ObjectRef` object to a `Node *`
   /// object.
   std::cout << *(testDerived1Ref2.as<TestCanDerivedFromNode>()) << '\n';
 
-  /// We can use GetObjectPtr to get a ObjectPtr<Node> object of a node.
-  TestCanDerivedFromNode x = object_test::InitObject<TestCanDerivedFromNode>();
+  TestCanDerivedFromNode x;
   ObjectPtr<TestCanDerivedFromNode> xptr =
       tvm::runtime::GetObjectPtr<TestCanDerivedFromNode>(&x);
+  
+  
+  /**
+   * @brief Test the ObjectPtr's behavior
+   * @note ObjectPtr behaves like both std::shared_ptr and std::unique_ptr,
+   * which can share/borrow resource with/from other ObjectPtr。
+   * Well, ObjectRef is also the mixture of std::shared_ptr and std::unique_ptr.
+   */
+  LOG_PRINT_VAR(&x);
+  LOG_PRINT_VAR(xptr.get());         // Expected: &x
+  LOG_PRINT_VAR(xptr.use_count());  // Expected: 1 (sole owner)
+  ObjectPtr<TestCanDerivedFromNode> xptr2 = xptr;// xptr shares the resource with xptr2
+  LOG_SPLIT_LINE("After Share");
+  LOG_PRINT_VAR(xptr.get());         // Expected: &x
+  LOG_PRINT_VAR(xptr.use_count());    // 2
+  LOG_PRINT_VAR(xptr2.get())          // Expected: &x
+  LOG_PRINT_VAR(xptr2.use_count());  // Expected: 2
+
+  LOG_SPLIT_LINE("After Move");
+  ObjectPtr<TestCanDerivedFromNode> xptr3 = std::move(xptr2); //xptr3 borrows the resource from xptr2
+  LOG_PRINT_VAR(xptr2.get()); // Expected: nullptr
+  LOG_PRINT_VAR(xptr2.use_count()); // 0
+  LOG_PRINT_VAR(xptr3.get()) // &x
+  LOG_PRINT_VAR(xptr3.use_count()); // 2
+
   TestCanDerivedFrom testXRef(xptr);
   LOG_SPLIT_LINE("testXRef");
   std::cout << testXRef << '\n';
@@ -152,17 +175,17 @@ void ObjectRefTest() {
   TestCanDerivedFrom2 testCanDerivedFrom2Ref{"varname"};
   LOG_SPLIT_LINE("testCanDerivedFrom2Ref");
   std::cout << testCanDerivedFrom2Ref << '\n';
-  LOG_PRINT_VAR(testCanDerivedFrom2Ref.get()->nameHint);
+  LOG_PRINT_VAR(testCanDerivedFrom2Ref.get()->GetNameHint());
 
   TestDerived3 testDerived3Ref = TestDerived3("varname3", "extraname3");
   LOG_SPLIT_LINE("testDerived3Ref");
   std::cout << testDerived3Ref << '\n';
-  LOG_PRINT_VAR(testDerived3Ref.get()->nameHint);
-  LOG_PRINT_VAR(testDerived3Ref.get()->extraNameHint);
+  LOG_PRINT_VAR(testDerived3Ref.get()->GetNameHint());
+  LOG_PRINT_VAR(testDerived3Ref.get()->GetExtraNameHint());
 
   /// @important `Ref.get()->` can be written to `Ref->`.
-  LOG_PRINT_VAR(testDerived3Ref.get()->nameHint);
-  LOG_PRINT_VAR(testDerived3Ref->extraNameHint);
+  LOG_PRINT_VAR(testDerived3Ref.get()->GetNameHint());
+  LOG_PRINT_VAR(testDerived3Ref->GetExtraNameHint());
 }
 
 namespace {
