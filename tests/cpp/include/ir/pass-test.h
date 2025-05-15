@@ -11,6 +11,6 @@ using tvm::runtime::ObjectRef;
 using tvm::transform::PassContext;
 using tvm::transform::PassContextNode;
 
-}  // namespace pass_test
-
 void PassTestTemp();
+
+}  // namespace pass_test

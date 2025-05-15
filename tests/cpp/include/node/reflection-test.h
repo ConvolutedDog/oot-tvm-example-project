@@ -52,7 +52,7 @@ class MyIRSerializer : public AttrVisitor {
   }
 };
 
-}  // namespace reflection_test
-
 void AttrVisitorTest();
 void ReflectionVTableTest();
+
+}  // namespace reflection_test

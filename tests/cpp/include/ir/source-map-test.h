@@ -24,7 +24,7 @@ using tvm::runtime::make_object;
 
 using tvm::runtime::Array;
 
-}  // namespace source_map_test
-
 void SpanTest();
 void SourceTest();
+
+}  // namespace source_map_test

@@ -93,9 +93,9 @@ public:
   TVM_DEFINE_OBJECT_REF_METHODS(MyAttr, Attrs, MyAttrNode);
 };
 
-}  // namespace attrs_test
-
 void AttrUtilsTests();
 void AttrFieldInfoTest();
 void AttrsTest();
 void DictAttrsTest();
+
+}  // namespace attrs_test

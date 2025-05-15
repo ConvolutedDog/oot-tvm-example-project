@@ -34,10 +34,5 @@ void TargetKindTest() {
 
 }  // namespace target_kind_test
 
-void TargetKindTest() { target_kind_test::TargetKindTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(TargetKindTest);
-
-}
+REGISTER_TEST_SUITE(target_kind_test::TargetKindTest,
+                    target_target_kind_test_TargetKindTest);

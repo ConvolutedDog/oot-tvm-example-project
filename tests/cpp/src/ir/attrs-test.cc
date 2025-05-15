@@ -111,16 +111,7 @@ void DictAttrsTest() {
 
 }  // namespace attrs_test
 
-void AttrUtilsTests() { attrs_test::AttrUtilsTests(); }
-void AttrFieldInfoTest() { attrs_test::AttrFieldInfoTest(); }
-void AttrsTest() { attrs_test::AttrsTest(); }
-void DictAttrsTest() { attrs_test::DictAttrsTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(AttrUtilsTests);
-REGISTER_TEST_SUITE(AttrFieldInfoTest);
-REGISTER_TEST_SUITE(AttrsTest);
-REGISTER_TEST_SUITE(DictAttrsTest);
-
-}  // namespace
+REGISTER_TEST_SUITE(attrs_test::AttrUtilsTests, ir_attrs_test_AttrUtilsTests);
+REGISTER_TEST_SUITE(attrs_test::AttrFieldInfoTest, ir_attrs_test_AttrFieldInfoTest);
+REGISTER_TEST_SUITE(attrs_test::AttrsTest, ir_attrs_test_AttrsTest);
+REGISTER_TEST_SUITE(attrs_test::DictAttrsTest, ir_attrs_test_DictAttrsTest);

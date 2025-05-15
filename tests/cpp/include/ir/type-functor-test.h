@@ -35,6 +35,6 @@ public:
   }
 };
 
-}  // namespace type_functor_test
-
 void TypeFunctorTest();
+
+}  // namespace type_functor_test

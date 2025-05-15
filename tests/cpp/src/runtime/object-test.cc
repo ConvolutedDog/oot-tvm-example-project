@@ -3,6 +3,20 @@
 #include "tvm/runtime/memory.h"
 #include <tvm/runtime/object.h>
 
+std::ostream &operator<<(std::ostream &os, const tvm::runtime::Object &cls) {
+  LOG_PRINT_VAR(cls.type_index());
+  LOG_PRINT_VAR(cls.RuntimeTypeIndex());
+  LOG_PRINT_VAR(cls.GetTypeKey());
+  LOG_PRINT_VAR(cls.type_index());
+  LOG_PRINT_VAR(cls.IsInstance<tvm::runtime::Object>());
+  LOG_PRINT_VAR(cls.IsInstance<object_test::TestCanDerivedFromNode>());
+  LOG_PRINT_VAR(cls.IsInstance<object_test::TestDerived1Node>());
+  LOG_PRINT_VAR(cls.IsInstance<object_test::TestDerived2Node>());
+  LOG_PRINT_VAR(cls.IsInstance<object_test::TestFinalNode>());
+  LOG_PRINT_VAR(cls.unique());
+  return os;
+}
+
 namespace object_test {
 
 /// @brief This macros actually calls `::_GetOrAllocRuntimeTypeIndex()`
@@ -19,19 +33,28 @@ TVM_REGISTER_OBJECT_TYPE(TestDerived1Node);
 TVM_REGISTER_OBJECT_TYPE(TestDerived2Node);
 TVM_REGISTER_OBJECT_TYPE(TestFinalNode);
 
+void ObjectTest() {
+  object_test::TestCanDerivedFromNode testCanDerivedFromObj;
+  LOG_SPLIT_LINE("testCanDerivedFromObj");
+  std::cout << testCanDerivedFromObj << '\n';
+
+  object_test::TestDerived1Node testDerived1;
+  LOG_SPLIT_LINE("testDerived1");
+  std::cout << testDerived1 << '\n';
+
+  object_test::TestDerived2Node testDerived2;
+  LOG_SPLIT_LINE("testDerived2");
+  std::cout << testDerived2 << '\n';
+
+  object_test::TestFinalNode testFinalObj;
+  LOG_SPLIT_LINE("testFinalObj");
+  std::cout << testFinalObj << '\n';
+}
+
 }  // namespace object_test
 
-std::ostream &operator<<(std::ostream &os, const tvm::runtime::Object &cls) {
-  LOG_PRINT_VAR(cls.type_index());
-  LOG_PRINT_VAR(cls.RuntimeTypeIndex());
-  LOG_PRINT_VAR(cls.GetTypeKey());
-  LOG_PRINT_VAR(cls.type_index());
-  LOG_PRINT_VAR(cls.IsInstance<tvm::runtime::Object>());
-  LOG_PRINT_VAR(cls.IsInstance<object_test::TestCanDerivedFromNode>());
-  LOG_PRINT_VAR(cls.IsInstance<object_test::TestDerived1Node>());
-  LOG_PRINT_VAR(cls.IsInstance<object_test::TestDerived2Node>());
-  LOG_PRINT_VAR(cls.IsInstance<object_test::TestFinalNode>());
-  LOG_PRINT_VAR(cls.unique());
+std::ostream &operator<<(std::ostream &os, const tvm::runtime::ObjectRef &clsref) {
+  operator<<(std::cout, *(clsref.get()));
   return os;
 }
 
@@ -48,32 +71,6 @@ TestCanDerivedFrom2::TestCanDerivedFrom2(const String &name) {
 /// a default constructor function for TestCanDerivedFrom2.
 TestDerived3::TestDerived3(const String &name, const String &extraName) {
   data_ = make_object<TestDerived3Node>(name, extraName);
-}
-
-}  // namespace objectref_test
-
-std::ostream &operator<<(std::ostream &os, const tvm::runtime::ObjectRef &clsref) {
-  operator<<(std::cout, *(clsref.get()));
-  return os;
-}
-
-void ObjectTest() {
-
-  object_test::TestCanDerivedFromNode testCanDerivedFromObj;
-  LOG_SPLIT_LINE("testCanDerivedFromObj");
-  std::cout << testCanDerivedFromObj << '\n';
-
-  object_test::TestDerived1Node testDerived1;
-  LOG_SPLIT_LINE("testDerived1");
-  std::cout << testDerived1 << '\n';
-
-  object_test::TestDerived2Node testDerived2;
-  LOG_SPLIT_LINE("testDerived2");
-  std::cout << testDerived2 << '\n';
-
-  object_test::TestFinalNode testFinalObj;
-  LOG_SPLIT_LINE("testFinalObj");
-  std::cout << testFinalObj << '\n';
 }
 
 void ObjectRefTest() {
@@ -188,9 +185,7 @@ void ObjectRefTest() {
   LOG_PRINT_VAR(testDerived3Ref->GetExtraNameHint());
 }
 
-namespace {
+}  // namespace objectref_test
 
-REGISTER_TEST_SUITE(ObjectTest);
-REGISTER_TEST_SUITE(ObjectRefTest);
-
-}  // namespace
+REGISTER_TEST_SUITE(object_test::ObjectTest, runtime_object_test_ObjectTest);
+REGISTER_TEST_SUITE(objectref_test::ObjectRefTest, runtime_objectref_test_ObjectRefTest);

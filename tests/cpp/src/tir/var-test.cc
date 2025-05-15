@@ -101,16 +101,6 @@ void IterVarTest() {
 
 }  // namespace var_test
 
-void VarTest() { var_test::VarTest(); }
-
-void SizeVarTest() { var_test::SizeVarTest(); }
-
-void IterVarTest() { var_test::IterVarTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(VarTest);
-REGISTER_TEST_SUITE(SizeVarTest);
-REGISTER_TEST_SUITE(IterVarTest);
-
-}  // namespace
+REGISTER_TEST_SUITE(var_test::VarTest, tir_var_test_VarTest);
+REGISTER_TEST_SUITE(var_test::SizeVarTest, tir_var_test_SizeVarTest);
+REGISTER_TEST_SUITE(var_test::IterVarTest, tir_var_test_IterVarTest);

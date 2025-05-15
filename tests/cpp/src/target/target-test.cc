@@ -91,10 +91,4 @@ void TargetTest() {
 
 }  // namespace target_test
 
-void TargetTest() { target_test::TargetTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(TargetTest);
-
-}
+REGISTER_TEST_SUITE(target_test::TargetTest, target_target_test_TargetTest);

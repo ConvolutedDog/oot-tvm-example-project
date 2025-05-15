@@ -1,6 +1,8 @@
 #include "runtime/inplacearraybase-test.h"
 #include "test-func-registry.h"
 
+namespace inplace_array_base_test {
+
 using namespace tvm::runtime;
 
 void InplaceArrayBaseTest() {
@@ -15,8 +17,7 @@ void InplaceArrayBaseTest() {
   arr2.Show(std::cout);
 }
 
-namespace {
+}  // namespace inplace_array_base_test
 
-REGISTER_TEST_SUITE(InplaceArrayBaseTest);
-
-}
+REGISTER_TEST_SUITE(inplace_array_base_test::InplaceArrayBaseTest,
+                    runtime_inplace_array_base_test_InplaceArrayBaseTest);

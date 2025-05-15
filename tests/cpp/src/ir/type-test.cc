@@ -18,8 +18,6 @@ std::string DataType2Str(const DataType &dtype) {
   return tvm::runtime::DLDataType2String((DLDataType)dtype);
 }
 
-}  // namespace type_test
-
 void PrimTypeTest() {
   LOG_SPLIT_LINE("PrimTypeTest");
   DLDataType dldtype{DLDataTypeCode::kDLFloat, 32, 1};
@@ -100,11 +98,9 @@ void FuncTypeTest() {
   LOG_PRINT_VAR(functype.get()->ret_type);
 }
 
-namespace {
+}  // namespace type_test
 
-REGISTER_TEST_SUITE(PrimTypeTest);
-REGISTER_TEST_SUITE(PointerTypeTest);
-REGISTER_TEST_SUITE(TupleTypeTest);
-REGISTER_TEST_SUITE(FuncTypeTest);
-
-}  // namespace
+REGISTER_TEST_SUITE(type_test::PrimTypeTest, ir_type_test_PrimTypeTest);
+REGISTER_TEST_SUITE(type_test::PointerTypeTest, ir_type_test_PointerTypeTest);
+REGISTER_TEST_SUITE(type_test::TupleTypeTest, ir_type_test_TupleTypeTest);
+REGISTER_TEST_SUITE(type_test::FuncTypeTest, ir_type_test_FuncTypeTest);

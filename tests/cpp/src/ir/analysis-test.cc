@@ -33,10 +33,4 @@ void AnalysisTest() {
 
 }  // namespace analysis_test
 
-void AnalysisTest() { analysis_test::AnalysisTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(AnalysisTest);
-
-}
+REGISTER_TEST_SUITE(analysis_test::AnalysisTest, ir_analysis_test_AnalysisTest);

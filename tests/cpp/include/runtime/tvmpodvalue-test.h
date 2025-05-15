@@ -10,6 +10,6 @@ public:
   TVMPODValueDerived(TVMValue value, int typecode) : TVMPODValue_(value, typecode) {}
 };
 
-}  // namespace tvmpodvalue_test
-
 void TvmPodValueTest();
+
+}  // namespace tvmpodvalue_test

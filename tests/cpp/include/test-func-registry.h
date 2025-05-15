@@ -87,6 +87,7 @@ private:
 /// Type alias for easier access to TestSuiteRegistry.
 using TestSuiteRegistry = test_func_registry::TestSuiteRegistry;
 
+/// Macros for concatenating strings.
 #define STR_CONCAT_(__x, __y) __x##__y
 #define STR_CONCAT(__x, __y) STR_CONCAT_(__x, __y)
 
@@ -95,24 +96,43 @@ using TestSuiteRegistry = test_func_registry::TestSuiteRegistry;
 /// 2. Registers it with the global TestSuiteRegistry.
 ///
 /// Usage:
-/// 1. Define a function without prefix namespace in a .cc/.cpp file:
-///    void TestSuiteName() {
-///      ::namespace_x::namespace_y:: ... ::TestSuiteFunc();
-///    }
+/// 1. Define a function in a .cc/.cpp file:
+///      namespace a {
+///        void TestSuiteName() {
+///          ...
+///        }
+///      }  // namespace a
 /// 2. Register it with the global TestSuiteRegistry in the same .cc/.cpp file:
-///    namespace {
-///      REGISTER_TEST_SUITE(TestSuiteName);
-///    }
+///      REGISTER_TEST_SUITE(::a::TestSuiteName);
+///    And, to avoid the name conflict, we can use a second param `key` (std::string)
+///    to register the function:
+///      REGISTER_TEST_SUITE(::a::TestSuiteName, JustPlaceSomeKeyHere);
 /// 3. Call the function from main.cc:
 ///    int main() {
 ///      // Run a single test suite.
-///      TestSuiteRegistry::Global()->RunTestSuite("TestSuiteName");
+///        // If registered without a specified key.
+///        TestSuiteRegistry::Global()->RunTestSuite("TestSuiteName");
+///        // If registered with a specified key.
+///        TestSuiteRegistry::Global()->RunTestSuite("JustPlaceSomeKeyHere");
 ///      // Run all test suites.
 ///      TestSuiteRegistry::Global()->RunAllTestSuites();
 ///    }
-#define REGISTER_TEST_SUITE(func)                                                        \
-  static void __test_suite_##func() { func(); }                                          \
+///
+/// Macro overloading to support 1 or 2 arguments
+#define GET_MACRO_TEST_SUITE(_1, _2, NAME, ...) NAME
+#define REGISTER_TEST_SUITE(...)                                                         \
+  namespace {                                                                            \
+  GET_MACRO_TEST_SUITE(__VA_ARGS__, REGISTER_TEST_SUITE_2,                               \
+                       REGISTER_TEST_SUITE_1)(__VA_ARGS__);                              \
+  }
+
+/// Version with 1 argument (func only, key defaults to func)
+#define REGISTER_TEST_SUITE_1(func) REGISTER_TEST_SUITE_2(func, func)
+
+/// Version with 2 arguments (func and custom key)
+#define REGISTER_TEST_SUITE_2(func, key)                                                 \
+  static void __test_suite_##key() { func(); }                                           \
   static ::test_func_registry::TestSuiteRegistry &STR_CONCAT(__make_TestSuite,           \
                                                              __COUNTER__) =              \
       ::test_func_registry::TestSuiteRegistry::Global()                                  \
-          -> RegisterTestSuite(#func, __test_suite_##func, __FILE__, __LINE__)
+          -> RegisterTestSuite(#key, __test_suite_##key, __FILE__, __LINE__)

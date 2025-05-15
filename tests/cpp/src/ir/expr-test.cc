@@ -13,8 +13,6 @@ using tvm::Integer;
 using tvm::IntImmNode;
 using tvm::Range;
 
-namespace expr_test {}
-
 #define PRINT_TOP_LINE(hint)                                                             \
   LOG_SPLIT_LINE(string(" Constant fold for Op ") + string(#hint) + string(" "));
 
@@ -101,6 +99,8 @@ namespace expr_test {}
     CAST_TO_NODE(primExprOp, popres, IntImmNode);                                        \
     PRINT_VARS2(pa->value, popres->value)                                                \
   }
+
+namespace expr_test {
 
 void PrimExprTest() {
   PrimExpr primExprA = 4;
@@ -198,11 +198,9 @@ void RangeTest() {
   LOG_PRINT_VAR(primExprA * 2 * primExprB + primExprC - primExprA * primExprB);
 }
 
-namespace {
+}  // namespace expr_test
 
-REGISTER_TEST_SUITE(PrimExprTest);
-REGISTER_TEST_SUITE(RangeTest);
-REGISTER_TEST_SUITE(IntegerTest);
-REGISTER_TEST_SUITE(BoolTest);
-
-}  // namespace
+REGISTER_TEST_SUITE(expr_test::PrimExprTest, ir_expr_test_PrimExprTest);
+REGISTER_TEST_SUITE(expr_test::RangeTest, ir_expr_test_RangeTest);
+REGISTER_TEST_SUITE(expr_test::IntegerTest, ir_expr_test_IntegerTest);
+REGISTER_TEST_SUITE(expr_test::BoolTest, ir_expr_test_BoolTest);

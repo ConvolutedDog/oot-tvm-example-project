@@ -203,12 +203,5 @@ void OpTest() {
 
 }  // namespace op_test
 
-void OpNodeTest() { op_test::OpNodeTest(); }
-void OpTest() { op_test::OpTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(OpNodeTest);
-REGISTER_TEST_SUITE(OpTest);
-
-}  // namespace
+REGISTER_TEST_SUITE(op_test::OpNodeTest, ir_op_test_OpNodeTest);
+REGISTER_TEST_SUITE(op_test::OpTest, ir_op_test_OpTest);

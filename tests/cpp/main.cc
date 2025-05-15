@@ -1,4 +1,3 @@
-#include "deprecated.h"
 #include "test-func-registry.h"
 #include <tvm/runtime/logging.h>
 
@@ -14,11 +13,6 @@ void TestMethod1() {
 }
 
 void TestMethod2() {
-  /// Method 2: Run each specified test suite manually.
-  deprecated::TestMethod2();
-}
-
-void TestMethod3() {
   /// Test suite registry
   TestSuiteRegistry *registry = TestSuiteRegistry::Global();
 
@@ -26,63 +20,65 @@ void TestMethod3() {
   registry->PrintAllTestSuiteNames();
 
   /// Method 3: Run each specific test suite.
-  registry->RunTestSuite("NDArrayTest");
-  registry->RunTestSuite("InplaceArrayBaseTest");  // Bug on MacOS
-  registry->RunTestSuite("ObjectTest");
-  registry->RunTestSuite("ObjectRefTest");
-  registry->RunTestSuite("PassTestTemp");
-  registry->RunTestSuite("PrimExprTest");
-  registry->RunTestSuite("BoolTest");
-  registry->RunTestSuite("IntegerTest");
-  registry->RunTestSuite("RangeTest");
-  registry->RunTestSuite("PrimTypeTest");
-  registry->RunTestSuite("PointerTypeTest");
-  registry->RunTestSuite("TupleTypeTest");
-  registry->RunTestSuite("FuncTypeTest");
-  registry->RunTestSuite("VarTest");
-  registry->RunTestSuite("SizeVarTest");
-  registry->RunTestSuite("IterVarTest");
-  registry->RunTestSuite("AttrVisitorTest");
-  registry->RunTestSuite("ReflectionVTableTest");
-  registry->RunTestSuite("AttrUtilsTests");
-  registry->RunTestSuite("AttrFieldInfoTest");
-  registry->RunTestSuite("AttrsTest");
-  registry->RunTestSuite("DictAttrsTest");
-  registry->RunTestSuite("BaseFuncTest");
-  registry->RunTestSuite("SpanTest");
-  registry->RunTestSuite("SourceTest");
-  registry->RunTestSuite("NodeFunctorTest");
-  registry->RunTestSuite("TypeFunctorTest");
-  registry->RunTestSuite("TvmPodValueTest");
-  registry->RunTestSuite("OpNodeTest");
-  registry->RunTestSuite("OpTest");
-  registry->RunTestSuite("CallTest");
-  registry->RunTestSuite("TupleTest");
-  registry->RunTestSuite("TupleGetItemTest");
-  registry->RunTestSuite("LeafExprTest");
-  registry->RunTestSuite("BindTest");
-  registry->RunTestSuite("ModuleTest");
-  registry->RunTestSuite("TargetKindTest");
-  registry->RunTestSuite("TargetTest");
-  registry->RunTestSuite("GlobalInfoTest");
-  registry->RunTestSuite("VDeviceTest");
-  registry->RunTestSuite("DummyGlobalInfoTest");
-  registry->RunTestSuite("AnalysisTest");
-  registry->RunTestSuite("DiagnosticTest");
-  registry->RunTestSuite("DiagnosticContextTest");
-  registry->RunTestSuite("NameSupplyTest");
-  registry->RunTestSuite("GlobalVarSupplyTest");
-  registry->RunTestSuite("ReplaceGlobalVarsTest");
-  registry->RunTestSuite("PassContextTest");
-  registry->RunTestSuite("PassTest");
-  registry->RunTestSuite("DumpTest");
-  registry->RunTestSuite("AsLegacyReprTest");
-  registry->RunTestSuite("ReprPrinterTest");
-  registry->RunTestSuite("ReprLegacyPrinterTest");
-  registry->RunTestSuite("ObjectPathTest");
+  registry->RunTestSuite("runtime_ndarray_test_NDArrayTest");
+  // Bug on MacOS
+  registry->RunTestSuite("runtime_inplace_array_base_test_InplaceArrayBaseTest");
+  registry->RunTestSuite("runtime_object_test_ObjectTest");
+  registry->RunTestSuite("runtime_objectref_test_ObjectRefTest");
+  registry->RunTestSuite("ir_pass_test_PassTestTemp");
+  registry->RunTestSuite("ir_expr_test_PrimExprTest");
+  registry->RunTestSuite("ir_expr_test_BoolTest");
+  registry->RunTestSuite("ir_expr_test_IntegerTest");
+  registry->RunTestSuite("ir_expr_test_RangeTest");
+  registry->RunTestSuite("ir_type_test_PrimTypeTest");
+  registry->RunTestSuite("ir_type_test_PointerTypeTest");
+  registry->RunTestSuite("ir_type_test_TupleTypeTest");
+  registry->RunTestSuite("ir_type_test_FuncTypeTest");
+  registry->RunTestSuite("tir_var_test_VarTest");
+  registry->RunTestSuite("tir_var_test_SizeVarTest");
+  registry->RunTestSuite("tir_var_test_IterVarTest");
+  registry->RunTestSuite("node_reflection_test_AttrVisitorTest");
+  registry->RunTestSuite("node_reflection_test_ReflectionVTableTest");
+  registry->RunTestSuite("ir_attrs_test_AttrUtilsTests");
+  registry->RunTestSuite("ir_attrs_test_AttrFieldInfoTest");
+  registry->RunTestSuite("ir_attrs_test_AttrsTest");
+  registry->RunTestSuite("ir_attrs_test_DictAttrsTest");
+  registry->RunTestSuite("ir_function_test_BaseFuncTest");
+  registry->RunTestSuite("ir_source_map_test_SpanTest");
+  registry->RunTestSuite("ir_source_map_test_SourceTest");
+  registry->RunTestSuite("node_functor_test_NodeFunctorTest");
+  registry->RunTestSuite("ir_type_functor_test_TypeFunctorTest");
+  registry->RunTestSuite("runtime_tvmpodvalue_test_TvmPodValueTest");
+  registry->RunTestSuite("ir_op_test_OpNodeTest");
+  registry->RunTestSuite("ir_op_test_OpTest");
+  registry->RunTestSuite("relax_expr_test_CallTest");
+  registry->RunTestSuite("relax_expr_test_TupleTest");
+  registry->RunTestSuite("relax_expr_test_TupleGetItemTest");
+  registry->RunTestSuite("relax_expr_test_LeafExprTest");
+  registry->RunTestSuite("relax_expr_test_BindTest");
+  registry->RunTestSuite("ir_module_test_ModuleTest");
+  registry->RunTestSuite("target_target_kind_test_TargetKindTest");
+  registry->RunTestSuite("target_target_test_TargetTest");
+  registry->RunTestSuite("ir_global_info_test_GlobalInfoTest");
+  registry->RunTestSuite("ir_global_info_test_VDeviceTest");
+  registry->RunTestSuite("ir_global_info_test_DummyGlobalInfoTest");
+  registry->RunTestSuite("ir_analysis_test_AnalysisTest");
+  registry->RunTestSuite("ir_diagnostic_test_DiagnosticTest");
+  registry->RunTestSuite("ir_diagnostic_test_DiagnosticContextTest");
+  registry->RunTestSuite("ir_name_supply_test_NameSupplyTest");
+  registry->RunTestSuite("ir_global_var_supply_test_GlobalVarSupplyTest");
+  registry->RunTestSuite("ir_replace_global_vars_test_ReplaceGlobalVarsTest");
+  registry->RunTestSuite("ir_transform_test_PassContextTest");
+  registry->RunTestSuite("ir_transform_test_PassTest");
+  registry->RunTestSuite("node_repr_printer_test_DumpTest");
+  registry->RunTestSuite("node_repr_printer_test_AsLegacyReprTest");
+  registry->RunTestSuite("node_repr_printer_test_ReprPrinterTest");
+  registry->RunTestSuite("node_repr_printer_test_ReprLegacyPrinterTest");
+  registry->RunTestSuite("node_object_path_test_ObjectPathTest");
+  registry->RunTestSuite("tir_expr_test_ExprTest");
 }
 
 int main() {
-  TestMethod3();
+  TestMethod2();
   return 0;
 }

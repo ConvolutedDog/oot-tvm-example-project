@@ -13,10 +13,5 @@ void ObjectPathTest() {
 
 }  // namespace object_path_test
 
-void ObjectPathTest() { object_path_test::ObjectPathTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(ObjectPathTest);
-
-}  // namespace
+REGISTER_TEST_SUITE(object_path_test::ObjectPathTest,
+                    node_object_path_test_ObjectPathTest);

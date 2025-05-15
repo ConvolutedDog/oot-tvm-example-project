@@ -133,16 +133,10 @@ void ReprLegacyPrinterTest() {
 
 }  // namespace repr_printer_test
 
-void AsLegacyReprTest() { repr_printer_test::AsLegacyReprTest(); }
-void ReprPrinterTest() { repr_printer_test::ReprPrinterTest(); }
-void ReprLegacyPrinterTest() { repr_printer_test::ReprLegacyPrinterTest(); }
-void DumpTest() { repr_printer_test::DumpTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(AsLegacyReprTest);
-REGISTER_TEST_SUITE(ReprPrinterTest);
-REGISTER_TEST_SUITE(DumpTest);
-REGISTER_TEST_SUITE(ReprLegacyPrinterTest);
-
-}  // namespace
+REGISTER_TEST_SUITE(repr_printer_test::AsLegacyReprTest,
+                    node_repr_printer_test_AsLegacyReprTest);
+REGISTER_TEST_SUITE(repr_printer_test::ReprPrinterTest,
+                    node_repr_printer_test_ReprPrinterTest);
+REGISTER_TEST_SUITE(repr_printer_test::DumpTest, node_repr_printer_test_DumpTest);
+REGISTER_TEST_SUITE(repr_printer_test::ReprLegacyPrinterTest,
+                    node_repr_printer_test_ReprLegacyPrinterTest);

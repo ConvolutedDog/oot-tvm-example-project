@@ -137,10 +137,4 @@ void ModuleTest() {
 
 }  // namespace module_test
 
-void ModuleTest() { module_test::ModuleTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(ModuleTest);
-
-}
+REGISTER_TEST_SUITE(module_test::ModuleTest, ir_module_test_ModuleTest);

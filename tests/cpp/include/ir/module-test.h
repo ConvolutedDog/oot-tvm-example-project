@@ -40,6 +40,6 @@ using tvm::relax::ShapeStructInfo;
 using tvm::relax::TensorStructInfo;
 using tvm::relax::Var;
 
-}  // namespace module_test
-
 void ModuleTest();
+
+}  // namespace module_test

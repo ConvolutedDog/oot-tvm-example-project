@@ -77,10 +77,4 @@ void NodeFunctorTest() {
 
 }  // namespace functor_test
 
-void NodeFunctorTest() { functor_test::NodeFunctorTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(NodeFunctorTest);
-
-}
+REGISTER_TEST_SUITE(functor_test::NodeFunctorTest, node_functor_test_NodeFunctorTest);

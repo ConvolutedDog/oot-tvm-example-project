@@ -54,10 +54,10 @@ using tvm::relax::FuncStructInfo;
 using tvm::relax::ShapeStructInfo;
 using tvm::relax::TensorStructInfo;
 
-}  // namespace expr_test
-
 void CallTest();
 void TupleTest();
 void TupleGetItemTest();
 void LeafExprTest();
 void BindTest();
+
+}  // namespace expr_test

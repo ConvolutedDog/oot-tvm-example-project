@@ -24,6 +24,6 @@ using tvm::attr::kGlobalSymbol;
 
 using tvm::NullValue;
 
-}  // namespace function_test
-
 void BaseFuncTest();
+
+}  // namespace function_test

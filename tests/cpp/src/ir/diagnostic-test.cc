@@ -72,12 +72,6 @@ void DiagnosticContextTest() {
 
 }  // namespace diagnostic_test
 
-void DiagnosticTest() { diagnostic_test::DiagnosticTest(); }
-void DiagnosticContextTest() { diagnostic_test::DiagnosticContextTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(DiagnosticTest);
-REGISTER_TEST_SUITE(DiagnosticContextTest);
-
-}  // namespace
+REGISTER_TEST_SUITE(diagnostic_test::DiagnosticTest, ir_diagnostic_test_DiagnosticTest);
+REGISTER_TEST_SUITE(diagnostic_test::DiagnosticContextTest,
+                    ir_diagnostic_test_DiagnosticContextTest);

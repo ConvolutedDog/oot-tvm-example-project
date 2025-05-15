@@ -52,10 +52,4 @@ void BaseFuncTest() {
 
 }  // namespace function_test
 
-void BaseFuncTest() { function_test::BaseFuncTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(BaseFuncTest);
-
-}
+REGISTER_TEST_SUITE(function_test::BaseFuncTest, ir_function_test_BaseFuncTest);

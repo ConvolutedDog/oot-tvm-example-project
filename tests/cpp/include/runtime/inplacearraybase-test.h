@@ -3,7 +3,9 @@
 #ifndef INPLACEARRAYBASE_TEST_H
 #define INPLACEARRAYBASE_TEST_H
 
-namespace tvm::runtime {
+namespace inplace_array_base_test {
+
+using tvm::runtime::InplaceArrayBase;
 
 template <typename Derived> class MyArrayPrinter {
 public:
@@ -57,8 +59,8 @@ private:
   }
 };
 
-}  // namespace tvm::runtime
-
 void InplaceArrayBaseTest();
+
+}  // namespace inplace_array_base_test
 
 #endif

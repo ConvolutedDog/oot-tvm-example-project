@@ -59,10 +59,5 @@ void TvmPodValueTest() {
 
 }  // namespace tvmpodvalue_test
 
-void TvmPodValueTest() { return tvmpodvalue_test::TvmPodValueTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(TvmPodValueTest);
-
-}
+REGISTER_TEST_SUITE(tvmpodvalue_test::TvmPodValueTest,
+                    runtime_tvmpodvalue_test_TvmPodValueTest);

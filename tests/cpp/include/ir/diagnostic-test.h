@@ -27,7 +27,7 @@ using Expr = tvm::RelaxExpr;
 using tvm::SourceName;
 using tvm::Span;
 
-}  // namespace diagnostic_test
-
 void DiagnosticTest();
 void DiagnosticContextTest();
+
+}  // namespace diagnostic_test

@@ -61,12 +61,5 @@ void SourceTest() {
 
 }  // namespace source_map_test
 
-void SpanTest() { source_map_test::SpanTest(); }
-void SourceTest() { source_map_test::SourceTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(SpanTest);
-REGISTER_TEST_SUITE(SourceTest);
-
-}  // namespace
+REGISTER_TEST_SUITE(source_map_test::SpanTest, ir_source_map_test_SpanTest);
+REGISTER_TEST_SUITE(source_map_test::SourceTest, ir_source_map_test_SourceTest);

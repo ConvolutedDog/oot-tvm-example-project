@@ -54,7 +54,7 @@ using tvm::runtime::NDArray;
 using tvm::runtime::ShapeTuple;
 using tvm::runtime::String;
 
-}  // namespace transform_test
-
 void PassContextTest();
 void PassTest();
+
+}  // namespace transform_test

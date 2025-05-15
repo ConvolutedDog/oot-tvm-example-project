@@ -5,6 +5,6 @@ namespace functor_test {
 using tvm::NodeFunctor;
 using tvm::runtime::ObjectRef;
 
-}  // namespace functor_test
-
 void NodeFunctorTest();
+
+}  // namespace functor_test

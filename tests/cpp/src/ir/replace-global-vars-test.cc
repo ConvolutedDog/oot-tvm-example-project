@@ -51,10 +51,5 @@ void ReplaceGlobalVarsTest() {
 
 }  // namespace replace_global_vars_test
 
-void ReplaceGlobalVarsTest() { replace_global_vars_test::ReplaceGlobalVarsTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(ReplaceGlobalVarsTest);
-
-}
+REGISTER_TEST_SUITE(replace_global_vars_test::ReplaceGlobalVarsTest,
+                    ir_replace_global_vars_test_ReplaceGlobalVarsTest);

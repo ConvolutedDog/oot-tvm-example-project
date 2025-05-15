@@ -13,6 +13,6 @@ using tvm::MissingMapEntryPath;
 using tvm::RootPath;
 using tvm::UnknownAttributeAccessPath;
 
-}  // namespace object_path_test
-
 void ObjectPathTest();
+
+}  // namespace object_path_test

@@ -231,12 +231,7 @@ void ReflectionVTableTest() {
 
 }  // namespace reflection_test
 
-void AttrVisitorTest() { reflection_test::AttrVisitorTest(); }
-void ReflectionVTableTest() { reflection_test::ReflectionVTableTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(AttrVisitorTest);
-REGISTER_TEST_SUITE(ReflectionVTableTest);
-
-}  // namespace
+REGISTER_TEST_SUITE(reflection_test::AttrVisitorTest,
+                    node_reflection_test_AttrVisitorTest);
+REGISTER_TEST_SUITE(reflection_test::ReflectionVTableTest,
+                    node_reflection_test_ReflectionVTableTest);

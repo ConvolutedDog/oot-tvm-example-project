@@ -2,7 +2,10 @@
 #include "test-func-registry.h"
 #include <tvm/runtime/container/shape_tuple.h>
 
-namespace tvm::runtime {
+namespace ndarray_test {
+
+using namespace tvm;
+using namespace tvm::runtime;
 
 /// This function tests the NDArray API in TVM runtime.
 /// It demonstrates how to create, manipulate, and inspect NDArray objects.
@@ -103,12 +106,6 @@ void NDArrayTest() {
   ndarray4.Show();
 }
 
-}  // namespace tvm::runtime
+}  // namespace ndarray_test
 
-void NDArrayTest() { tvm::runtime::NDArrayTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(NDArrayTest);
-
-}
+REGISTER_TEST_SUITE(ndarray_test::NDArrayTest, runtime_ndarray_test_NDArrayTest);

@@ -135,12 +135,5 @@ void PassTest() {
 
 }  // namespace transform_test
 
-void PassContextTest() { transform_test::PassContextTest(); }
-void PassTest() { transform_test::PassTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(PassContextTest);
-REGISTER_TEST_SUITE(PassTest);
-
-}  // namespace
+REGISTER_TEST_SUITE(transform_test::PassContextTest, ir_transform_test_PassContextTest);
+REGISTER_TEST_SUITE(transform_test::PassTest, ir_transform_test_PassTest);

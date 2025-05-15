@@ -15,10 +15,4 @@ void NameSupplyTest() {
 
 }  // namespace name_supply_test
 
-void NameSupplyTest() { name_supply_test::NameSupplyTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(NameSupplyTest);
-
-}
+REGISTER_TEST_SUITE(name_supply_test::NameSupplyTest, ir_name_supply_test_NameSupplyTest);

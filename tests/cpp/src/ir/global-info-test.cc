@@ -17,14 +17,7 @@ void DummyGlobalInfoTest() {}
 
 }  // namespace global_info_test
 
-void GlobalInfoTest() { global_info_test::GlobalInfoTest(); }
-void VDeviceTest() { global_info_test::VDeviceTest(); }
-void DummyGlobalInfoTest() { global_info_test::DummyGlobalInfoTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(GlobalInfoTest);
-REGISTER_TEST_SUITE(VDeviceTest);
-REGISTER_TEST_SUITE(DummyGlobalInfoTest);
-
-}  // namespace
+REGISTER_TEST_SUITE(global_info_test::GlobalInfoTest, ir_global_info_test_GlobalInfoTest);
+REGISTER_TEST_SUITE(global_info_test::VDeviceTest, ir_global_info_test_VDeviceTest);
+REGISTER_TEST_SUITE(global_info_test::DummyGlobalInfoTest,
+                    ir_global_info_test_DummyGlobalInfoTest);

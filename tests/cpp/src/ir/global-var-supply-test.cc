@@ -60,8 +60,5 @@ void GlobalVarSupplyTest() {
 
 void GlobalVarSupplyTest() { global_var_supply_test::GlobalVarSupplyTest(); }
 
-namespace {
-
-REGISTER_TEST_SUITE(GlobalVarSupplyTest);
-
-}
+REGISTER_TEST_SUITE(global_var_supply_test::GlobalVarSupplyTest,
+                    ir_global_var_supply_test_GlobalVarSupplyTest);

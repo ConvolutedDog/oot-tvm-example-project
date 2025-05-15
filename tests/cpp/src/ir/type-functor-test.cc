@@ -32,10 +32,5 @@ void TypeFunctorTest() {
 
 }  // namespace type_functor_test
 
-void TypeFunctorTest() { type_functor_test::TypeFunctorTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(TypeFunctorTest);
-
-}
+REGISTER_TEST_SUITE(type_functor_test::TypeFunctorTest,
+                    ir_type_functor_test_TypeFunctorTest);

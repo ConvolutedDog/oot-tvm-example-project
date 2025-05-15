@@ -513,18 +513,8 @@ void BindTest() {
 
 }  // namespace expr_test
 
-void CallTest() { expr_test::CallTest(); }
-void TupleTest() { expr_test::TupleTest(); }
-void TupleGetItemTest() { expr_test::TupleGetItemTest(); }
-void LeafExprTest() { expr_test::LeafExprTest(); }
-void BindTest() { expr_test::BindTest(); }
-
-namespace {
-
-REGISTER_TEST_SUITE(CallTest);
-REGISTER_TEST_SUITE(TupleTest);
-REGISTER_TEST_SUITE(TupleGetItemTest);
-REGISTER_TEST_SUITE(LeafExprTest);
-REGISTER_TEST_SUITE(BindTest);
-
-}  // namespace
+REGISTER_TEST_SUITE(expr_test::CallTest, relax_expr_test_CallTest);
+REGISTER_TEST_SUITE(expr_test::TupleTest, relax_expr_test_TupleTest);
+REGISTER_TEST_SUITE(expr_test::TupleGetItemTest, relax_expr_test_TupleGetItemTest);
+REGISTER_TEST_SUITE(expr_test::LeafExprTest, relax_expr_test_LeafExprTest);
+REGISTER_TEST_SUITE(expr_test::BindTest, relax_expr_test_BindTest);
