@@ -45,21 +45,15 @@ namespace object_test {
 
 using tvm::runtime::String;
 
-
-
-
-
-class TestCanDerivedFromNode : public tvm::runtime::Object{
+class TestCanDerivedFromNode : public tvm::runtime::Object {
 private:
   String nameHint;
 
 public:
-  //default constructor
-  TestCanDerivedFromNode(){
-    type_index_ = RuntimeTypeIndex();
-  }
+  // default constructor
+  TestCanDerivedFromNode() { type_index_ = RuntimeTypeIndex(); }
 
-  TestCanDerivedFromNode(const String& name): nameHint(name){
+  TestCanDerivedFromNode(const String &name) : nameHint(name) {
     type_index_ = RuntimeTypeIndex();
   }
   /**
@@ -79,21 +73,17 @@ public:
   String GetNameHint() const { return nameHint; }
 };
 
-class TestDerived1Node : public TestCanDerivedFromNode{
+class TestDerived1Node : public TestCanDerivedFromNode {
 public:
-  TestDerived1Node(){
-    type_index_ = RuntimeTypeIndex();
-  }
+  TestDerived1Node() { type_index_ = RuntimeTypeIndex(); }
   static constexpr const uint32_t _type_index = tvm::runtime::TypeIndex::kDynamic;
   static constexpr const char *_type_key = "test.TestDerived1Node";
   TVM_DECLARE_FINAL_OBJECT_INFO(TestDerived1Node, TestCanDerivedFromNode);
 };
 
-class TestDerived2Node : public TestCanDerivedFromNode{
+class TestDerived2Node : public TestCanDerivedFromNode {
 public:
-  TestDerived2Node(){
-    type_index_ = RuntimeTypeIndex();
-  }
+  TestDerived2Node() { type_index_ = RuntimeTypeIndex(); }
   /// @note `TestDerived2Node` inherits from `TestCanDerivedFromNode`, which may
   /// cause ambiguity between the `Create` function in
   /// `TestCanDerivedFromNode` and the `Create` function in
@@ -113,27 +103,24 @@ public:
   TVM_DECLARE_FINAL_OBJECT_INFO(TestDerived2Node, TestCanDerivedFromNode);
 };
 
-class TestDerived3Node : public TestCanDerivedFromNode{
+class TestDerived3Node : public TestCanDerivedFromNode {
 private:
   String extraNameHint;
 
 public:
-
-  //constructor
-  TestDerived3Node(const String& name, const String& extraName): 
-                TestCanDerivedFromNode(name), extraNameHint(extraName){}
+  // constructor
+  TestDerived3Node(const String &name, const String &extraName)
+      : TestCanDerivedFromNode(name), extraNameHint(extraName) {}
   static constexpr const uint32_t _type_index = tvm::runtime::TypeIndex::kDynamic;
   static constexpr const char *_type_key = "test.TestDerived3Node";
   TVM_DECLARE_FINAL_OBJECT_INFO(TestDerived3Node, TestCanDerivedFromNode);
 
-  String GetExtraNameHint() const{return extraNameHint;}
+  String GetExtraNameHint() const { return extraNameHint; }
 };
 
-class TestFinalNode : public tvm::runtime::Object{
+class TestFinalNode : public tvm::runtime::Object {
 public:
-  TestFinalNode(){
-    type_index_ = RuntimeTypeIndex();
-  }
+  TestFinalNode() { type_index_ = RuntimeTypeIndex(); }
   static constexpr const uint32_t _type_index = tvm::runtime::TypeIndex::kDynamic;
   static constexpr const char *_type_key = "test.TestFinalNode";
   TVM_DECLARE_FINAL_OBJECT_INFO(TestFinalNode, tvm::runtime::Object);
@@ -165,7 +152,7 @@ public:
 class TestCanDerivedFrom2 : public ObjectRef {
 public:
   TestCanDerivedFrom2() = default;
-  explicit TestCanDerivedFrom2(const String& name);
+  explicit TestCanDerivedFrom2(const String &name);
   const TestCanDerivedFromNode *operator->() const { return get(); }
   const TestCanDerivedFromNode *get() const {
     return static_cast<const TestCanDerivedFromNode *>(data_.get());
@@ -185,7 +172,7 @@ public:
 
 class TestDerived3 : public TestCanDerivedFrom2 {
 public:
-  explicit TestDerived3(const String& name, const String& extraName);
+  explicit TestDerived3(const String &name, const String &extraName);
   const TestDerived3Node *operator->() const { return get(); }
   const TestDerived3Node *get() const {
     return static_cast<const TestDerived3Node *>(data_.get());

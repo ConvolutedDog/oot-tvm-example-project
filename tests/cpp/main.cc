@@ -1,7 +1,6 @@
-
-#include <tvm/runtime/logging.h>
-#include "test-func-registry.h"
 #include "deprecated.h"
+#include "test-func-registry.h"
+#include <tvm/runtime/logging.h>
 
 void TestMethod1() {
   /// Test suite registry
@@ -76,10 +75,13 @@ void TestMethod3() {
   // registry->RunTestSuite("ReplaceGlobalVarsTest");
   // registry->RunTestSuite("PassContextTest");
   // registry->RunTestSuite("PassTest");
+  registry->RunTestSuite("DumpTest");
+  registry->RunTestSuite("AsLegacyReprTest");
   registry->RunTestSuite("ReprPrinterTest");
+  registry->RunTestSuite("ReprLegacyPrinterTest");
 }
 
 int main() {
-  TestMethod2();
+  TestMethod3();
   return 0;
 }

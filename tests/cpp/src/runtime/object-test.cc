@@ -37,7 +37,7 @@ std::ostream &operator<<(std::ostream &os, const tvm::runtime::Object &cls) {
 
 namespace objectref_test {
 
-TestCanDerivedFrom2::TestCanDerivedFrom2(const String& name) {
+TestCanDerivedFrom2::TestCanDerivedFrom2(const String &name) {
   data_ = make_object<TestCanDerivedFromNode>(name);
 }
 
@@ -46,7 +46,7 @@ TestCanDerivedFrom2::TestCanDerivedFrom2(const String& name) {
 /// has different internal Object type. And to achive the initialization of
 /// name which is inheritted from TestCanDerivedFrom2, we should also provide
 /// a default constructor function for TestCanDerivedFrom2.
-TestDerived3::TestDerived3(const String& name, const String& extraName) {
+TestDerived3::TestDerived3(const String &name, const String &extraName) {
   data_ = make_object<TestDerived3Node>(name, extraName);
 }
 
@@ -112,8 +112,8 @@ void ObjectRefTest() {
   std::cout << testFinalRef << '\n';
 
   /// Different ObjectPtr<TestCanDerivedFromNode>
-  /// In order to test the `use_count`,
-  // make new 2 references to the same object where `testCanDerivedFromRef` refers and `objptr` points.
+  /// In order to test the `use_count`, make two new references to the same object where
+  /// `testCanDerivedFromRef` refers and `ObjectPtr` points.
 
   /// the 2nd reference
   TestCanDerivedFrom testCanDerivedFromRef2(
@@ -142,8 +142,7 @@ void ObjectRefTest() {
   TestCanDerivedFromNode x;
   ObjectPtr<TestCanDerivedFromNode> xptr =
       tvm::runtime::GetObjectPtr<TestCanDerivedFromNode>(&x);
-  
-  
+
   /**
    * @brief Test the ObjectPtr's behavior
    * @note ObjectPtr behaves like both std::shared_ptr and std::unique_ptr,
@@ -151,21 +150,22 @@ void ObjectRefTest() {
    * Well, ObjectRef is also the mixture of std::shared_ptr and std::unique_ptr.
    */
   LOG_PRINT_VAR(&x);
-  LOG_PRINT_VAR(xptr.get());         // Expected: &x
-  LOG_PRINT_VAR(xptr.use_count());  // Expected: 1 (sole owner)
-  ObjectPtr<TestCanDerivedFromNode> xptr2 = xptr;// xptr shares the resource with xptr2
+  LOG_PRINT_VAR(xptr.get());                       // Expected: &x
+  LOG_PRINT_VAR(xptr.use_count());                 // Expected: 1 (sole owner)
+  ObjectPtr<TestCanDerivedFromNode> xptr2 = xptr;  // xptr shares the resource with xptr2
   LOG_SPLIT_LINE("After Share");
   LOG_PRINT_VAR(xptr.get());         // Expected: &x
-  LOG_PRINT_VAR(xptr.use_count());    // 2
-  LOG_PRINT_VAR(xptr2.get())          // Expected: &x
+  LOG_PRINT_VAR(xptr.use_count());   // 2
+  LOG_PRINT_VAR(xptr2.get())         // Expected: &x
   LOG_PRINT_VAR(xptr2.use_count());  // Expected: 2
 
   LOG_SPLIT_LINE("After Move");
-  ObjectPtr<TestCanDerivedFromNode> xptr3 = std::move(xptr2); //xptr3 borrows the resource from xptr2
-  LOG_PRINT_VAR(xptr2.get()); // Expected: nullptr
-  LOG_PRINT_VAR(xptr2.use_count()); // 0
-  LOG_PRINT_VAR(xptr3.get()) // &x
-  LOG_PRINT_VAR(xptr3.use_count()); // 2
+  ObjectPtr<TestCanDerivedFromNode> xptr3 =
+      std::move(xptr2);              // xptr3 borrows the resource from xptr2
+  LOG_PRINT_VAR(xptr2.get());        // Expected: nullptr
+  LOG_PRINT_VAR(xptr2.use_count());  // 0
+  LOG_PRINT_VAR(xptr3.get())         // &x
+  LOG_PRINT_VAR(xptr3.use_count());  // 2
 
   TestCanDerivedFrom testXRef(xptr);
   LOG_SPLIT_LINE("testXRef");
