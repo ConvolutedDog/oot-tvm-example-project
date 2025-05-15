@@ -21,12 +21,12 @@ Array<String> TestSuiteRegistry::ListAllTestSuiteNames() const {
   return ret;
 }
 
-void TestSuiteRegistry::PrintAllTestSuiteNames() const {
-  std::cout << "All test suites: {";
+void TestSuiteRegistry::PrintAllTestSuiteNames(std::ostream &os) const {
+  os << "All test suites: {";
   for (auto &kv : Global()->suites_) {
-    std::cout << kv.first << ", ";
+    os << kv.first << ", ";
   }
-  std::cout << "}\n";
+  os << "}\n";
 }
 
 TestSuiteRegistry &TestSuiteRegistry::RegisterTestSuite(const String &name,
@@ -40,18 +40,18 @@ TestSuiteRegistry &TestSuiteRegistry::RegisterTestSuite(const String &name,
   return *Global();
 }
 
-void TestSuiteRegistry::RunTestSuite(const String &name) const {
+void TestSuiteRegistry::RunTestSuite(const String &name, std::ostream &os) const {
   ICHECK(Global()->suites_.count(name) != 0)
       << "TestSuite " << name << " is not registered";
-  std::cout << "⭕⭕⭕ Running TestSuite <" << name << "> located at "
-            << Global()->span_[name] << "...\n";
+  os << "⭕⭕⭕ Running TestSuite <" << name << "> located at " << Global()->span_[name]
+     << "...\n";
   Global()->suites_[name]();
-  std::cout << "✅✅✅ TestSuite <" << name << "> passed\n\n";
+  os << "✅✅✅ TestSuite <" << name << "> passed\n\n";
 }
 
-void TestSuiteRegistry::RunAllTestSuites() const {
+void TestSuiteRegistry::RunAllTestSuites(std::ostream &os) const {
   for (auto &kv : Global()->suites_) {
-    RunTestSuite(kv.first);
+    RunTestSuite(kv.first, os);
   }
 }
 
