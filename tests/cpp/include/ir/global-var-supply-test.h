@@ -19,8 +19,6 @@ using tvm::relax::Var;
 
 using Expr = tvm::RelaxExpr;
 
-void GlobalVarSupplyTest();
-
 }  // namespace global_var_supply_test
 
 void GlobalVarSupplyTest();

@@ -13,8 +13,6 @@ using tvm::runtime::String;
 
 using tvm::runtime::DLDeviceType2Str;
 
-void TargetKindTest();
-
 }  // namespace target_kind_test
 
 void TargetKindTest();

@@ -5,7 +5,7 @@ namespace deprecated {
 void TestMethod2() {
   /// Method 2: Run each specified test suite manually.
   std::cout << "Running NDArrayTest...\n";
-  tvm::runtime::NDArrayTest();
+  NDArrayTest();
   std::cout << "NDArrayTest passed!\n\n";
 
   std::cout << "Running AutoSchedulerTest...\n";

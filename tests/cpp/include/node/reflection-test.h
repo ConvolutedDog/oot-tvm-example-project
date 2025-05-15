@@ -19,8 +19,6 @@ using tvm::tir::IterVarNode;
 using tvm::tir::IterVarType;
 using tvm::tir::Var;
 
-std::ostream &operator<<(std::ostream &os, const tvm::runtime::NDArray &arr);
-
 class MyIRSerializer : public AttrVisitor {
   void Visit(const char *key, double *value) override {
     std::cout << " double:             " << key << "=" << *value << ";\n";
@@ -53,9 +51,6 @@ class MyIRSerializer : public AttrVisitor {
     std::cout << " runtime::ObjectRef: " << key << "=" << *value << ";\n";
   }
 };
-
-void AttrVisitorTest();
-void ReflectionVTableTest();
 
 }  // namespace reflection_test
 

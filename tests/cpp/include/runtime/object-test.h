@@ -128,8 +128,6 @@ public:
 
 }  // namespace object_test
 
-std::ostream &operator<<(std::ostream &os, const tvm::runtime::Object &cls);
-
 namespace objectref_test {
 
 using ::object_test::TestCanDerivedFromNode;
@@ -186,8 +184,6 @@ public:
 };
 
 }  // namespace objectref_test
-
-std::ostream &operator<<(std::ostream &os, const tvm::runtime::ObjectRef &clsref);
 
 void ObjectTest();
 void ObjectRefTest();

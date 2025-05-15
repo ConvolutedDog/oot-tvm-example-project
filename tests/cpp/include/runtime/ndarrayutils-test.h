@@ -3,10 +3,6 @@
 #include <tvm/runtime/data_type.h>
 #include <tvm/runtime/ndarray.h>
 
-namespace tvm::runtime {
-
-void NDArrayTest();
-
-}  // namespace tvm::runtime
+namespace tvm::runtime {}  // namespace tvm::runtime
 
 void NDArrayTest();
