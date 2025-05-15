@@ -7,9 +7,12 @@
 /// Macro for printing variable name and its value.
 #define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
 
-/// Macro for printing a separator line with custom text.
-#define LOG_SPLIT_LINE(stmt)                                                             \
-  std::cout << "==============" << (stmt) << "==============\n";
+/// Macro for printing a separator line with custom stmt.
+#define SPLIT_L(num_equal) std::string(num_equal, '=') << " "
+#define SPLIT_R(num_equal) " " << std::string(num_equal, '=') << '\n'
+#define LOG_SPLIT_LINE_IMPL(stmt, num_equal)                                             \
+  std::cout << SPLIT_L(num_equal) << (stmt) << SPLIT_R(num_equal)
+#define LOG_SPLIT_LINE(stmt) LOG_SPLIT_LINE_IMPL(stmt, 14)
 
 namespace test_func_registry {
 
