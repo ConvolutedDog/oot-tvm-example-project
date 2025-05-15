@@ -16,7 +16,7 @@ using tvm::Range;
 namespace expr_test {}
 
 #define PRINT_TOP_LINE(hint)                                                             \
-  LOG_SPLIT_LINE(string(" Constant fold for Op ") + string(#hint) + string(" "))
+  LOG_SPLIT_LINE(string(" Constant fold for Op ") + string(#hint) + string(" "));
 
 #define PRINT_VARS3(a, b, c)                                                             \
   LOG_PRINT_VAR(a)                                                                       \
