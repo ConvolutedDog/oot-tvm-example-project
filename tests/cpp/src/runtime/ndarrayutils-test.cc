@@ -109,3 +109,15 @@ void NDArrayTest() {
 }  // namespace ndarray_test
 
 REGISTER_TEST_SUITE(ndarray_test::NDArrayTest, runtime_ndarray_test_NDArrayTest);
+
+// expanded to
+/*
+   namespace{
+      static void __test_suite_runtime_ndarray_test_NDArrayTest() {
+  ndarray_test::NDArrayTest(); }                                           \ static
+  ::test_func_registry::TestSuiteRegistry  __make_TestSuite(__COUNTER__) =
+        ::test_func_registry::TestSuiteRegistry::Global()
+            -> RegisterTestSuite(runtime_ndarray_test_NDArrayTest,
+  __test_suite_runtime_ndarray_test_NDArrayTest, __FILE__, __LINE__)
+  }
+*/
