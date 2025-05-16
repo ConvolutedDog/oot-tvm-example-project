@@ -19,7 +19,7 @@ void TestMethod2() {
   /// Print all test suite names.
   registry->PrintAllTestSuiteNames();
 
-  /// Method 3: Run each specific test suite.
+  /// Method 2: Run each specific test suite.
   registry->RunTestSuite("runtime_ndarray_test_NDArrayTest");
   // Bug on MacOS
   registry->RunTestSuite("runtime_inplace_array_base_test_InplaceArrayBaseTest");
@@ -34,9 +34,6 @@ void TestMethod2() {
   registry->RunTestSuite("ir_type_test_PointerTypeTest");
   registry->RunTestSuite("ir_type_test_TupleTypeTest");
   registry->RunTestSuite("ir_type_test_FuncTypeTest");
-  registry->RunTestSuite("tir_var_test_VarTest");
-  registry->RunTestSuite("tir_var_test_SizeVarTest");
-  registry->RunTestSuite("tir_var_test_IterVarTest");
   registry->RunTestSuite("node_reflection_test_AttrVisitorTest");
   registry->RunTestSuite("node_reflection_test_ReflectionVTableTest");
   registry->RunTestSuite("ir_attrs_test_AttrUtilsTests");
@@ -75,7 +72,11 @@ void TestMethod2() {
   registry->RunTestSuite("node_repr_printer_test_ReprPrinterTest");
   registry->RunTestSuite("node_repr_printer_test_ReprLegacyPrinterTest");
   registry->RunTestSuite("node_object_path_test_ObjectPathTest");
-  registry->RunTestSuite("tir_expr_test_ExprTest");
+  registry->RunTestSuite("tir_var_test_VarTest");
+  registry->RunTestSuite("tir_var_test_SizeVarTest");
+  registry->RunTestSuite("tir_var_test_IterVarTest");
+  registry->RunTestSuite("tir_buffer_test_BufferTest");
+  registry->RunTestSuite("tir_buffer_test_DataProducerTest");
 }
 
 int main() {

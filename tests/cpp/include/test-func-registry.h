@@ -7,6 +7,8 @@
 /// Macro for printing variable name and its value.
 #define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
 
+#define LOG_BLANK_LINE std::cout << '\n'
+
 /// Macro for printing a separator line with custom stmt.
 #define SPLIT_L(num_equal) std::string(num_equal, '=') << " "
 #define SPLIT_R(num_equal) " " << std::string(num_equal, '=') << '\n'
@@ -131,8 +133,6 @@ using TestSuiteRegistry = test_func_registry::TestSuiteRegistry;
 
 /// Version with 2 arguments (func and custom key)
 #define REGISTER_TEST_SUITE_2(func, key)                                                 \
-  static void __test_suite_##key() { func(); }                                           \
-  static ::test_func_registry::TestSuiteRegistry &STR_CONCAT(__make_TestSuite,           \
-                                                             __COUNTER__) =              \
+  ::test_func_registry::TestSuiteRegistry &STR_CONCAT(__make_TestSuite, __COUNTER__) =   \
       ::test_func_registry::TestSuiteRegistry::Global()                                  \
-          -> RegisterTestSuite(#key, __test_suite_##key, __FILE__, __LINE__)
+          -> RegisterTestSuite(#key, func, __FILE__, __LINE__)

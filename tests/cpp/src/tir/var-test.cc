@@ -8,24 +8,28 @@ namespace var_test {
 void VarTest() {
   LOG_SPLIT_LINE("VarTest");
   Var x{"var", DataType::UInt(32, 1, false)};
-  LOG_PRINT_VAR(x.operator->()->name_hint);
-  LOG_PRINT_VAR(x.operator->()->dtype);
-  LOG_PRINT_VAR(x.operator->()->type_annotation);
+  LOG_PRINT_VAR(x->name_hint);        // "var"
+  LOG_PRINT_VAR(x->dtype);            // uint32
+  LOG_PRINT_VAR(x->type_annotation);  // T.uint32
+  LOG_BLANK_LINE;
 
   Var y = x.copy_with_name("varcopy_with_name");
-  LOG_PRINT_VAR(y.operator->()->name_hint);
-  LOG_PRINT_VAR(y.operator->()->dtype);
-  LOG_PRINT_VAR(y.operator->()->type_annotation);
+  LOG_PRINT_VAR(y->name_hint);        // => "varcopy_with_name"
+  LOG_PRINT_VAR(y->dtype);            // default to uint32
+  LOG_PRINT_VAR(y->type_annotation);  // default to T.uint32
+  LOG_BLANK_LINE;
 
   Var z = x.copy_with_suffix("suffix");
-  LOG_PRINT_VAR(z.operator->()->name_hint);
-  LOG_PRINT_VAR(z.operator->()->dtype);
-  LOG_PRINT_VAR(z.operator->()->type_annotation);
+  LOG_PRINT_VAR(z->name_hint);        // => "varsuffix"
+  LOG_PRINT_VAR(z->dtype);            // default to uint32
+  LOG_PRINT_VAR(z->type_annotation);  // default to T.uint32
+  LOG_BLANK_LINE;
 
-  Var w = x.copy_with_dtype(DataType::Int(32, 1));
-  LOG_PRINT_VAR(w.operator->()->name_hint);
-  LOG_PRINT_VAR(w.operator->()->dtype);
-  LOG_PRINT_VAR(w.operator->()->type_annotation);
+  Var w = x.copy_with_dtype(DataType::Int(16, 1));
+  LOG_PRINT_VAR(w->name_hint);        // default to "var"
+  LOG_PRINT_VAR(w->dtype);            // => int16
+  LOG_PRINT_VAR(w->type_annotation);  // => T.int16
+  LOG_BLANK_LINE;
 
   LOG_PRINT_VAR(x.get() == y.get());
 }
@@ -33,33 +37,40 @@ void VarTest() {
 void SizeVarTest() {
   LOG_SPLIT_LINE("SizeVarTest");
   SizeVar x{"sizevar", DataType::UInt(32, 1, false)};
-  LOG_PRINT_VAR(x.operator->()->name_hint);
-  LOG_PRINT_VAR(x.operator->()->dtype);
-  LOG_PRINT_VAR(x.operator->()->type_annotation);
+  LOG_PRINT_VAR(x->name_hint);
+  LOG_PRINT_VAR(x->dtype);
+  LOG_PRINT_VAR(x->type_annotation);
+  LOG_BLANK_LINE;
 
   Var y = x.copy_with_name("varcopy_with_name");
-  LOG_PRINT_VAR(y.operator->()->name_hint);
-  LOG_PRINT_VAR(y.operator->()->dtype);
-  LOG_PRINT_VAR(y.operator->()->type_annotation);
+  LOG_PRINT_VAR(y->name_hint);
+  LOG_PRINT_VAR(y->dtype);
+  LOG_PRINT_VAR(y->type_annotation);
+  LOG_BLANK_LINE;
 
   LOG_PRINT_VAR(x.get() == y.get());
+  LOG_BLANK_LINE;
 
   Var z = x.copy_with_suffix("suffix");
-  LOG_PRINT_VAR(z.operator->()->name_hint);
-  LOG_PRINT_VAR(z.operator->()->dtype);
-  LOG_PRINT_VAR(z.operator->()->type_annotation);
+  LOG_PRINT_VAR(z->name_hint);
+  LOG_PRINT_VAR(z->dtype);
+  LOG_PRINT_VAR(z->type_annotation);
+  LOG_BLANK_LINE;
 
   Var w = x.copy_with_dtype(DataType::Int(32, 1));
-  LOG_PRINT_VAR(w.operator->()->name_hint);
-  LOG_PRINT_VAR(w.operator->()->dtype);
-  LOG_PRINT_VAR(w.operator->()->type_annotation);
+  LOG_PRINT_VAR(w->name_hint);
+  LOG_PRINT_VAR(w->dtype);
+  LOG_PRINT_VAR(w->type_annotation);
+  LOG_BLANK_LINE;
 
-  LOG_PRINT_VAR(x.get() == y.get());
+  LOG_PRINT_VAR(x.get() == w.get());
+  LOG_BLANK_LINE;
 
   SizeVar o{"sizevar", PointerType{VoidType()}};
-  LOG_PRINT_VAR(o.operator->()->name_hint);
-  LOG_PRINT_VAR(o.operator->()->dtype);
-  LOG_PRINT_VAR(o.operator->()->type_annotation);
+  LOG_PRINT_VAR(o->name_hint);
+  LOG_PRINT_VAR(o->dtype);            // => handle
+  LOG_PRINT_VAR(o->type_annotation);  // => T.handle(None)
+  LOG_BLANK_LINE;
 }
 
 void IterVarTest() {
@@ -70,12 +81,15 @@ void IterVarTest() {
 
   LOG_PRINT_VAR(x.as<IntImmNode>()->value);
   LOG_PRINT_VAR(y.as<IntImmNode>()->value);
+  LOG_BLANK_LINE;
 
   LOG_PRINT_VAR(x.as<PrimExprNode>()->dtype);
   LOG_PRINT_VAR(y.as<PrimExprNode>()->dtype);
+  LOG_BLANK_LINE;
 
   LOG_PRINT_VAR(x.as<BaseExprNode>()->GetTypeKey());
   LOG_PRINT_VAR(y.as<BaseExprNode>()->GetTypeKey());
+  LOG_BLANK_LINE;
 
   Range range{x, y};
   /// Here, the dtype of range is Int (because PrimExpr x = 4 and y = 4,
@@ -88,13 +102,13 @@ void IterVarTest() {
   Var var{"var", dtype};
   IterVar itervar{range, var, IterVarType::kOrdered, String("thread_tag")};
 
-  LOG_PRINT_VAR(itervar.get()->dom);
-  LOG_PRINT_VAR(itervar.get()->dom->extent.defined());
-  LOG_PRINT_VAR(itervar.get()->var);
-  LOG_PRINT_VAR(itervar.get()->iter_type);
-  LOG_PRINT_VAR(IterVarType2String(itervar.get()->iter_type));
-  LOG_PRINT_VAR(itervar.get()->thread_tag);
-  LOG_PRINT_VAR(itervar.get()->span);
+  LOG_PRINT_VAR(itervar->dom);
+  LOG_PRINT_VAR(itervar->dom->extent.defined());
+  LOG_PRINT_VAR(itervar->var);
+  LOG_PRINT_VAR(itervar->iter_type);
+  LOG_PRINT_VAR(IterVarType2String(itervar->iter_type));
+  LOG_PRINT_VAR(itervar->thread_tag);
+  LOG_PRINT_VAR(itervar->span);
 
   LOG_PRINT_VAR(itervar.as<IterVarNode>()->dom);
 }
