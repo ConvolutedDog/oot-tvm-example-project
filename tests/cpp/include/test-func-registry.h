@@ -93,9 +93,31 @@ using TestSuiteRegistry = test_func_registry::TestSuiteRegistry;
 #define STR_CONCAT_(__x, __y) __x##__y
 #define STR_CONCAT(__x, __y) STR_CONCAT_(__x, __y)
 
-/// Macro for registering test suites:
-/// 1. Creates a static wrapper function.
-/// 2. Registers it with the global TestSuiteRegistry.
+/// Macro for getting the third argument.
+#define GET_MACRO_TEST_SUITE(_1, _2, Name, ...) Name
+
+/// @brief Macro for registering test suites with the global TestSuiteRegistry. It is
+/// overloaded to support 1 or 2 arguments.
+///
+/// @note An anonymous namespace `namespace{}` ensures that variables/functions are only
+/// visible within the current file, preventing symbol conflicts across different files.
+///
+/// @note For example:
+///   🚀 1 argument: `REGISTER_TEST_SUITE(TestSuite1)` will be expand️ed to:
+///     @code {.cpp}
+///     namespace {
+///     GET_MACRO_TEST_SUITE(TestSuite1, REGISTER_TEST_SUITE_2,
+///                          REGISTER_TEST_SUITE_1)(TestSuite1);
+///     }
+///     @endcode
+///     Then this will be further replaced by `REGISTER_TEST_SUITE_1(TestSuite1)`.
+///   🚀 2 argument:
+///     `REGISTER_TEST_SUITE(TestSuite2, NameHint)` will be expand️ed to:
+///     @code {.cpp}
+///     namespace {
+///     REGISTER_TEST_SUITE_2(TestSuite2, NameHint);
+///     }
+///     @endcode
 ///
 /// Usage:
 /// 1. Define a function in a .cc/.cpp file:
@@ -110,17 +132,16 @@ using TestSuiteRegistry = test_func_registry::TestSuiteRegistry;
 ///    to register the function:
 ///      REGISTER_TEST_SUITE(::a::TestSuiteName, JustPlaceSomeKeyHere);
 ///
-///     For example, `REGISTER_TEST_SUITE(ndarray_test::NDArrayTest,
-///     runtime_ndarray_test_NDArrayTest);`
+///    For example, `REGISTER_TEST_SUITE(ndarray_test::NDArrayTest,
+///                                      runtime_ndarray_test_NDArrayTest);`
 ///    will be expanded to:
+///
 ///    @code {.cpp}
-///    namespace{
-///    static void __test_suite_runtime_ndarray_test_NDArrayTest() {
-///    ndarray_test::NDArrayTest(); }                                           \ static
-///    ::test_func_registry::TestSuiteRegistry __make_TestSuitexxx =
-///     ::test_func_registry::TestSuiteRegistry::Global()
-///         -> RegisterTestSuite(runtime_ndarray_test_NDArrayTest,
-///         __test_suite_runtime_ndarray_test_NDArrayTest, __FILE__, __LINE__)
+///    namespace {
+///    ::test_func_registry::TestSuiteRegistry __make_TestSuite0 =     \
+///     ::test_func_registry::TestSuiteRegistry::Global()               \
+///         -> RegisterTestSuite(runtime_ndarray_test_NDArrayTest,      \
+///              -> RegisterTestSuite(#key, func, __FILE__, __LINE__)   \
 ///    }
 ///    @endcode
 /// 3. Call the function from main.cc:
@@ -133,48 +154,21 @@ using TestSuiteRegistry = test_func_registry::TestSuiteRegistry;
 ///      // Run all test suites.
 ///      TestSuiteRegistry::Global()->RunAllTestSuites();
 ///    }
-///
-
-/**
- * @brief Macro overloading to support 1 or 2 arguments
- * @note An anonymous namespace `namespace{}` ensures that variables/functions are only
- visible
- * within the current file, preventing symbol conflicts across different files.
- * @note For example:
- * 🚀1 argument: `REGISTER_TEST_SUITE(TestSuite1)` ➡expand️ to
- *
- * @code {.cpp}
- * namespace {
-  GET_MACRO_TEST_SUITE(TestSuite1, REGISTER_TEST_SUITE_2,
-                       REGISTER_TEST_SUITE_1)(TestSuite1);
-  }
- * @endcode
- * expand the macro `GET_MACRO_TEST_SUITE` to `REGISTER_TEST_SUITE_1(TestSuite1)`
- *
- * 🚀2 argument
- * `REGISTER_TEST_SUITE(TestSuite2, NameHint)` ➡expand️ to
- `REGISTER_TEST_SUITE_2(TestSuite2, NameHint)`
- */
-#define GET_MACRO_TEST_SUITE(_1, _2, NAME, ...) NAME
 #define REGISTER_TEST_SUITE(...)                                                         \
   namespace {                                                                            \
   GET_MACRO_TEST_SUITE(__VA_ARGS__, REGISTER_TEST_SUITE_2,                               \
                        REGISTER_TEST_SUITE_1)(__VA_ARGS__);                              \
   }
 
-/// Version with 1 argument (func only, key defaults to func)
+/// @brief Version with 1 argument (func only, key defaults to func).
 #define REGISTER_TEST_SUITE_1(func) REGISTER_TEST_SUITE_2(func, func)
 
-/// Version with 2 arguments (func and custom key)
-/*!
- * @brief Version with 2 arguments (func and custom key)
- * @note The variable inside the anonymous namespace is initialized before `main()`
- * executes. This property is leveraged to perform registration during static
- * initialization: the variable's constructor (or initializer) includes the registration
- * logic which add entries into global registry
- * table(`TestSuiteRegistry::Global()->suites_`) enabling automatic registration without
- * explicit calls.
- */
+/// @brief Version with 2 arguments (func and custom key).
+/// @note The variable inside the anonymous namespace is initialized before the `main()`
+/// function executes. This property is leveraged to perform registration during static
+/// initialization: the variable's constructor includes the registration logic which add
+/// entries into global registry table (`TestSuiteRegistry::Global()->suites_`), enabling
+/// automatic registration without explicit includings and calls.
 #define REGISTER_TEST_SUITE_2(func, key)                                                 \
   ::test_func_registry::TestSuiteRegistry &STR_CONCAT(__make_TestSuite, __COUNTER__) =   \
       ::test_func_registry::TestSuiteRegistry::Global()                                  \

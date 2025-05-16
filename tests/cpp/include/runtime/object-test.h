@@ -3,42 +3,40 @@
 #include "tvm/runtime/object.h"
 
 /* clang-format off */
-/* Sub-class of objects should declare the following static constexpr fields:
- *
- * - _type_index:
- *      Static type index of the object, if assigned to TypeIndex::kDynamic
- *      the type index(`type_index_`) will be assigned during runtime.
- *      Runtime type index(`type_index_`) can be accessed by ObjectType::TypeIndex();
- * - _type_key:
- *       The unique string identifier of the type.
- * - _type_final:
- *       Whether the type is terminal type(there is no subclass of the type in
- *       the object system). This field is automatically set by macro
- *       TVM_DECLARE_FINAL_OBJECT_INFO It is still OK to sub-class a terminal object
- *       type T and construct it using make_object. But IsInstance check will only
- *       show that the object type is T(instead of the sub-class).
- *
- * The following two fields are necessary for base classes that can be
- * sub-classed.
- *
- * - _type_child_slots:
- *       Number of reserved type index slots for child classes.
- *       Used for runtime optimization for type checking in IsInstance.
- *       If an object's type_index is within range of [type_index, type_index +
- *       _type_child_slots] Then the object can be quickly decided as sub-class of the
- *       current object class. If not, a fallback mechanism is used to check the
- *       global type table. Recommendation: set to estimate number of children needed.
- * - _type_child_slots_can_overflow:
- *       Whether we can add additional child classes even if the number of child
- *       classes exceeds the _type_child_slots. A fallback mechanism to check global
- *       type table will be used. Recommendation: set to false for optimal runtime
- *       speed if we know exact number of children.
- *
- * Two macros are used to declare helper functions in the object:
- * - Use TVM_DECLARE_BASE_OBJECT_INFO for object classes that can be sub-classed.
- * - Use TVM_DECLARE_FINAL_OBJECT_INFO for object classes that cannot be sub-classed.
- *
- */
+/// Sub-class of objects should declare the following static constexpr fields:
+///
+/// - _type_index:
+///      Static type index of the object, if assigned to TypeIndex::kDynamic
+///      the type index(`type_index_`) will be assigned during runtime.
+///      Runtime type index(`type_index_`) can be accessed by ObjectType::TypeIndex();
+/// - _type_key:
+///       The unique string identifier of the type.
+/// - _type_final:
+///       Whether the type is terminal type(there is no subclass of the type in
+///       the object system). This field is automatically set by macro
+///       TVM_DECLARE_FINAL_OBJECT_INFO It is still OK to sub-class a terminal object
+///       type T and construct it using make_object. But IsInstance check will only
+///       show that the object type is T(instead of the sub-class).
+///
+/// The following two fields are necessary for base classes that can be
+/// sub-classed.
+///
+/// - _type_child_slots:
+///       Number of reserved type index slots for child classes.
+///       Used for runtime optimization for type checking in IsInstance.
+///       If an object's type_index is within range of [type_index, type_index +
+///       _type_child_slots] Then the object can be quickly decided as sub-class of the
+///       current object class. If not, a fallback mechanism is used to check the
+///       global type table. Recommendation: set to estimate number of children needed.
+/// - _type_child_slots_can_overflow:
+///       Whether we can add additional child classes even if the number of child
+///       classes exceeds the _type_child_slots. A fallback mechanism to check global
+///       type table will be used. Recommendation: set to false for optimal runtime
+///       speed if we know exact number of children.
+///
+/// Two macros are used to declare helper functions in the object:
+/// - Use TVM_DECLARE_BASE_OBJECT_INFO for object classes that can be sub-classed.
+/// - Use TVM_DECLARE_FINAL_OBJECT_INFO for object classes that cannot be sub-classed.
 /* clang-format on */
 
 namespace object_test {
@@ -56,10 +54,9 @@ public:
   TestCanDerivedFromNode(const String &name) : nameHint(name) {
     type_index_ = RuntimeTypeIndex();
   }
-  /**
-   * @brief if _type_index is not kDynamic, then the type_index_ = type_index
-   * else type_index_ = GetOrAllocRuntimeTypeIndex(type_key)
-   */
+
+  /// @brief if _type_index is not kDynamic, then the type_index_ = type_index
+  /// else type_index_ = GetOrAllocRuntimeTypeIndex(type_key)
   static constexpr const uint32_t _type_index = tvm::runtime::TypeIndex::kDynamic;
   static constexpr const char *_type_key = "test.TestCanDerivedFromNode";
   /// For example, in this header, we have three classes that inherits from

@@ -140,12 +140,11 @@ void ObjectRefTest() {
   ObjectPtr<TestCanDerivedFromNode> xptr =
       tvm::runtime::GetObjectPtr<TestCanDerivedFromNode>(&x);
 
-  /**
-   * @brief Test the ObjectPtr's behavior
-   * @note ObjectPtr behaves like both std::shared_ptr and std::unique_ptr,
-   * which can share/borrow resource with/from other ObjectPtr。
-   * Well, ObjectRef is also the mixture of std::shared_ptr and std::unique_ptr.
-   */
+
+  /// @brief Test the ObjectPtr's behavior.
+  /// @note ObjectPtr behaves like both std::shared_ptr and std::unique_ptr,
+  /// which can share/borrow resource with/from other ObjectPtr。
+  /// Well, ObjectRef is also the mixture of std::shared_ptr and std::unique_ptr.
   LOG_PRINT_VAR(&x);
   LOG_PRINT_VAR(xptr.get());                       // Expected: &x
   LOG_PRINT_VAR(xptr.use_count());                 // Expected: 1 (sole owner)

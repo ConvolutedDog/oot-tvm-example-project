@@ -68,7 +68,7 @@ void BufferTest() {
   ///   /*! \brief buffer type */
   ///   enum BufferType : int {
   ///     kDefault = 1,
-  ///     // Maps buffer[i][j][k] -> buffer[i][0][k] if dimension i's shape equals 1.
+  ///     // Maps buffer[i][j][k] -> buffer[i][0][k] if dimension j's shape equals 1.
   ///     kAutoBroadcast = 2,
   ///   };
   ///
