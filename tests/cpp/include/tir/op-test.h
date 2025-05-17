@@ -128,14 +128,14 @@ using tvm::tir::make_const;
 using tvm::tir::make_zero;
 using tvm::tir::MakeConstScalar;
 
-using tvm::tir::IterVar;
-using tvm::tir::Var;
-using tvm::tir::Buffer;
-using tvm::tir::decl_buffer;
-using tvm::tir::BufferLoad;
 using tvm::Range;
-using tvm::tir::IterVarType;
 using tvm::runtime::Array;
+using tvm::tir::Buffer;
+using tvm::tir::BufferLoad;
+using tvm::tir::decl_buffer;
+using tvm::tir::IterVar;
+using tvm::tir::IterVarType;
+using tvm::tir::Var;
 
 void OpTest();
 
