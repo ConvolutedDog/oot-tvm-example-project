@@ -102,7 +102,7 @@ using tvm::Range;
 
 namespace expr_test {
 
-void PrimExprTest() {
+void IrPrimExprTest() {
   PrimExpr primExprA = 4;
   DataType dtypeA = primExprA.dtype();
   DLDataType dldtypeA = DLDataType(dtypeA);
@@ -157,8 +157,8 @@ void PrimExprTest() {
   TEST_OPERATOR_BOOL_BOOL(primExprD, primExprE, ||, or);
 }
 
-void BoolTest() {
-  LOG_SPLIT_LINE("BoolTest");
+void IrBoolTest() {
+  LOG_SPLIT_LINE("IrBoolTest");
   auto b = Bool(true);
   LOG_PRINT_VAR(b);
   LOG_PRINT_VAR(!b);
@@ -174,8 +174,8 @@ void BoolTest() {
   LOG_PRINT_VAR(b == a);
 }
 
-void IntegerTest() {
-  LOG_SPLIT_LINE("IntegerTest");
+void IrIntegerTest() {
+  LOG_SPLIT_LINE("IrIntegerTest");
   Integer a = Integer(23);
   LOG_PRINT_VAR(a.IntValue());
   enum class X { aa = 20, bb = 21, cc = 22, SIZE = 23 };
@@ -184,8 +184,8 @@ void IntegerTest() {
   LOG_PRINT_VAR(b == a);
 }
 
-void RangeTest() {
-  LOG_SPLIT_LINE("RangeTest");
+void IrRangeTest() {
+  LOG_SPLIT_LINE("IrRangeTest");
   PrimExpr primExprA = 4;
   PrimExpr primExprB = 5;
 
@@ -200,7 +200,7 @@ void RangeTest() {
 
 }  // namespace expr_test
 
-REGISTER_TEST_SUITE(expr_test::PrimExprTest, ir_expr_test_PrimExprTest);
-REGISTER_TEST_SUITE(expr_test::RangeTest, ir_expr_test_RangeTest);
-REGISTER_TEST_SUITE(expr_test::IntegerTest, ir_expr_test_IntegerTest);
-REGISTER_TEST_SUITE(expr_test::BoolTest, ir_expr_test_BoolTest);
+REGISTER_TEST_SUITE(expr_test::IrPrimExprTest, ir_expr_test_IrPrimExprTest);
+REGISTER_TEST_SUITE(expr_test::IrRangeTest, ir_expr_test_IrRangeTest);
+REGISTER_TEST_SUITE(expr_test::IrIntegerTest, ir_expr_test_IrIntegerTest);
+REGISTER_TEST_SUITE(expr_test::IrBoolTest, ir_expr_test_IrBoolTest);

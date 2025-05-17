@@ -5,8 +5,8 @@
 
 namespace functor_test {
 
-void NodeFunctorTest() {
-  LOG_SPLIT_LINE("NodeFunctorTest");
+void NodeNodeFunctorTest() {
+  LOG_SPLIT_LINE("NodeNodeFunctorTest");
 
   /// @brief `NodeFunctor` is a template class that can dispatch to different functions
   /// based on the type of the input node. It has serveral template params: the first
@@ -77,4 +77,5 @@ void NodeFunctorTest() {
 
 }  // namespace functor_test
 
-REGISTER_TEST_SUITE(functor_test::NodeFunctorTest, node_functor_test_NodeFunctorTest);
+REGISTER_TEST_SUITE(functor_test::NodeNodeFunctorTest,
+                    node_functor_test_NodeNodeFunctorTest);

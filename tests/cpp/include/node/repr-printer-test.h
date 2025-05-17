@@ -28,9 +28,9 @@ using tvm::tir::PrimFunc;
 using tvm::tir::Stmt;
 using tvm::tir::Var;
 
-void AsLegacyReprTest();
-void ReprPrinterTest();
-void ReprLegacyPrinterTest();
-void DumpTest();
+void NodeAsLegacyReprTest();
+void NodeReprPrinterTest();
+void NodeReprLegacyPrinterTest();
+void NodeDumpTest();
 
 }  // namespace repr_printer_test

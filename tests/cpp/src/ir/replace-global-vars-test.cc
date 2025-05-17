@@ -3,8 +3,8 @@
 
 namespace replace_global_vars_test {
 
-void ReplaceGlobalVarsTest() {
-  LOG_SPLIT_LINE("ReplaceGlobalVarsTest");
+void IrReplaceGlobalVarsTest() {
+  LOG_SPLIT_LINE("IrReplaceGlobalVarsTest");
 
   /// IRModule
   /// @brief Define a GlobalVar.
@@ -51,5 +51,5 @@ void ReplaceGlobalVarsTest() {
 
 }  // namespace replace_global_vars_test
 
-REGISTER_TEST_SUITE(replace_global_vars_test::ReplaceGlobalVarsTest,
-                    ir_replace_global_vars_test_ReplaceGlobalVarsTest);
+REGISTER_TEST_SUITE(replace_global_vars_test::IrReplaceGlobalVarsTest,
+                    ir_replace_global_vars_test_IrReplaceGlobalVarsTest);

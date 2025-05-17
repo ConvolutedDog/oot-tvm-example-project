@@ -57,14 +57,14 @@ using tvm::te::PlaceholderOp;
 using tvm::te::Tensor;
 
 void TirExprTest();
-void BufferLoadTest();
-void ProducerLoadTest();
-void RampTest();
-void BroadcastTest();
-void LetTest();
+void TirBufferLoadTest();
+void TirProducerLoadTest();
+void TirRampTest();
+void TirBroadcastTest();
+void TirLetTest();
 void TirCallTest();
-void ShuffleTest();
-void CommReducerTest();
-void ReduceTest();
+void TirShuffleTest();
+void TirCommReducerTest();
+void TirReduceTest();
 
 }  // namespace expr_test

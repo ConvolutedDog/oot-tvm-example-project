@@ -4,6 +4,6 @@ namespace name_supply_test {
 
 using tvm::NameSupply;
 
-void NameSupplyTest();
+void IrNameSupplyTest();
 
 }  // namespace name_supply_test

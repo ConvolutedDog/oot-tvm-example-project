@@ -32,8 +32,8 @@ namespace repr_printer_test {
 ///           auto* node = static_cast<const OpNode*>(ref.get());
 ///           p->stream << "Op(" << node->name << ")";
 ///         });
-void DumpTest() {
-  LOG_SPLIT_LINE("DumpTest");
+void NodeDumpTest() {
+  LOG_SPLIT_LINE("NodeDumpTest");
 
   /// Test Dump PrimExpr
   PrimExpr p = 100;
@@ -102,15 +102,15 @@ TVM_STATIC_IR_FUNCTOR(ReprPrinter, vtable)
       p->stream << "This is my TestNode: ^^^(" << node->GetTestString() << ")^^^";
     });
 
-void ReprPrinterTest() {
-  LOG_SPLIT_LINE("ReprPrinterTest");
+void NodeReprPrinterTest() {
+  LOG_SPLIT_LINE("NodeReprPrinterTest");
 
   Test test{"Hello World!"};
   LOG_PRINT_VAR(test);
 }
 
-void AsLegacyReprTest() {
-  LOG_SPLIT_LINE("AsLegacyReprTest");
+void NodeAsLegacyReprTest() {
+  LOG_SPLIT_LINE("NodeAsLegacyReprTest");
 
   PrimExpr p = 100;
 
@@ -124,19 +124,19 @@ void AsLegacyReprTest() {
   LOG_PRINT_VAR(ps);
 }
 
-void ReprLegacyPrinterTest() {
-  LOG_SPLIT_LINE("ReprLegacyPrinterTest");
+void NodeReprLegacyPrinterTest() {
+  LOG_SPLIT_LINE("NodeReprLegacyPrinterTest");
 
-  /// Similar to `ReprPrinterTest`.
-  LOG_PRINT_VAR("Similar to `ReprPrinterTest`.");
+  /// Similar to `NodeReprPrinterTest`.
+  LOG_PRINT_VAR("Similar to `NodeReprPrinterTest`.");
 }
 
 }  // namespace repr_printer_test
 
-REGISTER_TEST_SUITE(repr_printer_test::AsLegacyReprTest,
-                    node_repr_printer_test_AsLegacyReprTest);
-REGISTER_TEST_SUITE(repr_printer_test::ReprPrinterTest,
-                    node_repr_printer_test_ReprPrinterTest);
-REGISTER_TEST_SUITE(repr_printer_test::DumpTest, node_repr_printer_test_DumpTest);
-REGISTER_TEST_SUITE(repr_printer_test::ReprLegacyPrinterTest,
-                    node_repr_printer_test_ReprLegacyPrinterTest);
+REGISTER_TEST_SUITE(repr_printer_test::NodeAsLegacyReprTest,
+                    node_repr_printer_test_NodeAsLegacyReprTest);
+REGISTER_TEST_SUITE(repr_printer_test::NodeReprPrinterTest,
+                    node_repr_printer_test_NodeReprPrinterTest);
+REGISTER_TEST_SUITE(repr_printer_test::NodeDumpTest, node_repr_printer_test_NodeDumpTest);
+REGISTER_TEST_SUITE(repr_printer_test::NodeReprLegacyPrinterTest,
+                    node_repr_printer_test_NodeReprLegacyPrinterTest);

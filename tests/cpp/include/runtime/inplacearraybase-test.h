@@ -59,7 +59,7 @@ private:
   }
 };
 
-void InplaceArrayBaseTest();
+void RuntimeInplaceArrayBaseTest();
 
 }  // namespace inplace_array_base_test
 

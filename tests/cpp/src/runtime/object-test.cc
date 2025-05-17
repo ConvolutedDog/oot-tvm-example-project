@@ -33,7 +33,7 @@ TVM_REGISTER_OBJECT_TYPE(TestDerived1Node);
 TVM_REGISTER_OBJECT_TYPE(TestDerived2Node);
 TVM_REGISTER_OBJECT_TYPE(TestFinalNode);
 
-void ObjectTest() {
+void RuntimeObjectTest() {
   object_test::TestCanDerivedFromNode testCanDerivedFromObj;
   LOG_SPLIT_LINE("testCanDerivedFromObj");
   std::cout << testCanDerivedFromObj << '\n';
@@ -73,7 +73,7 @@ TestDerived3::TestDerived3(const String &name, const String &extraName) {
   data_ = make_object<TestDerived3Node>(name, extraName);
 }
 
-void ObjectRefTest() {
+void RuntimeObjectRefTest() {
   using object_test::TestCanDerivedFromNode;
   using object_test::TestDerived1Node;
   using object_test::TestDerived2Node;
@@ -185,5 +185,7 @@ void ObjectRefTest() {
 
 }  // namespace objectref_test
 
-REGISTER_TEST_SUITE(object_test::ObjectTest, runtime_object_test_ObjectTest);
-REGISTER_TEST_SUITE(objectref_test::ObjectRefTest, runtime_objectref_test_ObjectRefTest);
+REGISTER_TEST_SUITE(object_test::RuntimeObjectTest,
+                    runtime_object_test_RuntimeObjectTest);
+REGISTER_TEST_SUITE(objectref_test::RuntimeObjectRefTest,
+                    runtime_objectref_test_RuntimeObjectRefTest);

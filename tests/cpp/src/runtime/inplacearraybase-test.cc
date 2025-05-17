@@ -5,7 +5,7 @@ namespace inplace_array_base_test {
 
 using namespace tvm::runtime;
 
-void InplaceArrayBaseTest() {
+void RuntimeInplaceArrayBaseTest() {
   typedef uint32_t ArrayType;
   typedef int16_t ElemType;
 
@@ -19,5 +19,5 @@ void InplaceArrayBaseTest() {
 
 }  // namespace inplace_array_base_test
 
-REGISTER_TEST_SUITE(inplace_array_base_test::InplaceArrayBaseTest,
-                    runtime_inplace_array_base_test_InplaceArrayBaseTest);
+REGISTER_TEST_SUITE(inplace_array_base_test::RuntimeInplaceArrayBaseTest,
+                    runtime_inplace_array_base_test_RuntimeInplaceArrayBaseTest);

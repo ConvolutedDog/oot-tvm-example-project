@@ -23,6 +23,6 @@ using Expr = tvm::RelaxExpr;
 
 using tvm::runtime::Map;
 
-void ReplaceGlobalVarsTest();
+void IrReplaceGlobalVarsTest();
 
 }  // namespace replace_global_vars_test

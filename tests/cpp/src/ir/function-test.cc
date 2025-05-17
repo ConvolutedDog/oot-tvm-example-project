@@ -14,8 +14,8 @@ std::ostream &operator<<(std::ostream &os, const LinkageType &linkage) {
   return os;
 }
 
-void BaseFuncTest() {
-  LOG_SPLIT_LINE("BaseFuncTest");
+void IrBaseFuncTest() {
+  LOG_SPLIT_LINE("IrBaseFuncTest");
   ObjectPtr<BaseFuncNode> basefuncnodeptr = make_object<BaseFuncNode>();
   std::initializer_list<std::pair<String, ObjectRef>> init = {
       {"attr1",       String("attr1")       },
@@ -52,4 +52,4 @@ void BaseFuncTest() {
 
 }  // namespace function_test
 
-REGISTER_TEST_SUITE(function_test::BaseFuncTest, ir_function_test_BaseFuncTest);
+REGISTER_TEST_SUITE(function_test::IrBaseFuncTest, ir_function_test_IrBaseFuncTest);

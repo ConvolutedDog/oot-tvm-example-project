@@ -5,7 +5,7 @@
 
 namespace var_test {
 
-void VarTest() {
+void TirVarTest() {
   LOG_SPLIT_LINE("VarTest");
   Var x{"var", DataType::UInt(32, 1, false)};
   LOG_PRINT_VAR(x->name_hint);        // "var"
@@ -34,8 +34,8 @@ void VarTest() {
   LOG_PRINT_VAR(x.get() == y.get());
 }
 
-void SizeVarTest() {
-  LOG_SPLIT_LINE("SizeVarTest");
+void TirSizeVarTest() {
+  LOG_SPLIT_LINE("TirSizeVarTest");
   SizeVar x{"sizevar", DataType::UInt(32, 1, false)};
   LOG_PRINT_VAR(x->name_hint);
   LOG_PRINT_VAR(x->dtype);
@@ -73,8 +73,8 @@ void SizeVarTest() {
   LOG_BLANK_LINE;
 }
 
-void IterVarTest() {
-  LOG_SPLIT_LINE("IterVarTest");
+void TirIterVarTest() {
+  LOG_SPLIT_LINE("TirIterVarTest");
 
   PrimExpr x = 4;
   PrimExpr y = 4;
@@ -115,6 +115,6 @@ void IterVarTest() {
 
 }  // namespace var_test
 
-REGISTER_TEST_SUITE(var_test::VarTest, tir_var_test_VarTest);
-REGISTER_TEST_SUITE(var_test::SizeVarTest, tir_var_test_SizeVarTest);
-REGISTER_TEST_SUITE(var_test::IterVarTest, tir_var_test_IterVarTest);
+REGISTER_TEST_SUITE(var_test::TirVarTest, tir_var_test_TirVarTest);
+REGISTER_TEST_SUITE(var_test::TirSizeVarTest, tir_var_test_TirSizeVarTest);
+REGISTER_TEST_SUITE(var_test::TirIterVarTest, tir_var_test_TirIterVarTest);

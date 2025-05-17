@@ -38,8 +38,8 @@ class MyIRSerializer : public AttrVisitor {
   }
 };
 
-void BufferTest() {
-  LOG_SPLIT_LINE("BufferTest");
+void TirBufferTest() {
+  LOG_SPLIT_LINE("TirBufferTest");
 
   DataType dtype = DataType::Float(32, 4);
   /// The type of data must be `PointerType`.
@@ -151,12 +151,13 @@ void BufferTest() {
   LOG_PRINT_VAR(stmt);
 }
 
-void DataProducerTest() {
+void TirDataProducerTest() {
   LOG_SPLIT_LINE("DataProducer");
   LOG_PRINT_VAR("Refer to the test of `tvm::te::Tensor`");
 }
 
 }  // namespace buffer_test
 
-REGISTER_TEST_SUITE(buffer_test::BufferTest, tir_buffer_test_BufferTest);
-REGISTER_TEST_SUITE(buffer_test::DataProducerTest, tir_buffer_test_DataProducerTest);
+REGISTER_TEST_SUITE(buffer_test::TirBufferTest, tir_buffer_test_TirBufferTest);
+REGISTER_TEST_SUITE(buffer_test::TirDataProducerTest,
+                    tir_buffer_test_TirDataProducerTest);

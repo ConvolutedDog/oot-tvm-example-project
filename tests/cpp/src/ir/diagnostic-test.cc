@@ -14,11 +14,11 @@ inline const char *DiagnosticLevel2String(DiagnosticLevel lv) {
   return "Unknown";
 }
 
-void DiagnosticTest() {
-  LOG_SPLIT_LINE("DiagnosticTest");
+void IrDiagnosticTest() {
+  LOG_SPLIT_LINE("IrDiagnosticTest");
   Diagnostic diagnostic{
       DiagnosticLevel::kBug, Span{SourceName::Get("diagnostic_test.cc"), 1, 2, 3, 4},
-      "DiagnosticTest - kBug"
+      "IrDiagnosticTest - kBug"
   };
   LOG_PRINT_VAR(diagnostic);
   LOG_PRINT_VAR(DiagnosticLevel2String(diagnostic->level));
@@ -32,8 +32,8 @@ void DiagnosticTest() {
   LOG_PRINT_VAR(Diagnostic::Bug(diagnostic->span).operator Diagnostic());
 }
 
-void DiagnosticContextTest() {
-  LOG_SPLIT_LINE("DiagnosticContextTest");
+void IrDiagnosticContextTest() {
+  LOG_SPLIT_LINE("IrDiagnosticContextTest");
 
   /// @brief Define a GlobalVar.
   GlobalVar globalvar("globalvar");
@@ -72,6 +72,7 @@ void DiagnosticContextTest() {
 
 }  // namespace diagnostic_test
 
-REGISTER_TEST_SUITE(diagnostic_test::DiagnosticTest, ir_diagnostic_test_DiagnosticTest);
-REGISTER_TEST_SUITE(diagnostic_test::DiagnosticContextTest,
-                    ir_diagnostic_test_DiagnosticContextTest);
+REGISTER_TEST_SUITE(diagnostic_test::IrDiagnosticTest,
+                    ir_diagnostic_test_IrDiagnosticTest);
+REGISTER_TEST_SUITE(diagnostic_test::IrDiagnosticContextTest,
+                    ir_diagnostic_test_IrDiagnosticContextTest);

@@ -15,8 +15,8 @@ std::ostream &operator<<(std::ostream &os, std::vector<std::string> &vec) {
   return os;
 }
 
-void AttrVisitorTest() {
-  LOG_SPLIT_LINE("AttrVisitorTest");
+void NodeAttrVisitorTest() {
+  LOG_SPLIT_LINE("NodeAttrVisitorTest");
   PrimExpr start = 4;
   PrimExpr end = 8;
 
@@ -28,8 +28,8 @@ void AttrVisitorTest() {
   const_cast<IterVarNode *>(itervar.as<IterVarNode>())->VisitAttrs(&serializer);
 }
 
-void ReflectionVTableTest() {
-  LOG_SPLIT_LINE("ReflectionVTableTest");
+void NodeReflectionVTableTest() {
+  LOG_SPLIT_LINE("NodeReflectionVTableTest");
 
   /// @brief `ReflectionVTable` is used to register the vtable of a class. It stores a set
   /// of `FVisitAttrs`/`FSEqualReduce`/`FSHashReduce`/`FCreate`/`FReprBytes` function
@@ -231,7 +231,7 @@ void ReflectionVTableTest() {
 
 }  // namespace reflection_test
 
-REGISTER_TEST_SUITE(reflection_test::AttrVisitorTest,
-                    node_reflection_test_AttrVisitorTest);
-REGISTER_TEST_SUITE(reflection_test::ReflectionVTableTest,
-                    node_reflection_test_ReflectionVTableTest);
+REGISTER_TEST_SUITE(reflection_test::NodeAttrVisitorTest,
+                    node_reflection_test_NodeAttrVisitorTest);
+REGISTER_TEST_SUITE(reflection_test::NodeReflectionVTableTest,
+                    node_reflection_test_NodeReflectionVTableTest);

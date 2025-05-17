@@ -123,7 +123,7 @@ public:
   TVM_DECLARE_FINAL_OBJECT_INFO(TestFinalNode, tvm::runtime::Object);
 };
 
-void ObjectTest();
+void RuntimeObjectTest();
 
 }  // namespace object_test
 
@@ -182,6 +182,6 @@ public:
   TVM_DEFINE_OBJECT_REF_METHODS(TestFinal, ObjectRef, TestFinalNode);
 };
 
-void ObjectRefTest();
+void RuntimeObjectRefTest();
 
 }  // namespace objectref_test

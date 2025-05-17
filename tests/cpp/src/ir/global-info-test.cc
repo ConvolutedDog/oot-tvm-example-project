@@ -3,21 +3,22 @@
 
 namespace global_info_test {
 
-void GlobalInfoTest() {}
+void IrGlobalInfoTest() {}
 
-void VDeviceTest() {
-  LOG_SPLIT_LINE("VDeviceTest");
+void IrVDeviceTest() {
+  LOG_SPLIT_LINE("IrVDeviceTest");
 
   Target target{"vulkan"};
   VDevice vd{target, 0, "memorycopeofvulkan"};
   LOG_PRINT_VAR(vd);
 }
 
-void DummyGlobalInfoTest() {}
+void IrDummyGlobalInfoTest() {}
 
 }  // namespace global_info_test
 
-REGISTER_TEST_SUITE(global_info_test::GlobalInfoTest, ir_global_info_test_GlobalInfoTest);
-REGISTER_TEST_SUITE(global_info_test::VDeviceTest, ir_global_info_test_VDeviceTest);
-REGISTER_TEST_SUITE(global_info_test::DummyGlobalInfoTest,
-                    ir_global_info_test_DummyGlobalInfoTest);
+REGISTER_TEST_SUITE(global_info_test::IrGlobalInfoTest,
+                    ir_global_info_test_IrGlobalInfoTest);
+REGISTER_TEST_SUITE(global_info_test::IrVDeviceTest, ir_global_info_test_IrVDeviceTest);
+REGISTER_TEST_SUITE(global_info_test::IrDummyGlobalInfoTest,
+                    ir_global_info_test_IrDummyGlobalInfoTest);

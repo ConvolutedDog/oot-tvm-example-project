@@ -19,8 +19,8 @@ std::ostream &operator<<(std::ostream &os, const TVMValue &tv) {
   return os;
 }
 
-void OpNodeTest() {
-  LOG_SPLIT_LINE("OpNodeTest");
+void IrOpNodeTest() {
+  LOG_SPLIT_LINE("IrOpNodeTest");
 
   PrimType arg1{DataType{DLDataType{DLDataTypeCode::kDLFloat, 32, 1}}};
   PointerType arg2{arg1};
@@ -141,8 +141,8 @@ void OpNodeTest() {
 /// which is defined in `OpNode` class.
 ///
 /// So almost all the registration of Op and its attributes is completed here.
-void OpTest() {
-  LOG_SPLIT_LINE("OpTest");
+void IrOpTest() {
+  LOG_SPLIT_LINE("IrOpTest");
 
   /// @brief We can use `OpRegistry::ListAllNames()` to get all the operator names that
   /// are registered in the system.
@@ -203,5 +203,5 @@ void OpTest() {
 
 }  // namespace op_test
 
-REGISTER_TEST_SUITE(op_test::OpNodeTest, ir_op_test_OpNodeTest);
-REGISTER_TEST_SUITE(op_test::OpTest, ir_op_test_OpTest);
+REGISTER_TEST_SUITE(op_test::IrOpNodeTest, ir_op_test_IrOpNodeTest);
+REGISTER_TEST_SUITE(op_test::IrOpTest, ir_op_test_IrOpTest);

@@ -132,16 +132,16 @@ using TestSuiteRegistry = test_func_registry::TestSuiteRegistry;
 ///    to register the function:
 ///      REGISTER_TEST_SUITE(::a::TestSuiteName, JustPlaceSomeKeyHere);
 ///
-///    For example, `REGISTER_TEST_SUITE(ndarray_test::NDArrayTest,
-///                                      runtime_ndarray_test_NDArrayTest);`
+///    For example, `REGISTER_TEST_SUITE(ndarray_test::RuntimeNDArrayTest,
+///                                      runtime_ndarray_test_RuntimeNDArrayTest);`
 ///    will be expanded to:
 ///
 ///    @code {.cpp}
 ///    namespace {
-///    ::test_func_registry::TestSuiteRegistry __make_TestSuite0 =     \
-///     ::test_func_registry::TestSuiteRegistry::Global()               \
-///         -> RegisterTestSuite(runtime_ndarray_test_NDArrayTest,      \
-///              -> RegisterTestSuite(#key, func, __FILE__, __LINE__)   \
+///    ::test_func_registry::TestSuiteRegistry __make_TestSuite0 =            \
+///     ::test_func_registry::TestSuiteRegistry::Global()                      \
+///         -> RegisterTestSuite(runtime_ndarray_test_RuntimeNDArrayTest,      \
+///              -> RegisterTestSuite(#key, func, __FILE__, __LINE__)          \
 ///    }
 ///    @endcode
 /// 3. Call the function from main.cc:

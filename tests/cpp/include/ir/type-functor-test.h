@@ -35,6 +35,6 @@ public:
   }
 };
 
-void TypeFunctorTest();
+void IrTypeFunctorTest();
 
 }  // namespace type_functor_test

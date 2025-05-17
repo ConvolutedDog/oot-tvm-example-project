@@ -15,7 +15,7 @@ using namespace tvm::runtime;
 /// - Printing of NDArray data based on its type.
 /// - Shape and data type inspection.
 /// - Copying data between NDArrays.
-void NDArrayTest() {
+void RuntimeNDArrayTest() {
   // Create a ShapeTuple with initial dimensions {3, 64, 224, 224}.
   ShapeTuple shapeTuple({3, 64, 224, 224});
 
@@ -108,12 +108,13 @@ void NDArrayTest() {
 
 }  // namespace ndarray_test
 
-REGISTER_TEST_SUITE(ndarray_test::NDArrayTest, runtime_ndarray_test_NDArrayTest);
+REGISTER_TEST_SUITE(ndarray_test::RuntimeNDArrayTest,
+                    runtime_ndarray_test_RuntimeNDArrayTest);
 /// Expands to
 /// namespace {
 /// ::test_func_registry ::TestSuiteRegistry &__make_TestSuite0 =
 ///     ::test_func_registry ::TestSuiteRegistry ::Global()->RegisterTestSuite(
-///         "runtime_ndarray_test_NDArrayTest", ndarray_test ::NDArrayTest,
+///         "runtime_ndarray_test_RuntimeNDArrayTest", ndarray_test ::RuntimeNDArrayTest,
 ///         "path/to/tests/cpp/src/runtime/"
 ///         "ndarrayutils-test.cc",
 ///         111);

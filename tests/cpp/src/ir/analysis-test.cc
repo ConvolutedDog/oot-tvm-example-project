@@ -3,8 +3,8 @@
 
 namespace analysis_test {
 
-void AnalysisTest() {
-  LOG_SPLIT_LINE("AnalysisTest");
+void IrAnalysisTest() {
+  LOG_SPLIT_LINE("IrAnalysisTest");
 
   /// @brief Define a GlobalVar.
   GlobalVar globalvar("globalvar");
@@ -33,4 +33,4 @@ void AnalysisTest() {
 
 }  // namespace analysis_test
 
-REGISTER_TEST_SUITE(analysis_test::AnalysisTest, ir_analysis_test_AnalysisTest);
+REGISTER_TEST_SUITE(analysis_test::IrAnalysisTest, ir_analysis_test_IrAnalysisTest);

@@ -5,8 +5,8 @@
 namespace target_kind_test {
 
 /// @brief Please refer to the op-test.h for more details about `TargetKindRegEntry`.
-void TargetKindTest() {
-  LOG_SPLIT_LINE("TargetKindTest");
+void TargetTargetKindTest() {
+  LOG_SPLIT_LINE("TargetTargetKindTest");
 
   Array<String> targetkindnames = TargetKindRegEntry::ListTargetKinds();
   for (const auto &name : targetkindnames) {
@@ -34,5 +34,5 @@ void TargetKindTest() {
 
 }  // namespace target_kind_test
 
-REGISTER_TEST_SUITE(target_kind_test::TargetKindTest,
-                    target_target_kind_test_TargetKindTest);
+REGISTER_TEST_SUITE(target_kind_test::TargetTargetKindTest,
+                    target_target_kind_test_TargetTargetKindTest);

@@ -4,9 +4,9 @@
 
 namespace expr_test {
 
-void PrimExprTest();
-void BoolTest();
-void IntegerTest();
-void RangeTest();
+void IrPrimExprTest();
+void IrBoolTest();
+void IrIntegerTest();
+void IrRangeTest();
 
 }  // namespace expr_test

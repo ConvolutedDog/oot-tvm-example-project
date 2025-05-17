@@ -18,6 +18,6 @@ using tvm::relax::Var;
 
 using Expr = tvm::RelaxExpr;
 
-void AnalysisTest();
+void IrAnalysisTest();
 
 }  // namespace analysis_test

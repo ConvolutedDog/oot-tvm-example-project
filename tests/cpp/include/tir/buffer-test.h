@@ -26,11 +26,11 @@ using tvm::runtime::Array;
 using tvm::runtime::DataType;
 using tvm::runtime::String;
 
-void BufferTest();
+void TirBufferTest();
 
 /// @brief `DataProducerNode` is a virtual class that represents a data
 /// producer. It will be used in `tvm::te::Tensor` and we will test it
 /// when we use `tvm::te::Tensor`.
-void DataProducerTest();
+void TirDataProducerTest();
 
 }  // namespace buffer_test

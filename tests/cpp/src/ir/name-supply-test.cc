@@ -3,8 +3,8 @@
 
 namespace name_supply_test {
 
-void NameSupplyTest() {
-  LOG_SPLIT_LINE("NameSupplyTest");
+void IrNameSupplyTest() {
+  LOG_SPLIT_LINE("IrNameSupplyTest");
 
   NameSupply namesupply{"prefix"};
   LOG_PRINT_VAR(namesupply->FreshName("TestName"));  // prefix_TestName
@@ -15,4 +15,5 @@ void NameSupplyTest() {
 
 }  // namespace name_supply_test
 
-REGISTER_TEST_SUITE(name_supply_test::NameSupplyTest, ir_name_supply_test_NameSupplyTest);
+REGISTER_TEST_SUITE(name_supply_test::IrNameSupplyTest,
+                    ir_name_supply_test_IrNameSupplyTest);

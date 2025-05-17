@@ -74,7 +74,7 @@ void TirExprTest() {
   LOG_BLANK_LINE;
 }
 
-void BufferLoadTest() {
+void TirBufferLoadTest() {
   LOG_SPLIT_LINE("BufferLoadTest");
 
   /// Define a Buffer instance.
@@ -101,7 +101,7 @@ void BufferLoadTest() {
   LOG_PRINT_VAR(bufferload);
 }
 
-void ProducerLoadTest() {
+void TirProducerLoadTest() {
   /// Define a ProducerLoad instance.
   /// @todo (yangjianchao) Supplement more details about `ProducerLoad`.
   ProducerLoad producerload{
@@ -114,7 +114,7 @@ void ProducerLoadTest() {
   LOG_PRINT_VAR(producerload);
 }
 
-void RampTest() {
+void TirRampTest() {
   /// Ramp: Construct a vector with lanes elements where its i-th element equals
   /// base + i * stride.  This is useful to construct a index for a continuous
   /// vector load.
@@ -130,9 +130,9 @@ void RampTest() {
   }
 }
 
-void BroadcastTest() {
+void TirBroadcastTest() {
   /// Broadcast: Create a vector where all the elements are value.
-  /// @sa buffer_test::BufferTest()
+  /// @sa buffer_test::TirBufferTest()
   {
     LOG_SPLIT_LINE("Broadcast");
     PrimExpr value = 1, lanes = 3;
@@ -141,7 +141,7 @@ void BroadcastTest() {
   }
 }
 
-void LetTest() {
+void TirLetTest() {
   /// Let: Let binding. Bind var to value then evaluate body.
   {
     LOG_SPLIT_LINE("Let");
@@ -157,7 +157,7 @@ void LetTest() {
 void TirCallTest() {
   /// Call
   ///
-  /// \sa module_test::ModuleTest
+  /// \sa module_test::IrModuleTest
   {
     LOG_SPLIT_LINE("Call");
     tvm::RelaxExpr opexpr = tvm::Op::Get("relax.nn.conv2d");
@@ -170,7 +170,7 @@ void TirCallTest() {
   }
 }
 
-void ShuffleTest() {
+void TirShuffleTest() {
   /// Shuffle instruction.
   ///   vec = concat(vectors)
   ///   result = (vec[indices[0]], vec[indices[1]] ...)
@@ -189,7 +189,7 @@ void ShuffleTest() {
   }
 }
 
-void CommReducerTest() {
+void TirCommReducerTest() {
   /// CommReducer: A commutative reducer node to represent a commutative binary
   /// operator with identity element.
   {
@@ -204,7 +204,7 @@ void CommReducerTest() {
   }
 }
 
-void ReduceTest() {
+void TirReduceTest() {
   /// Reduce: Reduction operator
   {
     /// @todo (yangjianchao)
@@ -215,12 +215,12 @@ void ReduceTest() {
 }  // namespace expr_test
 
 REGISTER_TEST_SUITE(expr_test::TirExprTest, tir_expr_test_TirExprTest);
-REGISTER_TEST_SUITE(expr_test::BufferLoadTest, tir_expr_test_BufferLoadTest);
-REGISTER_TEST_SUITE(expr_test::ProducerLoadTest, tir_expr_test_ProducerLoadTest);
-REGISTER_TEST_SUITE(expr_test::RampTest, tir_expr_test_RampTest);
-REGISTER_TEST_SUITE(expr_test::BroadcastTest, tir_expr_test_BroadcastTest);
-REGISTER_TEST_SUITE(expr_test::LetTest, tir_expr_test_LetTest);
+REGISTER_TEST_SUITE(expr_test::TirBufferLoadTest, tir_expr_test_TirBufferLoadTest);
+REGISTER_TEST_SUITE(expr_test::TirProducerLoadTest, tir_expr_test_TirProducerLoadTest);
+REGISTER_TEST_SUITE(expr_test::TirRampTest, tir_expr_test_TirRampTest);
+REGISTER_TEST_SUITE(expr_test::TirBroadcastTest, tir_expr_test_TirBroadcastTest);
+REGISTER_TEST_SUITE(expr_test::TirLetTest, tir_expr_test_TirLetTest);
 REGISTER_TEST_SUITE(expr_test::TirCallTest, tir_expr_test_TirCallTest);
-REGISTER_TEST_SUITE(expr_test::ShuffleTest, tir_expr_test_ShuffleTest);
-REGISTER_TEST_SUITE(expr_test::CommReducerTest, tir_expr_test_CommReducerTest);
-REGISTER_TEST_SUITE(expr_test::ReduceTest, tir_expr_test_ReduceTest);
+REGISTER_TEST_SUITE(expr_test::TirShuffleTest, tir_expr_test_TirShuffleTest);
+REGISTER_TEST_SUITE(expr_test::TirCommReducerTest, tir_expr_test_TirCommReducerTest);
+REGISTER_TEST_SUITE(expr_test::TirReduceTest, tir_expr_test_TirReduceTest);

@@ -9,8 +9,8 @@ std::ostream &operator<<(std::ostream &os, const std::vector<std::pair<int, int>
   return os;
 }
 
-void SpanTest() {
-  LOG_SPLIT_LINE("SpanTest");
+void IrSpanTest() {
+  LOG_SPLIT_LINE("IrSpanTest");
 
   ObjectPtr<SourceNameNode> sourcenamenodeptr = make_object<SourceNameNode>();
   sourcenamenodeptr->name = "test.cc";
@@ -37,8 +37,8 @@ void SpanTest() {
   LOG_PRINT_VAR(seqspan2);
 }
 
-void SourceTest() {
-  LOG_SPLIT_LINE("SourceTest");
+void IrSourceTest() {
+  LOG_SPLIT_LINE("IrSourceTest");
 
   ObjectPtr<SourceNameNode> sourcenamenodeptr = make_object<SourceNameNode>();
   sourcenamenodeptr->name = "sourcenamenodeptr->name";
@@ -61,5 +61,5 @@ void SourceTest() {
 
 }  // namespace source_map_test
 
-REGISTER_TEST_SUITE(source_map_test::SpanTest, ir_source_map_test_SpanTest);
-REGISTER_TEST_SUITE(source_map_test::SourceTest, ir_source_map_test_SourceTest);
+REGISTER_TEST_SUITE(source_map_test::IrSpanTest, ir_source_map_test_IrSpanTest);
+REGISTER_TEST_SUITE(source_map_test::IrSourceTest, ir_source_map_test_IrSourceTest);

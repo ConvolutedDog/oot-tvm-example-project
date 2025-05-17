@@ -13,8 +13,8 @@ R MyTypeFunctor::VisitType_(const PrimTypeNode *op) { return op->dtype.code(); }
 
 R MyTypeFunctor::VisitType_(const TupleTypeNode *op) { return op->fields.size(); }
 
-void TypeFunctorTest() {
-  LOG_SPLIT_LINE("TypeFunctorTest");
+void IrTypeFunctorTest() {
+  LOG_SPLIT_LINE("IrTypeFunctorTest");
 
   MyTypeFunctor functor;
   PrimType primtype{
@@ -32,5 +32,5 @@ void TypeFunctorTest() {
 
 }  // namespace type_functor_test
 
-REGISTER_TEST_SUITE(type_functor_test::TypeFunctorTest,
-                    ir_type_functor_test_TypeFunctorTest);
+REGISTER_TEST_SUITE(type_functor_test::IrTypeFunctorTest,
+                    ir_type_functor_test_IrTypeFunctorTest);

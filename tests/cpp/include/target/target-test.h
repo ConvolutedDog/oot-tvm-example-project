@@ -15,6 +15,6 @@ using tvm::runtime::String;
 
 using tvm::runtime::DLDeviceType2Str;
 
-void TargetTest();
+void TargetTargetTest();
 
 }  // namespace target_test

@@ -6,9 +6,9 @@
 
 namespace type_test {
 
-void PrimTypeTest();
-void PointerTypeTest();
-void TupleTypeTest();
-void FuncTypeTest();
+void IrPrimTypeTest();
+void IrPointerTypeTest();
+void IrTupleTypeTest();
+void IrFuncTypeTest();
 
 }  // namespace type_test

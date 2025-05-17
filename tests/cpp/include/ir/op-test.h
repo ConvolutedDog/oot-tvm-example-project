@@ -80,7 +80,7 @@ class MyIRSerializer : public AttrVisitor {
   }
 };
 
-void OpNodeTest();
-void OpTest();
+void IrOpNodeTest();
+void IrOpTest();
 
 }  // namespace op_test

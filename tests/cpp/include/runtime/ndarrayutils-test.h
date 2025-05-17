@@ -5,6 +5,6 @@
 
 namespace ndarray_test {
 
-void NDArrayTest();
+void RuntimeNDArrayTest();
 
 }  // namespace ndarray_test

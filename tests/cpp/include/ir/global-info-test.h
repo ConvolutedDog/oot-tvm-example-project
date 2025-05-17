@@ -9,8 +9,8 @@ using tvm::VDevice;
 using tvm::Target;
 using tvm::TargetKind;
 
-void GlobalInfoTest();
-void VDeviceTest();
-void DummyGlobalInfoTest();
+void IrGlobalInfoTest();
+void IrVDeviceTest();
+void IrDummyGlobalInfoTest();
 
 }  // namespace global_info_test

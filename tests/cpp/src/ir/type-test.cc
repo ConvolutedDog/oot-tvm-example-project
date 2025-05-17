@@ -18,8 +18,8 @@ std::string DataType2Str(const DataType &dtype) {
   return tvm::runtime::DLDataType2String((DLDataType)dtype);
 }
 
-void PrimTypeTest() {
-  LOG_SPLIT_LINE("PrimTypeTest");
+void IrPrimTypeTest() {
+  LOG_SPLIT_LINE("IrPrimTypeTest");
   DLDataType dldtype{DLDataTypeCode::kDLFloat, 32, 1};
   DataType dtype{dldtype};
   PrimType primetype{dtype};
@@ -27,8 +27,8 @@ void PrimTypeTest() {
   LOG_PRINT_VAR(primetype.get()->span);
 }
 
-void PointerTypeTest() {
-  LOG_SPLIT_LINE("PointerTypeTest");
+void IrPointerTypeTest() {
+  LOG_SPLIT_LINE("IrPointerTypeTest");
 
   /// Create some types start
   DLDataType dldtype{DLDataTypeCode::kDLFloat, 32, 1};
@@ -48,8 +48,8 @@ void PointerTypeTest() {
   LOG_PRINT_VAR(pptype.get()->span);
 }
 
-void TupleTypeTest() {
-  LOG_SPLIT_LINE("TupleTypeTest");
+void IrTupleTypeTest() {
+  LOG_SPLIT_LINE("IrTupleTypeTest");
 
   /// Create some types start
   DLDataType dldtype{DLDataTypeCode::kDLFloat, 32, 1};
@@ -73,8 +73,8 @@ void TupleTypeTest() {
   LOG_PRINT_VAR(tupletype2.get()->fields);
 }
 
-void FuncTypeTest() {
-  LOG_SPLIT_LINE("FuncTypeTest");
+void IrFuncTypeTest() {
+  LOG_SPLIT_LINE("IrFuncTypeTest");
 
   /// Create some types start
   DLDataType dldtype{DLDataTypeCode::kDLFloat, 32, 1};
@@ -100,7 +100,7 @@ void FuncTypeTest() {
 
 }  // namespace type_test
 
-REGISTER_TEST_SUITE(type_test::PrimTypeTest, ir_type_test_PrimTypeTest);
-REGISTER_TEST_SUITE(type_test::PointerTypeTest, ir_type_test_PointerTypeTest);
-REGISTER_TEST_SUITE(type_test::TupleTypeTest, ir_type_test_TupleTypeTest);
-REGISTER_TEST_SUITE(type_test::FuncTypeTest, ir_type_test_FuncTypeTest);
+REGISTER_TEST_SUITE(type_test::IrPrimTypeTest, ir_type_test_IrPrimTypeTest);
+REGISTER_TEST_SUITE(type_test::IrPointerTypeTest, ir_type_test_IrPointerTypeTest);
+REGISTER_TEST_SUITE(type_test::IrTupleTypeTest, ir_type_test_IrTupleTypeTest);
+REGISTER_TEST_SUITE(type_test::IrFuncTypeTest, ir_type_test_IrFuncTypeTest);

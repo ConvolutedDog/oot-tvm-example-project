@@ -3,8 +3,8 @@
 
 namespace object_path_test {
 
-void ObjectPathTest() {
-  LOG_SPLIT_LINE("ObjectPathTest");
+void NodeObjectPathTest() {
+  LOG_SPLIT_LINE("NodeObjectPathTest");
 
   /// @todo (yangjianchao) I don't understand what this is for at the moment, I'll add
   /// more later.
@@ -13,5 +13,5 @@ void ObjectPathTest() {
 
 }  // namespace object_path_test
 
-REGISTER_TEST_SUITE(object_path_test::ObjectPathTest,
-                    node_object_path_test_ObjectPathTest);
+REGISTER_TEST_SUITE(object_path_test::NodeObjectPathTest,
+                    node_object_path_test_NodeObjectPathTest);

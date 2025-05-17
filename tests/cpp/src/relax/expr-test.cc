@@ -7,7 +7,7 @@
 
 namespace expr_test {
 
-void CallTest() {
+void RelaxCallTest() {
   LOG_SPLIT_LINE("CallTest");
 
   /// Create Expr
@@ -39,8 +39,8 @@ void CallTest() {
   LOG_PRINT_VAR(func);
 }
 
-void TupleTest() {
-  LOG_SPLIT_LINE("TupleTest");
+void RelaxTupleTest() {
+  LOG_SPLIT_LINE("RelaxTupleTest");
 
   /// Create Expr
   Expr opexpr = tvm::Op::Get("relax.nn.conv2d");
@@ -62,8 +62,8 @@ void TupleTest() {
   LOG_PRINT_VAR(tuplewithfields);
 }
 
-void TupleGetItemTest() {
-  LOG_SPLIT_LINE("TupleGetItemTest");
+void RelaxTupleGetItemTest() {
+  LOG_SPLIT_LINE("RelaxTupleGetItemTest");
 
   Var arg1{"arg1", tvm::relax::ShapeStructInfo{4}};
   Var arg2{"arg2", tvm::relax::ShapeStructInfo{4}};
@@ -79,8 +79,8 @@ void TupleGetItemTest() {
   LOG_PRINT_VAR(tuplegetitemwithfields);
 }
 
-void LeafExprTest() {
-  LOG_SPLIT_LINE("LeafExprTest");
+void RelaxLeafExprTest() {
+  LOG_SPLIT_LINE("RelaxLeafExprTest");
 
   /// ShapeExpr
   ShapeExpr shapeexpr{
@@ -122,8 +122,8 @@ void LeafExprTest() {
   LOG_PRINT_VAR(datatypeimm);
 }
 
-void BindTest() {
-  LOG_SPLIT_LINE("BindTest");
+void RelaxBindTest() {
+  LOG_SPLIT_LINE("RelaxBindTest");
 
   /// Binding
   /// `BindingNode` is the base class of a variable binding in Relax.
@@ -513,8 +513,9 @@ void BindTest() {
 
 }  // namespace expr_test
 
-REGISTER_TEST_SUITE(expr_test::CallTest, relax_expr_test_CallTest);
-REGISTER_TEST_SUITE(expr_test::TupleTest, relax_expr_test_TupleTest);
-REGISTER_TEST_SUITE(expr_test::TupleGetItemTest, relax_expr_test_TupleGetItemTest);
-REGISTER_TEST_SUITE(expr_test::LeafExprTest, relax_expr_test_LeafExprTest);
-REGISTER_TEST_SUITE(expr_test::BindTest, relax_expr_test_BindTest);
+REGISTER_TEST_SUITE(expr_test::RelaxCallTest, relax_expr_test_RelaxCallTest);
+REGISTER_TEST_SUITE(expr_test::RelaxTupleTest, relax_expr_test_RelaxTupleTest);
+REGISTER_TEST_SUITE(expr_test::RelaxTupleGetItemTest,
+                    relax_expr_test_RelaxTupleGetItemTest);
+REGISTER_TEST_SUITE(expr_test::RelaxLeafExprTest, relax_expr_test_RelaxLeafExprTest);
+REGISTER_TEST_SUITE(expr_test::RelaxBindTest, relax_expr_test_RelaxBindTest);

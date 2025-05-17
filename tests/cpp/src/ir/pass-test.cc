@@ -40,7 +40,7 @@ std::ostream &operator<<(std::ostream &os, const PassContext &ctx) {
   return os;
 }
 
-void PassTestTemp() {
+void IrPassTestTemp() {
   PassContext passctx;
   passctx = PassContext::Create();
 
@@ -63,4 +63,4 @@ void PassTestTemp() {
 
 }  // namespace pass_test
 
-REGISTER_TEST_SUITE(pass_test::PassTestTemp, ir_pass_test_PassTestTemp);
+REGISTER_TEST_SUITE(pass_test::IrPassTestTemp, ir_pass_test_IrPassTestTemp);

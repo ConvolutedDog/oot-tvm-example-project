@@ -3,8 +3,8 @@
 
 namespace attrs_test {
 
-void AttrUtilsTests() {
-  LOG_SPLIT_LINE("AttrUtilsTests");
+void IrAttrUtilsTests() {
+  LOG_SPLIT_LINE("IrAttrUtilsTests");
 
   LOG_PRINT_VAR(NullValue<AttrFieldInfo>());
   LOG_PRINT_VAR(NullValue<DataType>());
@@ -12,8 +12,8 @@ void AttrUtilsTests() {
   LOG_PRINT_VAR(NullValue<PointerType>());
 }
 
-void AttrFieldInfoTest() {
-  LOG_SPLIT_LINE("AttrFieldInfoTest");
+void IrAttrFieldInfoTest() {
+  LOG_SPLIT_LINE("IrAttrFieldInfoTest");
 
   MyIRSerializer serializer;
   AttrFieldInfo attrfieldinfo{make_object<AttrFieldInfoNode>()};
@@ -60,7 +60,7 @@ MyAttr::MyAttr(std::string attr1, tvm::PrimExpr attr2, std::string attr3) {
   data_ = std::move(n);
 }
 
-void AttrsTest() {
+void IrAttrsTest() {
   LOG_SPLIT_LINE("AttrsTest");
 
   MyIRSerializer serializer;
@@ -79,8 +79,8 @@ void AttrsTest() {
   LOG_PRINT_VAR(attr2.get()->ListFieldInfo());
 }
 
-void DictAttrsTest() {
-  LOG_SPLIT_LINE("DictAttrsTest");
+void IrDictAttrsTest() {
+  LOG_SPLIT_LINE("IrDictAttrsTest");
 
   std::initializer_list<std::pair<String, ObjectRef>> init = {
       {"attr1", String("attr1") },
@@ -111,7 +111,7 @@ void DictAttrsTest() {
 
 }  // namespace attrs_test
 
-REGISTER_TEST_SUITE(attrs_test::AttrUtilsTests, ir_attrs_test_AttrUtilsTests);
-REGISTER_TEST_SUITE(attrs_test::AttrFieldInfoTest, ir_attrs_test_AttrFieldInfoTest);
-REGISTER_TEST_SUITE(attrs_test::AttrsTest, ir_attrs_test_AttrsTest);
-REGISTER_TEST_SUITE(attrs_test::DictAttrsTest, ir_attrs_test_DictAttrsTest);
+REGISTER_TEST_SUITE(attrs_test::IrAttrUtilsTests, ir_attrs_test_IrAttrUtilsTests);
+REGISTER_TEST_SUITE(attrs_test::IrAttrFieldInfoTest, ir_attrs_test_IrAttrFieldInfoTest);
+REGISTER_TEST_SUITE(attrs_test::IrAttrsTest, ir_attrs_test_IrAttrsTest);
+REGISTER_TEST_SUITE(attrs_test::IrDictAttrsTest, ir_attrs_test_IrDictAttrsTest);

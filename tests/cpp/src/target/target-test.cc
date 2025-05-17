@@ -20,8 +20,8 @@ std::ostream &operator<<(std::ostream &os, const std::unordered_set<std::string>
   return os;
 }
 
-void TargetTest() {
-  LOG_SPLIT_LINE("TargetTest");
+void TargetTargetTest() {
+  LOG_SPLIT_LINE("TargetTargetTest");
 
   // Constructors
   Target target{"vulkan"};
@@ -91,4 +91,4 @@ void TargetTest() {
 
 }  // namespace target_test
 
-REGISTER_TEST_SUITE(target_test::TargetTest, target_target_test_TargetTest);
+REGISTER_TEST_SUITE(target_test::TargetTargetTest, target_target_test_TargetTargetTest);

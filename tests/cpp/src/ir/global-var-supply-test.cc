@@ -4,8 +4,8 @@
 
 namespace global_var_supply_test {
 
-void GlobalVarSupplyTest() {
-  LOG_SPLIT_LINE("GlobalVarSupplyTest");
+void IrGlobalVarSupplyTest() {
+  LOG_SPLIT_LINE("IrGlobalVarSupplyTest");
 
   NameSupply namesupply{"prefix"};
   LOG_PRINT_VAR(namesupply->FreshName("TestName"));  // prefix_TestName
@@ -58,7 +58,7 @@ void GlobalVarSupplyTest() {
 
 }  // namespace global_var_supply_test
 
-void GlobalVarSupplyTest() { global_var_supply_test::GlobalVarSupplyTest(); }
+void IrGlobalVarSupplyTest() { global_var_supply_test::IrGlobalVarSupplyTest(); }
 
-REGISTER_TEST_SUITE(global_var_supply_test::GlobalVarSupplyTest,
-                    ir_global_var_supply_test_GlobalVarSupplyTest);
+REGISTER_TEST_SUITE(global_var_supply_test::IrGlobalVarSupplyTest,
+                    ir_global_var_supply_test_IrGlobalVarSupplyTest);

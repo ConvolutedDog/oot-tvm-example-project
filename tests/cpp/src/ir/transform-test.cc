@@ -31,8 +31,8 @@ std::ostream &operator<<(std::ostream &os,
 ///     GetConfig("relax.FuseOps.max_depth", Integer(kMaxFusedOps));
 /// it defaults to `kMaxFusedOps` if this config is not set.
 /// Users can use `PassContext::RegisterConfigOption` to register a config option.
-void PassContextTest() {
-  LOG_SPLIT_LINE("PassContextTest");
+void IrPassContextTest() {
+  LOG_SPLIT_LINE("IrPassContextTest");
 
   // Print the current configs.
   Map<String, Map<String, String>> configs = PassContext::ListConfigs();
@@ -60,8 +60,8 @@ void PassContextTest() {
   LOG_PRINT_VAR(testIntegerConfig);
 }
 
-void PassTest() {
-  LOG_SPLIT_LINE("PassTest");
+void IrPassTest() {
+  LOG_SPLIT_LINE("IrPassTest");
 
   // Create an IRModule.
   GlobalVar globalvar("globalvar");
@@ -135,5 +135,6 @@ void PassTest() {
 
 }  // namespace transform_test
 
-REGISTER_TEST_SUITE(transform_test::PassContextTest, ir_transform_test_PassContextTest);
-REGISTER_TEST_SUITE(transform_test::PassTest, ir_transform_test_PassTest);
+REGISTER_TEST_SUITE(transform_test::IrPassContextTest,
+                    ir_transform_test_IrPassContextTest);
+REGISTER_TEST_SUITE(transform_test::IrPassTest, ir_transform_test_IrPassTest);

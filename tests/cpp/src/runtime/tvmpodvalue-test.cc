@@ -3,8 +3,8 @@
 
 namespace tvmpodvalue_test {
 
-void TvmPodValueTest() {
-  LOG_SPLIT_LINE("TvmPodValueTest");
+void RuntimeTvmPodValueTest() {
+  LOG_SPLIT_LINE("RuntimeTvmPodValueTest");
 
   /// typedef union {
   ///   int64_t v_int64;
@@ -57,5 +57,5 @@ void TvmPodValueTest() {
 
 }  // namespace tvmpodvalue_test
 
-REGISTER_TEST_SUITE(tvmpodvalue_test::TvmPodValueTest,
-                    runtime_tvmpodvalue_test_TvmPodValueTest);
+REGISTER_TEST_SUITE(tvmpodvalue_test::RuntimeTvmPodValueTest,
+                    runtime_tvmpodvalue_test_RuntimeTvmPodValueTest);

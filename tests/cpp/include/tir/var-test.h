@@ -28,8 +28,8 @@ using tvm::IntImmNode;
 using tvm::PrimExpr;
 using tvm::PrimExprNode;
 
-void VarTest();
-void SizeVarTest();
-void IterVarTest();
+void TirVarTest();
+void TirSizeVarTest();
+void TirIterVarTest();
 
 }  // namespace var_test

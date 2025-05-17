@@ -3,8 +3,8 @@
 
 namespace module_test {
 
-void ModuleTest() {
-  LOG_SPLIT_LINE("ModuleTest");
+void IrModuleTest() {
+  LOG_SPLIT_LINE("IrModuleTest");
 
   /// @brief Define a BaseFunc.
   ObjectPtr<BaseFuncNode> basefuncnodeptr = make_object<BaseFuncNode>();
@@ -137,4 +137,4 @@ void ModuleTest() {
 
 }  // namespace module_test
 
-REGISTER_TEST_SUITE(module_test::ModuleTest, ir_module_test_ModuleTest);
+REGISTER_TEST_SUITE(module_test::IrModuleTest, ir_module_test_IrModuleTest);
