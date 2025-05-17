@@ -5,7 +5,7 @@ namespace tvmpodvalue_test {
 
 void TvmPodValueTest() {
   LOG_SPLIT_LINE("TvmPodValueTest");
-  
+
   /// typedef union {
   ///   int64_t v_int64;
   ///   double v_float64;

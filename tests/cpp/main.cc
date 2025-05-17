@@ -77,6 +77,16 @@ void TestMethod2() {
   registry->RunTestSuite("tir_var_test_IterVarTest");
   registry->RunTestSuite("tir_buffer_test_BufferTest");
   registry->RunTestSuite("tir_buffer_test_DataProducerTest");
+  registry->RunTestSuite("tir_expr_test_TirExprTest");
+  registry->RunTestSuite("tir_expr_test_BufferLoadTest");
+  registry->RunTestSuite("tir_expr_test_ProducerLoadTest");
+  registry->RunTestSuite("tir_expr_test_RampTest");
+  registry->RunTestSuite("tir_expr_test_BroadcastTest");
+  registry->RunTestSuite("tir_expr_test_LetTest");
+  registry->RunTestSuite("tir_expr_test_TirCallTest");
+  registry->RunTestSuite("tir_expr_test_ShuffleTest");
+  registry->RunTestSuite("tir_expr_test_CommReducerTest");
+  registry->RunTestSuite("tir_expr_test_ReduceTest");
 }
 
 int main() {

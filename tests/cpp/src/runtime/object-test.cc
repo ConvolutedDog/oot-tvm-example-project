@@ -140,7 +140,6 @@ void ObjectRefTest() {
   ObjectPtr<TestCanDerivedFromNode> xptr =
       tvm::runtime::GetObjectPtr<TestCanDerivedFromNode>(&x);
 
-
   /// @brief Test the ObjectPtr's behavior.
   /// @note ObjectPtr behaves like both std::shared_ptr and std::unique_ptr,
   /// which can share/borrow resource with/from other ObjectPtr。
