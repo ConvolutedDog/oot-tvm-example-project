@@ -88,6 +88,7 @@ void TestMethod2() {
   registry->RunTestSuite("tir_expr_test_TirCommReducerTest");
   registry->RunTestSuite("tir_expr_test_TirReduceTest");
   registry->RunTestSuite("tir_op_test_TirOpTest");
+  registry->RunTestSuite("tir_expr_functor_test_ExprFunctorTest");
 }
 
 int main() {
