@@ -1,4 +1,4 @@
-#include "node/serialization.h"
+#include "node/serialization-test.h"
 #include "test-func-registry.h"
 #include <tvm/ir/module.h>
 
