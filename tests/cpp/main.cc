@@ -100,6 +100,10 @@ void TestMethod2() {
   registry->RunTestSuite("tir_function_test_TirSpecialize");
   registry->RunTestSuite("node_serialization_test_NodeSerializationTest");
   registry->RunTestSuite("te_tensor_test_TeTensorTest");
+  registry->RunTestSuite("te_operation_test_TePlaceholderOpTest");
+  registry->RunTestSuite("te_operation_test_TeComputeOpTest");
+  registry->RunTestSuite("te_operation_test_TeScanOpTest");
+  registry->RunTestSuite("te_operation_test_TeExternOpTest");
 }
 
 int main() {

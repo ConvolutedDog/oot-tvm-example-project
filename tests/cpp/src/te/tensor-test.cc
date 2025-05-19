@@ -41,9 +41,6 @@ void TeTensorTest() {
   Var indices1{"n"}, indices2{"c"}, indices3{"h"}, indices4{"w"};
   LOG_PRINT_VAR(
       tensor.operator()<Array<PrimExpr>>({indices1, indices2, indices3, indices4}));
-  // LOG_PRINT_VAR(PrimExpr(tensor[indices1]));
-  // LOG_PRINT_VAR(tensor[indices1][indices2]);
-  // LOG_PRINT_VAR(tensor[indices1][indices2][indices3]);
   LOG_PRINT_VAR(PrimExpr(tensor[indices1][indices2][indices3][indices4]));
 
   Tensor tensor2 = Tensor(tensor);
@@ -71,7 +68,7 @@ void TeTensorTest() {
 
   // Require lhs.dtype().is_int() || lhs.dtype().is_uint()
   // LOG_PRINT_VAR(tensor2[0][0][0][0] << tensor[0][0][0][0]);
-  
+
   LOG_PRINT_VAR(tensor2[0][0][0][0] > tensor[0][0][0][0]);
   LOG_PRINT_VAR(tensor2[0][0][0][0] < tensor[0][0][0][0]);
 }
