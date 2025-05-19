@@ -418,7 +418,8 @@ void TirPrefetchTest() {
   LOG_SPLIT_LINE("BlockRealize");
   BlockRealize blockrealize{
       {i, j},
-      tvm::Bool{1}, block
+      tvm::Bool{1},
+      block
   };
   LOG_PRINT_VAR(blockrealize);
 }
@@ -437,4 +438,5 @@ REGISTER_TEST_SUITE(stmt_test::TirProducerStoreTest, tir_stmt_test_TirProducerSt
 REGISTER_TEST_SUITE(stmt_test::TirAllocateTest, tir_stmt_test_TirAllocateTest);
 REGISTER_TEST_SUITE(stmt_test::TirForTest, tir_stmt_test_TirForTest);
 REGISTER_TEST_SUITE(stmt_test::TirPrefetchTest, tir_stmt_test_TirPrefetchTest);
-REGISTER_TEST_SUITE(stmt_test::TirTypeAnnotationTest, tir_stmt_test_TirTypeAnnotationTest);
+REGISTER_TEST_SUITE(stmt_test::TirTypeAnnotationTest,
+                    tir_stmt_test_TirTypeAnnotationTest);

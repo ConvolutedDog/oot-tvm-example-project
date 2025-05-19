@@ -98,6 +98,7 @@ void TestMethod2() {
   registry->RunTestSuite("tir_function_test_TirPrimFuncTest");
   registry->RunTestSuite("tir_function_test_TirTensorIntrinTest");
   registry->RunTestSuite("tir_function_test_TirSpecialize");
+  registry->RunTestSuite("node_serialization_test_NodeSerializationTest");
 }
 
 int main() {

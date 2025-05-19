@@ -38,5 +38,6 @@ void TirSpecialize() { LOG_SPLIT_LINE("TirSpecialize"); }
 }  // namespace function_test
 
 REGISTER_TEST_SUITE(function_test::TirPrimFuncTest, tir_function_test_TirPrimFuncTest);
-REGISTER_TEST_SUITE(function_test::TirTensorIntrinTest, tir_function_test_TirTensorIntrinTest);
+REGISTER_TEST_SUITE(function_test::TirTensorIntrinTest,
+                    tir_function_test_TirTensorIntrinTest);
 REGISTER_TEST_SUITE(function_test::TirSpecialize, tir_function_test_TirSpecialize);
