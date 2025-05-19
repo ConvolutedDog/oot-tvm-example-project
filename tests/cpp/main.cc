@@ -89,6 +89,13 @@ void TestMethod2() {
   registry->RunTestSuite("tir_expr_test_TirReduceTest");
   registry->RunTestSuite("tir_op_test_TirOpTest");
   registry->RunTestSuite("tir_expr_functor_test_ExprFunctorTest");
+  registry->RunTestSuite("tir_stmt_test_BufferStoreTest");
+  registry->RunTestSuite("tir_stmt_test_ProducerStoreTest");
+  registry->RunTestSuite("tir_stmt_test_AllocateTest");
+  registry->RunTestSuite("tir_stmt_test_IfThenElseTest");
+  registry->RunTestSuite("tir_stmt_test_ForTest");
+  registry->RunTestSuite("tir_stmt_test_PrefetchTest");
+  registry->RunTestSuite("tir_stmt_test_TypeAnnotationTest");
 }
 
 int main() {
