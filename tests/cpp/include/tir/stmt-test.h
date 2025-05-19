@@ -46,12 +46,11 @@ using tvm::tir::ForKind;
 using tvm::tir::IterVar;
 using tvm::tir::Var;
 
-void BufferStoreTest();
-void ProducerStoreTest();
-void AllocateTest();
-void IfThenElseTest();
-void ForTest();
-void PrefetchTest();
-void TypeAnnotationTest();
+void TirBufferStoreTest();
+void TirProducerStoreTest();
+void TirAllocateTest();
+void TirForTest();
+void TirPrefetchTest();
+void TirTypeAnnotationTest();
 
 }  // namespace stmt_test

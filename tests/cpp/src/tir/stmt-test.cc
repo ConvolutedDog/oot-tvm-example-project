@@ -7,8 +7,8 @@
 
 namespace stmt_test {
 
-void BufferStoreTest() {
-  LOG_SPLIT_LINE("BufferStoreTest");
+void TirBufferStoreTest() {
+  LOG_SPLIT_LINE("TirBufferStoreTest");
 
   /// Define a Buffer. This is same to `buffer-test.cc`.
   DataType dtype = DataType::Float(32, 4);
@@ -128,8 +128,8 @@ void BufferStoreTest() {
   ///   T.evaluate(0)
 }
 
-void ProducerStoreTest() {
-  LOG_SPLIT_LINE("ProducerStoreTest");
+void TirProducerStoreTest() {
+  LOG_SPLIT_LINE("TirProducerStoreTest");
 
   Array<PrimExpr> shape{128, 128};
   DataType dtype = DataType::BFloat(16, 4);
@@ -209,8 +209,8 @@ void ProducerStoreTest() {
   ///       T.evaluate(var1)
 }
 
-void AllocateTest() {
-  LOG_SPLIT_LINE("AllocateTest");
+void TirAllocateTest() {
+  LOG_SPLIT_LINE("TirAllocateTest");
 
   DataType dtype = DataType::Float(32, 4);
   Var buffervar{"buffer", PointerType{PrimType{dtype}}};
@@ -236,10 +236,8 @@ void AllocateTest() {
   ///   T.evaluate(buffer)
 }
 
-void IfThenElseTest() { LOG_SPLIT_LINE("IfThenElseTest"); }
-
-void ForTest() {
-  LOG_SPLIT_LINE("ForTest");
+void TirForTest() {
+  LOG_SPLIT_LINE("TirForTest");
 
   // int start, end;
   // int middle;
@@ -300,8 +298,8 @@ void ForTest() {
   ///           T.evaluate(i * 2)
 }
 
-void PrefetchTest() {
-  LOG_SPLIT_LINE("PrefetchTest");
+void TirPrefetchTest() {
+  LOG_SPLIT_LINE("TirPrefetchTest");
 
   /// Define a Buffer. This is same to `buffer-test.cc`.
   DataType dtype = DataType::Float(32, 4);
@@ -425,8 +423,8 @@ void PrefetchTest() {
   LOG_PRINT_VAR(blockrealize);
 }
 
-void TypeAnnotationTest() {
-  LOG_SPLIT_LINE("TypeAnnotationTest");
+void TirTypeAnnotationTest() {
+  LOG_SPLIT_LINE("TirTypeAnnotationTest");
 
   LOG_PRINT_VAR(TypeAnnotation(DataType::Float(32)));
   /// Output: T.type_annotation("float32")
@@ -434,10 +432,9 @@ void TypeAnnotationTest() {
 
 }  // namespace stmt_test
 
-REGISTER_TEST_SUITE(stmt_test::BufferStoreTest, tir_stmt_test_BufferStoreTest);
-REGISTER_TEST_SUITE(stmt_test::ProducerStoreTest, tir_stmt_test_ProducerStoreTest);
-REGISTER_TEST_SUITE(stmt_test::AllocateTest, tir_stmt_test_AllocateTest);
-REGISTER_TEST_SUITE(stmt_test::IfThenElseTest, tir_stmt_test_IfThenElseTest);
-REGISTER_TEST_SUITE(stmt_test::ForTest, tir_stmt_test_ForTest);
-REGISTER_TEST_SUITE(stmt_test::PrefetchTest, tir_stmt_test_PrefetchTest);
-REGISTER_TEST_SUITE(stmt_test::TypeAnnotationTest, tir_stmt_test_TypeAnnotationTest);
+REGISTER_TEST_SUITE(stmt_test::TirBufferStoreTest, tir_stmt_test_TirBufferStoreTest);
+REGISTER_TEST_SUITE(stmt_test::TirProducerStoreTest, tir_stmt_test_TirProducerStoreTest);
+REGISTER_TEST_SUITE(stmt_test::TirAllocateTest, tir_stmt_test_TirAllocateTest);
+REGISTER_TEST_SUITE(stmt_test::TirForTest, tir_stmt_test_TirForTest);
+REGISTER_TEST_SUITE(stmt_test::TirPrefetchTest, tir_stmt_test_TirPrefetchTest);
+REGISTER_TEST_SUITE(stmt_test::TirTypeAnnotationTest, tir_stmt_test_TirTypeAnnotationTest);

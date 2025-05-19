@@ -89,13 +89,15 @@ void TestMethod2() {
   registry->RunTestSuite("tir_expr_test_TirReduceTest");
   registry->RunTestSuite("tir_op_test_TirOpTest");
   registry->RunTestSuite("tir_expr_functor_test_ExprFunctorTest");
-  registry->RunTestSuite("tir_stmt_test_BufferStoreTest");
-  registry->RunTestSuite("tir_stmt_test_ProducerStoreTest");
-  registry->RunTestSuite("tir_stmt_test_AllocateTest");
-  registry->RunTestSuite("tir_stmt_test_IfThenElseTest");
-  registry->RunTestSuite("tir_stmt_test_ForTest");
-  registry->RunTestSuite("tir_stmt_test_PrefetchTest");
-  registry->RunTestSuite("tir_stmt_test_TypeAnnotationTest");
+  registry->RunTestSuite("tir_stmt_test_TirBufferStoreTest");
+  registry->RunTestSuite("tir_stmt_test_TirProducerStoreTest");
+  registry->RunTestSuite("tir_stmt_test_TirAllocateTest");
+  registry->RunTestSuite("tir_stmt_test_TirForTest");
+  registry->RunTestSuite("tir_stmt_test_TirPrefetchTest");
+  registry->RunTestSuite("tir_stmt_test_TirTypeAnnotationTest");
+  registry->RunTestSuite("tir_function_test_TirPrimFuncTest");
+  registry->RunTestSuite("tir_function_test_TirTensorIntrinTest");
+  registry->RunTestSuite("tir_function_test_TirSpecialize");
 }
 
 int main() {
