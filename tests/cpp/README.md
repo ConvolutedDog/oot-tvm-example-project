@@ -10,23 +10,23 @@ flowchart LR
     tvm::RelaxExpr --> tvm::GlobalVar
     tvm::RelaxExpr --> tvm::BaseFunc
     tvm::RelaxExpr --> tvm::Op
-    tvm::RelaxExpr --> tvm::Call
-    tvm::RelaxExpr --> tvm::If
-    tvm::RelaxExpr --> tvm::LeafExpr
-    tvm::RelaxExpr --> tvm::SeqExpr
-    tvm::RelaxExpr --> tvm::Tuple
-    tvm::RelaxExpr --> tvm::TupleGetItem
+    tvm::RelaxExpr --> tvm::relax::Call
+    tvm::RelaxExpr --> tvm::relax::If
+    tvm::RelaxExpr --> tvm::relax::LeafExpr
+    tvm::RelaxExpr --> tvm::relax:SeqExpr
+    tvm::RelaxExpr --> tvm::relax::Tuple
+    tvm::RelaxExpr --> tvm::relax::TupleGetItem
 
     tvm::BaseFunc --> tvm::relax::Function
     tvm::BaseFunc --> tvm::relax::ExternFunc
     tvm::BaseFunc --> tvm::tir::PrimFunc
 
-    tvm::LeafExpr --> tvm::relax::Constant
-    tvm::LeafExpr --> tvm::relax::DataTypeImm
-    tvm::LeafExpr --> tvm::relax::PrimValue
-    tvm::LeafExpr --> tvm::relax::ShapeExpr
-    tvm::LeafExpr --> tvm::relax::StringImm
-    tvm::LeafExpr --> tvm::relax::Var
+    tvm::relax::LeafExpr --> tvm::relax::Constant
+    tvm::relax::LeafExpr --> tvm::relax::DataTypeImm
+    tvm::relax::LeafExpr --> tvm::relax::PrimValue
+    tvm::relax::LeafExpr --> tvm::relax::ShapeExpr
+    tvm::relax::LeafExpr --> tvm::relax::StringImm
+    tvm::relax::LeafExpr --> tvm::relax::Var
 
     tvm::relax::Var --> tvm::relax::DataflowVar
 

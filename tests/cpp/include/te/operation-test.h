@@ -38,5 +38,6 @@ void TePlaceholderOpTest();
 void TeComputeOpTest();
 void TeScanOpTest();
 void TeExternOpTest();
+void TeOtherFuncTest();
 
 }  // namespace operation_test

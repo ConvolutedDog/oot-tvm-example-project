@@ -104,6 +104,7 @@ void TestMethod2() {
   registry->RunTestSuite("te_operation_test_TeComputeOpTest");
   registry->RunTestSuite("te_operation_test_TeScanOpTest");
   registry->RunTestSuite("te_operation_test_TeExternOpTest");
+  registry->RunTestSuite("te_operation_test_TeOtherFuncTest");
 }
 
 int main() {

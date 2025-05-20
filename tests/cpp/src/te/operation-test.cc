@@ -258,6 +258,13 @@ void TeScanOpTest() {
   }
 }
 
+// tvm::relax::Expr TestOp(const Array<tvm::tir::Var> &inputs) {
+//   return tvm::relax::ShapeExpr{{tvm::PrimExpr{(int32_t)inputs.size()}}};
+// }
+PrimExpr TestOp(const Array<tvm::tir::Var> &inputs) { return (int32_t)inputs.size(); }
+
+TVM_REGISTER_OP("TestOp");
+
 void TeExternOpTest() {
   LOG_SPLIT_LINE("TeExternOpTest");
 
@@ -277,9 +284,9 @@ void TeExternOpTest() {
   PrimExpr n = 1024;
   Tensor tensor = placeholder({n,}, tvm::DataType::Float(32), "A");
   std::function<PrimExpr(const tvm::tir::Var &)> fcompute = 
-      [&tensor](const tvm::tir::Var & index) {
+      [&tensor](const tvm::tir::Var &index) {
         return tvm::tir::ProducerLoad(tensor, {index}) +
-              tvm::tir::make_const(DataType::Float(32), 1.0);
+               tvm::tir::make_const(DataType::Float(32), 1.0);
       };
   tensor = compute({n,}, fcompute, "B");
   LOG_PRINT_VAR(tensor);
@@ -292,19 +299,31 @@ void TeExternOpTest() {
                           "global")
   };
 
-  /// @bug (yangjianchao)
-  // tvm::Op testop = tvm::Op::Get("testop");
-  // std::function<PrimExpr(const Array<tvm::tir::Var>&)> fcomputeextern = 
-  //     [&](const Array<tvm::tir::Var>& indices) {
-  //       return tvm::tir::Call(tvm::DataType::Handle(), testop,
-  //                             {indices[0], indices[1]});
-  //     };
-  // PrimExpr body = fcomputeextern({input_placeholders, output_placeholders});
-  // ExternOp externop{"C", "tagC", {}, {tensor},
-  //                   input_placeholders, output_placeholders,
-  //                   tvm::tir::Evaluate{body}};
-  // LOG_PRINT_VAR(externop);
+  tvm::Op testop = tvm::Op::Get("TestOp");
+  std::function<PrimExpr(const Array<tvm::tir::Var>&)> fcomputeextern = 
+      [&](const Array<tvm::tir::Var> &vars) {
+        return tvm::tir::Call(DataType::Handle(), testop, {vars[0], vars[1]});
+      };
+  // `vm::tir::Var("inputX"), tvm::tir::Var("inputY")` may have no sense here.
+  PrimExpr body = fcomputeextern({tvm::tir::Var("inputX"), tvm::tir::Var("inputY")});
+  ExternOp externop{"C", "tagC", {}, {tensor},
+                    input_placeholders, output_placeholders,
+                    tvm::tir::Evaluate{body}};
+  LOG_PRINT_VAR(externop);
   // clang-format on
+}
+
+void TeOtherFuncTest() {
+  LOG_SPLIT_LINE("TeOtherFuncTest");
+
+  tvm::tir::Var var{"var", DataType::Int(32)};
+  LOG_PRINT_VAR(var);
+
+  tvm::tir::IterVar threadaxis = thread_axis({0, 512}, "thread_axis");
+  LOG_PRINT_VAR(threadaxis);
+
+  tvm::tir::IterVar reduceaxis = reduce_axis({0, 512}, "reduce_axis");
+  LOG_PRINT_VAR(reduceaxis);
 }
 
 }  // namespace operation_test
@@ -314,3 +333,4 @@ REGISTER_TEST_SUITE(operation_test::TePlaceholderOpTest,
 REGISTER_TEST_SUITE(operation_test::TeComputeOpTest, te_operation_test_TeComputeOpTest);
 REGISTER_TEST_SUITE(operation_test::TeScanOpTest, te_operation_test_TeScanOpTest);
 REGISTER_TEST_SUITE(operation_test::TeExternOpTest, te_operation_test_TeExternOpTest);
+REGISTER_TEST_SUITE(operation_test::TeOtherFuncTest, te_operation_test_TeOtherFuncTest);
