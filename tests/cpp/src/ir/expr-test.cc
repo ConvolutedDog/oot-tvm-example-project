@@ -1,5 +1,6 @@
 #include "ir/expr-test.h"
 #include "test-func-registry.h"
+#include <tvm/ir/expr.h>
 
 using std::string;
 
@@ -146,8 +147,13 @@ void IrPrimExprTest() {
   TEST_OPERATOR_INT_INT(primExprA, primExprC, ==, eq);
   TEST_OPERATOR_INT_INT(primExprA, primExprC, !=, ne);
   TEST_OPERATOR_INT(primExprA, -, neg);
-  /// @bug Maybe a bug of TVM.
-  /// TEST_OPERATOR_INT(primExprA, ~, bitwise neg);
+  /// @note can't cast `~primeExprA` into IntImmNode directly
+  /// `(~primExprA).as<IntImmNode>()` return the nullptr
+  /// error:  TEST_OPERATOR_INT(primExprA, ~, bitwise neg);
+  PrimExpr bitwiseA = ~primExprA;
+  std::cout << bitwiseA << std::endl;
+  std::cout << bitwiseA->GetTypeKey() << std::endl;//tir.Call
+
   TEST_OPERATOR_INT_INT(primExprA, primExprC, &, bitwise and);
   TEST_OPERATOR_INT_INT(primExprA, primExprC, |, bitwise or);
 

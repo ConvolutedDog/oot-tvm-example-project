@@ -352,18 +352,28 @@ void RelaxBindTest() {
     tvm::Array<Binding> true_bindings{
         {VarBinding{v_in_f, call_add}, VarBinding{gv0, call_multiply}}
     };
+    /*!
+     * \brief Binding when if-condition is true
+     * v_in_f  <--(var binding) call_add(relax.add, x, x)
+     * gv0 <--(var binding) call_multiply(relax.multiply, x, x)
+     */
     // NOLINTNEXTLINE
     tvm::Array<BindingBlock> true_blocks{{BindingBlock{true_bindings}}};
     // NOLINTNEXTLINE
-    SeqExpr true_seq_expr{true_blocks, true_blocks[0]->bindings[1]->var};
+    SeqExpr true_seq_expr{true_blocks, true_blocks[0]->bindings[1]->var /*return gv0*/};
     // NOLINTNEXTLINE
     tvm::Array<Binding> false_bindings{
         {VarBinding{v_in_f, call_multiply}, VarBinding{gv0, call_add}}
     };
+    /*!
+     * \brief Binding when if-condition is false
+     * gv0  <--(var binding) call_add(relax.add, x, x)
+     * v_in_f <--(var binding) call_multiply(relax.multiply, x, x)
+     */
     // NOLINTNEXTLINE
     tvm::Array<BindingBlock> false_blocks{{BindingBlock{false_bindings}}};
     // NOLINTNEXTLINE
-    SeqExpr false_seq_expr{false_blocks, false_blocks[0]->bindings[1]->var};
+    SeqExpr false_seq_expr{false_blocks, false_blocks[0]->bindings[1]->var/*return gv0*/};
     // NOLINTNEXTLINE
     If if_node{cond, true_seq_expr, false_seq_expr};
 
