@@ -5,6 +5,7 @@
 #include <tvm/runtime/data_type.h>
 #include <tvm/te/operation.h>
 #include <tvm/tir/expr.h>
+#include <tvm/tir/op.h>
 
 namespace expr_test {
 
@@ -328,6 +329,16 @@ void TirCommReducerTest() {
     LOG_SPLIT_LINE("CommReducer");
     Var x("x", DataType::Float(32)), y("y", DataType::Float(32));
     PrimExpr result = tvm::tir::Add(x, y);
+
+    // clang-format off
+    /// `identity_element` is the identity element of the operator. For example:
+    /// 1. sum: make_zero(source.dtype(), span); (sum_result + 0 = sum_result)
+    /// 2. all: make_const(source.dtype(), true, span); (all(all_result, true) = all_result)
+    /// 3. any: make_const(source.dtype(), false, span); (any(any_result, false) = any_result)
+    /// 4. max: min_value(source.dtype(), span); (max(max_result, min_value) = max_result)
+    /// 5. min: max_value(source.dtype(), span); (min(min_result, max_value) = min_result)
+    /// 6. prod: make_const(source.dtype(), 1, span); (prod(prod_result, 1) = prod_result)
+    // clang-format on
     PrimExpr identity_element = tvm::tir::make_zero(x.dtype());  // NOLINT
     LOG_PRINT_VAR(identity_element);
 
@@ -343,6 +354,8 @@ void TirCommReducerTest() {
     ///   make_const(DataType::Bool(1), true), 0, init, span);
     /// }
     // clang-format on
+
+    /// `lhs`, `rhs`, `result` and `identity_element` must have the same size.
     CommReducer combiner = CommReducer({x}, {y}, {result}, {identity_element});
     LOG_PRINT_VAR(combiner);
     LOG_PRINT_VAR(combiner->lhs);
@@ -350,13 +363,143 @@ void TirCommReducerTest() {
     LOG_PRINT_VAR(combiner->result);
     LOG_PRINT_VAR(combiner->identity_element);
   }
+
+  /// sum
+  LOG_SPLIT_LINE("sum");
+  {
+    DataType dtype = DataType::Float(32);
+    Var x("x", dtype), y("y", dtype);
+    PrimExpr result = tvm::tir::Add(x, y);
+    PrimExpr identity_element = tvm::te::make_zero(dtype);  // NOLINT
+    CommReducer combiner = CommReducer({x}, {y}, {result}, {identity_element});
+    LOG_PRINT_VAR(combiner);
+  }
+
+  /// all
+  LOG_SPLIT_LINE("all");
+  {
+    DataType dtype = DataType::Bool(1);
+    Var x("x", dtype), y("y", dtype);
+    PrimExpr result = tvm::tir::And(x, y);
+    PrimExpr identity_element = tvm::te::make_const(dtype, true);  // NOLINT
+    CommReducer combiner = CommReducer({x}, {y}, {result}, {identity_element});
+    LOG_PRINT_VAR(combiner);
+  }
+
+  /// any
+  LOG_SPLIT_LINE("any");
+  {
+    DataType dtype = DataType::Bool(1);
+    Var x("x", dtype), y("y", dtype);
+    PrimExpr result = tvm::tir::Or(x, y);
+    PrimExpr identity_element = tvm::te::make_const(dtype, false);  // NOLINT
+    CommReducer combiner = CommReducer({x}, {y}, {result}, {identity_element});
+    LOG_PRINT_VAR(combiner);
+  }
+
+  /// max
+  LOG_SPLIT_LINE("max");
+  {
+    DataType dtype = DataType::Float(32);
+    Var x("x", dtype), y("y", dtype);
+    PrimExpr result = tvm::tir::Max(x, y);
+    PrimExpr identity_element = tvm::min_value(dtype);  // NOLINT
+    CommReducer combiner = CommReducer({x}, {y}, {result}, {identity_element});
+    LOG_PRINT_VAR(combiner);
+  }
+
+  /// min
+  LOG_SPLIT_LINE("min");
+  {
+    DataType dtype = DataType::Float(32);
+    Var x("x", dtype), y("y", dtype);
+    PrimExpr result = tvm::tir::Min(x, y);
+    PrimExpr identity_element = tvm::max_value(dtype);  // NOLINT
+    CommReducer combiner = CommReducer({x}, {y}, {result}, {identity_element});
+    LOG_PRINT_VAR(combiner);
+  }
+
+  /// prod
+  LOG_SPLIT_LINE("prod");
+  {
+    DataType dtype = DataType::Float(32);
+    Var x("x", dtype), y("y", dtype);
+    PrimExpr result = tvm::tir::Min(x, y);
+    PrimExpr identity_element = tvm::te::make_const(dtype, 1);  // NOLINT
+    CommReducer combiner = CommReducer({x}, {y}, {result}, {identity_element});
+    LOG_PRINT_VAR(combiner);
+  }
+}
+
+inline tvm::te::Tensor matmul(const tvm::te::Tensor &A,                          // NOLINT
+                              const tvm::te::Tensor &B,                          // NOLINT
+                              bool trans_a = false, bool trans_b = false,        // NOLINT
+                              std::string name = "T_matmul",                     // NOLINT
+                              std::string tag = "matmul") {                      // NOLINT
+  tvm::Array<tvm::PrimExpr> output_shape{A->shape[trans_a ? 1 : 0],              // NOLINT
+                                         B->shape[trans_b ? 0 : 1]};             // NOLINT
+  auto k = tvm::te::reduce_axis(tvm::Range{0, A->shape[trans_a ? 0 : 1]}, "k");  // NOLINT
+  auto l = [&](tvm::tir::Var i, tvm::tir::Var j) {                               // NOLINT
+    return tvm::sum((trans_a ? A[k][i] : A[i][k]) *                              // NOLINT
+                        (trans_b ? B[j][k] : B[k][j]),                           // NOLINT
+                    {k});
+  };
+  return tvm::te::compute(output_shape, l, std::move(name), std::move(tag));
 }
 
 void TirReduceTest() {
   /// Reduce: Reduction operator
   {
-    /// @todo (yangjianchao)
+    /// @ref Refer to the above matmul implementation.
     LOG_SPLIT_LINE("Reduce");
+
+    Array<PrimExpr> shape{128, 128};
+    DataType dtype = DataType::Float(32, 4);
+    tvm::te::Tensor tensorA = tvm::te::placeholder(shape, dtype, "A");
+    tvm::te::Tensor tensorB = tvm::te::placeholder(shape, dtype, "B");
+    tvm::te::Tensor tensorC = matmul(tensorA, tensorB);
+    LOG_PRINT_VAR(tensorC);
+
+    tvm::tir::IterVar k{
+        {0, tensorA->GetShape()[1]},
+        tvm::te::var("k", DataType::Int(32)),
+        tvm::tir::IterVarType::kCommReduce
+    };
+    // clang-format off
+    std::function<PrimExpr(const Var &i, const Var &j)> func = [&](const Var &i,
+                                                                   const Var &j) {
+      PrimExpr source = tensorA[i][k] * tensorB[k][j];
+      Var x("x", source.dtype()), y("y", source.dtype());
+      PrimExpr result = tvm::tir::Add(x, y);
+      PrimExpr identity_element = tvm::te::make_zero(source.dtype());  // NOLINT
+      CommReducer combiner = CommReducer({x}, {y}, {result}, {identity_element});
+      Reduce reduce{combiner, {source}, {k,},
+                    tvm::te::make_const(DataType::Bool(4), true), 0, {}};
+
+      LOG_PRINT_VAR(combiner);
+      LOG_PRINT_VAR(combiner->lhs);
+      LOG_PRINT_VAR(combiner->rhs);
+      LOG_PRINT_VAR(combiner->result);
+      LOG_PRINT_VAR(combiner->identity_element);
+      LOG_PRINT_VAR(reduce->dtype);
+      LOG_PRINT_VAR(reduce);
+      LOG_PRINT_VAR(reduce->combiner);
+      LOG_PRINT_VAR(reduce->source);
+      LOG_PRINT_VAR(reduce->init)
+      LOG_PRINT_VAR(reduce->axis);
+      LOG_PRINT_VAR(reduce->condition);
+      LOG_PRINT_VAR(reduce->value_index);
+      LOG_PRINT_VAR(reduce->dtype);
+      return reduce;
+    };
+    // clang-format on
+
+    Array<PrimExpr> outShape{tensorA->GetShape()[0], tensorA->GetShape()[1]};
+    /// @ref Please refer to tests/cpp/src/te/operation-test.cc for more details about
+    /// `tvm::te::compute`.
+    tvm::te::Tensor tensorD = tvm::te::compute(outShape, func, "matmul", "tagmatmul");
+
+    LOG_PRINT_VAR(tensorD);
   }
 }
 
