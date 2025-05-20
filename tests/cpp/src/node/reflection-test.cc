@@ -195,6 +195,9 @@ void NodeReflectionVTableTest() {
   /// Test PrimExpr
 
   PrimExpr start = 4;
+  LOG_PRINT_VAR(start->GetTypeKey());  // IntImm
+  /// call IntImm's `VisitAttrs` Function which is registered in expr.cc
+  /// `TVM_REGISTER_GLOBAL("ir.IntImm").`
   std::vector<std::string> attrnames =
       vtable->ListAttrNames(const_cast<PrimExprNode *>(start.get()));
   LOG_PRINT_VAR(attrnames);
