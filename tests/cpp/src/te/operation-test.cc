@@ -258,9 +258,6 @@ void TeScanOpTest() {
   }
 }
 
-// tvm::relax::Expr TestOp(const Array<tvm::tir::Var> &inputs) {
-//   return tvm::relax::ShapeExpr{{tvm::PrimExpr{(int32_t)inputs.size()}}};
-// }
 PrimExpr TestOp(const Array<tvm::tir::Var> &inputs) { return (int32_t)inputs.size(); }
 
 TVM_REGISTER_OP("TestOp");

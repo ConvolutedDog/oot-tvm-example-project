@@ -3,6 +3,8 @@
 #include "tvm/relax/struct_info.h"
 #include <tvm/ir/expr.h>
 #include <tvm/runtime/data_type.h>
+#include <tvm/te/operation.h>
+#include <tvm/tir/expr.h>
 
 namespace expr_test {
 
@@ -13,11 +15,16 @@ void TirExprTest() {
   StringImm stringimm{"Hello World!"};
   LOG_PRINT_VAR(stringimm);
   LOG_PRINT_VAR(stringimm->value);
+  LOG_PRINT_VAR(stringimm->dtype);   // handle
+  LOG_PRINT_VAR(stringimm.dtype());  // handle
   LOG_BLANK_LINE;
 
   /// Cast: Cast value from one data type to another.
   Cast cast{DataType::Float(32, 1), 123};
   LOG_PRINT_VAR(cast);  // T.Cast("float32", 123)
+  LOG_PRINT_VAR(cast->dtype);
+  LOG_PRINT_VAR(cast.dtype());
+  LOG_PRINT_VAR(cast->value);
   LOG_BLANK_LINE;
 
   /// Add
@@ -27,6 +34,8 @@ void TirExprTest() {
   LOG_PRINT_VAR(add);  // T.Add(4, 5)
   LOG_PRINT_VAR(add->a);
   LOG_PRINT_VAR(add->b);
+  LOG_PRINT_VAR(add->dtype);  // int32
+  LOG_PRINT_VAR(add.dtype());
   LOG_BLANK_LINE;
 
   /// Sub/Mul/Div/Mod/FloorDiv/FloorMod/Min/Max
@@ -46,6 +55,15 @@ void TirExprTest() {
   LOG_PRINT_VAR(floor_mod);  // T.FloorMod(4, 5)
   LOG_PRINT_VAR(min);        // T.min(4, 5)
   LOG_PRINT_VAR(max);        // T.max(4, 5)
+
+  LOG_PRINT_VAR(sub->dtype);        // int32
+  LOG_PRINT_VAR(mul->dtype);        // int32
+  LOG_PRINT_VAR(div->dtype);        // int32
+  LOG_PRINT_VAR(mod->dtype);        // int32
+  LOG_PRINT_VAR(floor_div->dtype);  // int32
+  LOG_PRINT_VAR(floor_mod->dtype);  // int32
+  LOG_PRINT_VAR(min->dtype);        // int32
+  LOG_PRINT_VAR(max->dtype);        // int32
   LOG_BLANK_LINE;
 
   // EQ/NE/LT/LE/GT/GE/And/Or/Not/Select
@@ -57,66 +75,151 @@ void TirExprTest() {
   GE ge{a, b};
   tvm::Bool aa = tvm::Bool(true);
   tvm::Bool bb = tvm::Bool(false);
+  /// @note Must use tvm::Bool params.
   And and_{aa, bb};  // NOLINT
   Or or_{aa, bb};    // NOLINT
   Not not_{aa};      // NOLINT
   Select select{tvm::Bool{false}, a, b};
   LOG_PRINT_VAR(eq);
+  LOG_PRINT_VAR(eq->dtype);  // bool
   LOG_PRINT_VAR(ne);
+  LOG_PRINT_VAR(ne->dtype);  // bool
   LOG_PRINT_VAR(lt);
+  LOG_PRINT_VAR(lt->dtype);  // bool
   LOG_PRINT_VAR(le);
+  LOG_PRINT_VAR(le->dtype);  // bool
   LOG_PRINT_VAR(gt);
+  LOG_PRINT_VAR(gt->dtype);  // bool
   LOG_PRINT_VAR(ge);
+  LOG_PRINT_VAR(ge->dtype);  // bool
   LOG_PRINT_VAR(and_);
+  LOG_PRINT_VAR(and_->dtype);  // bool
   LOG_PRINT_VAR(or_);
+  LOG_PRINT_VAR(or_->dtype);  // bool
   LOG_PRINT_VAR(not_);
+  LOG_PRINT_VAR(not_->dtype);  // bool
   LOG_PRINT_VAR(select);
+  LOG_PRINT_VAR(select->dtype);  // int32
   LOG_BLANK_LINE;
 }
 
 void TirBufferLoadTest() {
   LOG_SPLIT_LINE("BufferLoadTest");
 
-  /// Define a Buffer instance.
-  DataType dtype = DataType::Float(32, 4);
+  /// Define a Buffer instance. A Bufer's data type is equal to the type of elements it
+  /// stored.
+  DataType dtype = DataType::Float(32, 4);  // float32x4
+
+  /// When binding the buffer to a variable, we need to specify the data type of the
+  /// variable to be `tvm::PointerType` which points to `PrimType` elements.
+  /// @todo (yangjianchao) Whether the pointered dtype of `Var` should be consistent with
+  /// the type of the Buffer?
   Var data{
       "dataptr", PointerType{PrimType{dtype}, "global"}
   };
+  /// This shape contains the shape as it is accessed by BufferLoad/BufferStore nodes, and
+  /// used by the low-level code generators.
   Array<PrimExpr> shape{128, 128};
-  Array<PrimExpr> strides{128, 1};
+  Array<PrimExpr> strides{128, 1};  // row-major
+  /// The offset in terms of number of dtype elements (including lanes).
   PrimExpr elem_offset = PrimExpr(0);  // NOLINT
   String buffer_name{"buffer"};        // NOLINT
+  /// The alignment of data in bytes.
   int align = 64;
-  int offset_factor = 64;           // NOLINT
-  Array<IntImm> axis_separators{};  // NOLINT
+  /// Factor of elem_offset field, elem_offset is guaranteed to be multiple of
+  /// offset_factor. @ref https://www.zhihu.com/question/565420155
+  int offset_factor = 64;  // NOLINT
+  /// Axis separators is used to split the input axes into multiple sub-axes, which will
+  /// be reflected in the output axes. The axis separators should be chosen from 0~n-1,
+  /// where n is the number of dimensions of the buffer. The order of the axis separators
+  /// should be in increasing order.
+  /// @todo Supplement more details about axis_separators.
+  // NOLINTNEXTLINE
+  Array<IntImm> axis_separators{
+      {IntImm{DataType::Int(32), 0}, IntImm{DataType::Int(32), 1}}
+  };
 
+  /// @brief BufferType:
+  ///   /*! \brief buffer type */
+  ///   enum BufferType : int {
+  ///     kDefault = 1,
+  ///     // Maps buffer[i][j][k] -> buffer[i][0][k] if dimension j's shape equals 1.
+  ///     kAutoBroadcast = 2,
+  ///   };
+  ///
+  /// 1. kDefault:
+  ///    Normal buffer, no automatic broadcast. When accessing buffer[i][j][k], the data
+  ///    is accessed strictly by the actual coordinates (i, j, k). If a dimension is
+  ///    shape=1, you still need to explicitly specify an index (for example,
+  ///    buffer[0][j][k]) when accessing that dimension. If it is not explicitly specified
+  ///    as 0, it is out of bounds.
+  /// 2. kAutoBroadcast:
+  ///    Automatically broadcast axes with dimension 1. If a dimension is shape=1, it is
+  ///    automatically broadcast when the dimension is accessed, i.e. buffer[i][j][k] is
+  ///    mapped to buffer[0][j][k] (regardless of i).
+  ///
+  /// @ref src/script/ir_builder/tir/ir.cc
+  /// @sa Buffer BufferDecl(...);
   Buffer buffer = Buffer(data, dtype, shape, strides, elem_offset, buffer_name, align,
                          offset_factor, BufferType::kDefault, axis_separators, Span{});
 
+  /// GetFlattenedBuffer
+  auto bufferflatten = buffer.GetFlattenedBuffer();
+  /// LOG_PRINT_VAR(bufferflatten->data);
+  /// LOG_PRINT_VAR(bufferflatten->dtype);
+  /// LOG_PRINT_VAR(bufferflatten->shape);
+  /// LOG_PRINT_VAR(bufferflatten->axis_separators);
+  /// LOG_PRINT_VAR(bufferflatten->strides);
+  /// LOG_PRINT_VAR(bufferflatten->elem_offset);
+  /// LOG_PRINT_VAR(bufferflatten->name);
+  /// LOG_PRINT_VAR(bufferflatten->data_alignment);
+  /// LOG_PRINT_VAR(bufferflatten->offset_factor);
+  /// LOG_PRINT_VAR(bufferflatten->buffer_type);
+
   /// Define a BufferLoad instance.
-  BufferLoad bufferload{
-      buffer, {2,               4},
-       Broadcast{tvm::Bool{true}, 4}
-  };
+  // clang-format off
+  /// Lanes of `predicate` of `Bufferload` must be consistent with the `dtype.lanes` of
+  /// the `Buffer`. The shape of the indices must equal to the shape size of `Buffer`.
+  /// The indices can set its last index to be a vector type (with DataType's lanes > 1).
+  /// @todo (yangjianchao) Supplement more details about indices with its last index being
+  /// with DataType's lanes > 1.
+  BufferLoad bufferload{buffer, {2, 4}, Broadcast{tvm::Bool{true}, 4}};
+  // clang-format on
   LOG_PRINT_VAR(bufferload);
+  LOG_PRINT_VAR(bufferload->buffer->data);
+  LOG_PRINT_VAR(bufferload->buffer->dtype);
+  LOG_PRINT_VAR(bufferload->buffer->shape);
+  LOG_PRINT_VAR(bufferload->buffer->axis_separators);
+  LOG_PRINT_VAR(bufferload->buffer->strides);
+  LOG_PRINT_VAR(bufferload->buffer->elem_offset);
+  LOG_PRINT_VAR(bufferload->buffer->name);
+  LOG_PRINT_VAR(bufferload->buffer->data_alignment);
+  LOG_PRINT_VAR(bufferload->buffer->offset_factor);
+  LOG_PRINT_VAR(bufferload->buffer->buffer_type);
+  LOG_PRINT_VAR(bufferload->dtype);
+  LOG_PRINT_VAR(bufferload->indices);
+  LOG_PRINT_VAR(bufferload->predicate);
 }
 
 void TirProducerLoadTest() {
   /// Define a ProducerLoad instance.
-  /// @todo (yangjianchao) Supplement more details about `ProducerLoad`.
+  /// The information about `placeholder` is in tests/cpp/src/te/operation-test.cc.
+  /// It generates a 16x3x224x224 `Tensor` which inherits from `DataProducer`.
+  /// @todo There is no `indices` check in `ProducerLoad`'s constructor. May should check.
   ProducerLoad producerload{
-      Tensor{{2, 2},
-             DataType::Float(32, 4),
-             PlaceholderOp{"placeholder", {1, 2}, DataType::Float(32, 4)},
-             1},
-      {1, 1}
+      tvm::te::placeholder({16, 3, 224, 224},
+      DataType::Float(32, 4), "placeholder"),
+      {1,  1, 2,   3  }
   };
   LOG_PRINT_VAR(producerload);
+  LOG_PRINT_VAR(producerload->producer);
+  LOG_PRINT_VAR(producerload->indices);
+  LOG_PRINT_VAR(producerload->dtype);  // Return Buffer type.
 }
 
 void TirRampTest() {
-  /// Ramp: Construct a vector with lanes elements where its i-th element equals
-  /// base + i * stride.  This is useful to construct a index for a continuous
+  /// Ramp: Construct a vector with `lanes` elements where its i-th element equals
+  /// `base + i * stride`.  This is useful to construct a index for a continuous
   /// vector load.
   ///
   /// Examples:
@@ -127,17 +230,24 @@ void TirRampTest() {
     PrimExpr base = 0, stride = 1, lanes = 3;
     Ramp ramp{base, stride, lanes};
     LOG_PRINT_VAR(ramp);
+    LOG_PRINT_VAR(ramp->base);
+    LOG_PRINT_VAR(ramp->stride);
+    LOG_PRINT_VAR(ramp->lanes);
+    LOG_PRINT_VAR(ramp->dtype);
   }
 }
 
 void TirBroadcastTest() {
-  /// Broadcast: Create a vector where all the elements are value.
+  /// Broadcast: Create a vector where all the elements are `value`.
   /// @sa buffer_test::TirBufferTest()
   {
     LOG_SPLIT_LINE("Broadcast");
-    PrimExpr value = 1, lanes = 3;
+    PrimExpr value = 1, lanes = 4;
     Broadcast broadcast{value, lanes};
     LOG_PRINT_VAR(broadcast);
+    LOG_PRINT_VAR(broadcast->value);
+    LOG_PRINT_VAR(broadcast->lanes);
+    LOG_PRINT_VAR(broadcast->dtype);
   }
 }
 
@@ -147,10 +257,14 @@ void TirLetTest() {
     LOG_SPLIT_LINE("Let");
     Var x{"x"};
     Let let{
-        x, Add{x, 1},
-         Add{x, 2}
+        x, Add{x, 1}, // First let x = x + 1;
+        Add{x, 2}  // Then return x + 2.
     };
     LOG_PRINT_VAR(let);
+    LOG_PRINT_VAR(let->var);
+    LOG_PRINT_VAR(let->value);
+    LOG_PRINT_VAR(let->body);
+    LOG_PRINT_VAR(let->dtype);
   }
 }
 
@@ -167,6 +281,12 @@ void TirCallTest() {
         DataType::Float(32), opexpr, {arg1, arg2}
     };
     LOG_PRINT_VAR(call2);
+    LOG_PRINT_VAR(call2->op);
+    LOG_PRINT_VAR(call2->args);
+    LOG_PRINT_VAR(call2->dtype);
+
+    /// The `tir.Call` in python frontend can accept several variant params,
+    /// please refer to `TVM_REGISTER_GLOBAL("tir.Call")` in tvm/src/tir/ir/expr.cc.
   }
 }
 
@@ -180,11 +300,23 @@ void TirShuffleTest() {
     Array<PrimExpr> indices{3, 2, 1, 0};
     Shuffle shuffle{vectors, indices};
     LOG_PRINT_VAR(shuffle);
+    LOG_PRINT_VAR(shuffle->vectors);
+    LOG_PRINT_VAR(shuffle->indices);
+    LOG_PRINT_VAR(shuffle->dtype);
 
     PrimExpr shuffleconcat{Shuffle::Concat(vectors)};
     LOG_PRINT_VAR(shuffleconcat);
 
-    PrimExpr shuffleextractelement{Shuffle::ExtractElement(1, 0)};
+    auto x1 = tvm::tir::Broadcast{1, 4};
+    auto x2 = tvm::tir::Broadcast{2, 4};
+    auto x3 = tvm::tir::Broadcast{3, 4};
+    auto x4 = tvm::tir::Broadcast{4, 4};
+    Array<PrimExpr> withlanesvectors{x1, x2, x3, x4};
+    PrimExpr shuffledvectors{Shuffle::Concat(withlanesvectors)};
+    LOG_PRINT_VAR(shuffledvectors);
+
+    LOG_PRINT_VAR(Shuffle::ExtractElement(shuffle, 0));
+    PrimExpr shuffleextractelement{Shuffle::ExtractElement(shuffledvectors, 1)};
     LOG_PRINT_VAR(shuffleextractelement);
   }
 }
@@ -199,8 +331,24 @@ void TirCommReducerTest() {
     PrimExpr identity_element = tvm::tir::make_zero(x.dtype());  // NOLINT
     LOG_PRINT_VAR(identity_element);
 
+    /// @ref Refer to the implementation of `sum`:
+    // clang-format off
+    /// PrimExpr sum(PrimExpr source, Array<IterVar> rdom, Array<PrimExpr> init, Span
+    /// span) {
+    ///   Var x("x", source.dtype(), span), y("y", source.dtype(), span);
+    ///   PrimExpr result = tir::Add(x, y, span);
+    ///   PrimExpr identity_element = make_zero(source.dtype(), span);
+    ///   tir::CommReducer combiner = tir::CommReducer({x}, {y}, {result},
+    ///   {identity_element}, span); return tir::Reduce(combiner, {source}, rdom,
+    ///   make_const(DataType::Bool(1), true), 0, init, span);
+    /// }
+    // clang-format on
     CommReducer combiner = CommReducer({x}, {y}, {result}, {identity_element});
     LOG_PRINT_VAR(combiner);
+    LOG_PRINT_VAR(combiner->lhs);
+    LOG_PRINT_VAR(combiner->rhs);
+    LOG_PRINT_VAR(combiner->result);
+    LOG_PRINT_VAR(combiner->identity_element);
   }
 }
 
