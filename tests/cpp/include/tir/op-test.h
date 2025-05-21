@@ -28,7 +28,6 @@ using tvm::infinity;
 using tvm::less;
 using tvm::less_equal;
 using tvm::likely;
-// using tvm::logaddexp;
 using tvm::logical_and;
 using tvm::logical_not;
 using tvm::logical_or;

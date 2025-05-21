@@ -18,21 +18,20 @@ std::string DataType2Str(const DataType &dtype) {
   return tvm::runtime::DLDataType2String((DLDataType)dtype);
 }
 
-/*
- * Tests primitive type handling in TVM, demonstrating the relationship between:
- * - DLDataType: Low-level type descriptor (C-compatible POD struct) for cross-language exchange
- * - DataType:   TVM's high-level type abstraction with extended functionality
- * 
- * The conversion flow: DLDataType → DataType → PrimType shows how TVM bridges 
- * between external interface types and internal type system representations.
- * 
- * Key points:
- * 1. DLDataType (bits/code/lanes) is minimal for framework interoperability
- * 2. DataType wraps DLDataType with type system operations
- * 3. PrimType represents final TVM IR type with source location (span)
- */
+/// Tests primitive type handling in TVM, demonstrating the relationship between:
+/// - DLDataType: Low-level type descriptor (C-compatible POD struct) for cross-
+///               language exchange.
+/// - DataType: TVM's high-level type abstraction with extended functionality.
+///
+/// The conversion flow: DLDataType -> DataType -> PrimType shows how TVM bridges
+/// between external interface types and internal type system representations.
+///
+/// Key points:
+/// 1. DLDataType (bits/code/lanes) is minimal for framework interoperability.
+/// 2. DataType wraps DLDataType with type system operations.
+/// 3. PrimType represents final TVM IR type with source location (span).
 void IrPrimTypeTest() {
-  LOG_SPLIT_LINE("PrimTypeTest");
+  LOG_SPLIT_LINE("IrPrimTypeTest");
   DLDataType dldtype{DLDataTypeCode::kDLFloat, 32, 1};
   DataType dtype{dldtype};
   PrimType primetype{dtype};

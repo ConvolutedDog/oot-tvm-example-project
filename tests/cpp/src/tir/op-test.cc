@@ -27,17 +27,58 @@ void OpTest() {
       GetRuntimeDataType(GetTypeFromRuntimeDataType(tvm::DataType::BFloat(16, 4))));
 
   /// ret
+  ///
+  /// @brief `ret(PrimExpr value)` is used to get the return value of `value`:
+  /// namespace tir::builtin {
+  ///   const Op& ret() {
+  ///     static const Op& op = Op ::Get(
+  ///         "tir."
+  ///         "ret");
+  ///     return op;
+  ///   }
+  /// }
+  /// PrimExpr ret(PrimExpr value, Span span) {
+  ///   CHECK(value.defined());
+  ///   return tir::Call(value.dtype(), tir::builtin::ret(), {value}, span);
+  /// }
   LOG_PRINT_VAR(ret(1));
   LOG_PRINT_VAR(tvm::floor(2.0f));
 
   /// max_value & min_value & infinity
   LOG_PRINT_VAR(max_value(tvm::DataType::BFloat(16, 1)));  // Lanes must be 1.
   LOG_PRINT_VAR(min_value(tvm::DataType::BFloat(16, 1)));
+  /// @note `infinity(...)` can only used by DataType::kFloat type with lanes = 1 and bits
+  /// = 16/32/64.
   LOG_PRINT_VAR(infinity(
       tvm::DataType::Float(16, 1)));  // Cannot decide infinity for type bfloat16.
 
   /// cast & reinterpret
+  ///
+  /// @brief
+  /// If the target type of `cast` is scalar (lanes = 1):
+  ///   1. `cast` can only be used by `value`s of `IntImm` or `FloatImm` type, and will
+  ///       use `make_const` to return for these two types.
+  ///   2. otherwise it returns a `tvm::tir::Cast` node.
+  /// Elseif the target type of `cast` is scalable (lanes < -1) or fixed length vector
+  /// (lanes > 1), it is to say `value` is a vector:
+  ///   1. the target type `t` should also be scalable if `value` is a scalable vector.
+  ///   2. the target type `t` should have same `vscale_factor()` if `value` is a scalable
+  ///      vector.
+  ///   3. the target type `t` should have same lanes if `value` is a fixed length vector.
+  ///   4. if `value` is a `tvm::tir::Broadcast` node:
+  ///        return Broadcast(cast(vtype, broadcast->value, span), broadcast->lanes,
+  ///                         span);
+  ///      elif `value` is a `tvm::tir::Ramp` node, `t` is DataType::kInt/DataType::UkInt:
+  ///        return tir::Ramp(cast(vtype, ramp->base, span), cast(vtype, ramp->stride,
+  ///        span),
+  ///                         ramp->lanes, span);
+  ///      else:
+  ///        return tir::Cast(t, value, span);
+  /// Else:  // the target type of `cast` is not scalable (lanes < -1) or fixed length
+  ///        // vector (lanes > 1).
+  ///   @todo (yangjianchao) Not commonly used.
   LOG_PRINT_VAR(cast(tvm::DataType::Float(32, 1), 1));
+  /// `reinterpret(...)` returns `tir::Call(t, tir::builtin::reinterpret(), {value})`.
   LOG_PRINT_VAR(reinterpret(tvm::DataType::Float(32, 1), 1));
   LOG_PRINT_VAR(
       reinterpret(tvm::DataType::Float(16, 1), max_value(tvm::DataType::BFloat(16, 1))));
@@ -120,17 +161,27 @@ void OpTest() {
   LOG_PRINT_VAR(is_const_number(make_const(tvm::DataType::Int(32), 1)));
 
   /// foldl: Left fold.
-  /// @todo (yangjianchao)
+  /// @todo (yangjianchao) foldl(...)
 
   /// MakeConstScalar
+  /// @note If `t` is DataType::Int, returns `IntImm`. If `t` is DataType::UInt, only when
+  /// 0 <= `value` < static_cast<uint64_t>(std::numeric_limits<int64_t>::max()), it returns
+  /// `IntImm`, and if `value` >= static_cast<uint64_t>(std::numeric_limits<int64_t>::max()),
+  /// it returns `tvm::tir::Call`. If `t` is DataType::BFloat/Float, returns `FloatImm`.
   LOG_PRINT_VAR(MakeConstScalar(tvm::DataType::Float(32), 1.0f));
   LOG_PRINT_VAR(MakeConstScalar(tvm::DataType::Float(32), true));
   LOG_PRINT_VAR(MakeConstScalar(tvm::DataType::Float(32), false));
 
   /// make_const
+  ///
+  /// @note For scalar type, use `MakeConstScalr()` to return IntImm/UIntImm/FloatImm/...,
+  /// for vector type, returns `tir::Broadcast` node.
   LOG_PRINT_VAR(make_const(tvm::DataType::Float(32), 1.0f));
 
   /// make_zero
+  ///
+  /// @note If `t` is a DataType::Handle, returns `tvm::tir::Call` node, otherwise it will
+  /// call `make_const`.
   LOG_PRINT_VAR(make_zero(tvm::DataType::Float(32)));
 
   /// @todo (yangjianchao) The rest of them can be used as you go, and they are

@@ -28,6 +28,7 @@ void IrDiagnosticTest() {
 
   DiagnosticBuilder builder{diagnostic->level, diagnostic->span};
   LOG_PRINT_VAR(builder.operator Diagnostic()->message);
+  LOG_PRINT_VAR(((Diagnostic)builder)->message);
   LOG_PRINT_VAR(static_cast<Diagnostic>(builder)->span);
 
   LOG_PRINT_VAR(Diagnostic::Bug(diagnostic->span).operator Diagnostic());

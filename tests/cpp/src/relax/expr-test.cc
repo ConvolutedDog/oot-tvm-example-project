@@ -373,7 +373,8 @@ void RelaxBindTest() {
     // NOLINTNEXTLINE
     tvm::Array<BindingBlock> false_blocks{{BindingBlock{false_bindings}}};
     // NOLINTNEXTLINE
-    SeqExpr false_seq_expr{false_blocks, false_blocks[0]->bindings[1]->var/*return gv0*/};
+    SeqExpr false_seq_expr{false_blocks,
+                           false_blocks[0]->bindings[1]->var /*return gv0*/};
     // NOLINTNEXTLINE
     If if_node{cond, true_seq_expr, false_seq_expr};
 

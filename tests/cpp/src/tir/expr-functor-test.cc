@@ -1,6 +1,6 @@
 #include "tir/expr-functor-test.h"
 #include "test-func-registry.h"
-#include "tvm/tir/op.h"
+#include <tvm/tir/expr_functor.h>
 
 namespace expr_functor_test {
 
@@ -9,33 +9,47 @@ void ExprFunctorTest() {
 
   ExprVisitor visitor;
 
-  visitor(tvm::floor(1.2f));
-  visitor(tvm::tir::const_true(4));
-  visitor(tvm::tir::MakeConstScalar(tvm::DataType::Float(32), 1.0f));
+  visitor(floor(1.2f));
+  visitor(const_true(4));
+  visitor(MakeConstScalar(DataType::Float(32), 1.0f));
 
   int n = 10;
-  tvm::tir::IterVar i = tvm::tir::IterVar(tvm::Range(0, n), tvm::tir::Var{"i"},
-                                          tvm::tir::IterVarType::kCommReduce);
-  tvm::tir::IterVar j = tvm::tir::IterVar(tvm::Range(0, n), tvm::tir::Var{"j"},
-                                          tvm::tir::IterVarType::kCommReduce);
-  tvm::runtime::Array<tvm::tir::IterVar> rdom = {i, j};
-  tvm::runtime::Array<tvm::PrimExpr> init = {
-      tvm::tir::make_const(tvm::DataType::Int(32), 0)};
-  tvm::tir::Buffer buffer = tvm::tir::decl_buffer({n, n}, tvm::DataType::Int(32), "A");
-  tvm::PrimExpr source = tvm::tir::BufferLoad(buffer, {i, j});
+  IterVar i = IterVar(Range(0, n), Var{"i"}, IterVarType::kCommReduce);
+  IterVar j = IterVar(Range(0, n), Var{"j"}, IterVarType::kCommReduce);
+  Array<IterVar> rdom = {i, j};
+  Array<PrimExpr> init = {make_const(DataType::Int(32), 0)};
+  Buffer buffer = decl_buffer({n, n}, DataType::Int(32), "A");
+  PrimExpr source = BufferLoad(buffer, {i, j});
   // $totalsum = \sum_{i=0}^{n-1} \sum_{j=0}^{n-1} A[i][j]$.
-  tvm::PrimExpr totalsum = sum(source, rdom, init, tvm::Span());
+  PrimExpr totalsum = sum(source, rdom, init, Span());
   LOG_PRINT_VAR(totalsum);
-  tvm::PrimExpr totalmin = min(source, rdom, init, tvm::Span());
+  PrimExpr totalmin = min(source, rdom, init, Span());
   LOG_PRINT_VAR(totalmin);
-  tvm::PrimExpr totalmax = max(source, rdom, init, tvm::Span());
+  PrimExpr totalmax = max(source, rdom, init, Span());
   LOG_PRINT_VAR(totalmax);
-  tvm::PrimExpr totalprod = prod(source, rdom, init, tvm::Span());
+  PrimExpr totalprod = prod(source, rdom, init, Span());
   LOG_PRINT_VAR(totalprod);
 
   visitor(totalprod);
 
-  /// @todo (yangjianchao) Supplement a derived class.
+  StdCoutExprVisitor stdcoutvisitor;
+  LOG_PRINT_VAR_ONLY(stdcoutvisitor(tvm::tir::Var{"i"}));
+}
+
+/// Define VisitExpr methods for class `StdCoutExprVisitor`.
+using R = StdCoutExprVisitor::R;
+
+R StdCoutExprVisitor::VisitExpr_(const VarNode *op) {
+  return CastString("VarNode:", op->name_hint, op->dtype);
+}
+
+R StdCoutExprVisitor::VisitExprDefault_(const Object *op) {
+  LOG(FATAL) << "Do not have a default for " << op->GetTypeKey();
+}
+
+/// Cast Everything to a String.
+template <typename... Args> String CastString(Args... args) {
+  return (... + (Everything2String(args) + String(" ")));
 }
 
 }  // namespace expr_functor_test

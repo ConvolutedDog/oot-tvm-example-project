@@ -4,8 +4,14 @@
 #include "tvm/runtime/container/array.h"
 #include "tvm/runtime/container/string.h"
 
+#define GREEN_TEXT "\033[32m"
+#define RESET_TEXT "\033[0m"
+
 /// Macro for printing variable name and its value.
 #define LOG_PRINT_VAR(stmt) std::cout << #stmt << ": " << (stmt) << '\n';
+#define LOG_PRINT_VAR_ONLY(stmt)                                                         \
+  std::cout << GREEN_TEXT << "[" << (__DATE__) << " " << (__TIME__)                      \
+            << "]: " << RESET_TEXT << (stmt) << '\n';
 
 #define LOG_BLANK_LINE std::cout << '\n'
 

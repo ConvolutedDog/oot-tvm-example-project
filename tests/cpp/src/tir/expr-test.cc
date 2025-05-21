@@ -120,8 +120,11 @@ void TirBufferLoadTest() {
   };
   /// This shape contains the shape as it is accessed by BufferLoad/BufferStore nodes, and
   /// used by the low-level code generators.
-  Array<PrimExpr> shape{128, 128};
-  Array<PrimExpr> strides{128, 1};  // row-major
+  Array<PrimExpr> shape{128, 128};  // 2D 128 x 128 matrix buffer
+  Array<PrimExpr> strides{128, 1};  // Row-major. Here, users can also don't specify
+                                    // strides. Just use `strides{}` here and call
+                                    // `buffer.MakeStrideView()` will generate strides
+                                    // automatically (default to row-major: [128, 1]).
   /// The offset in terms of number of dtype elements (including lanes).
   PrimExpr elem_offset = PrimExpr(0);  // NOLINT
   String buffer_name{"buffer"};        // NOLINT
