@@ -76,9 +76,48 @@ void TirBufferStoreTest() {
   ///   arg1 = T.int32()
   ///   arg2 = T.int32()
   ///   buffer[arg1, arg2] = T.Broadcast(input, 4)
+  bufferstore = BufferStore{
+      buffer, tvm::tir::Ramp{input, var1, 4},
+       indices
+  };
+  LOG_PRINT_VAR(bufferstore);
+  /// Output:
+  ///   buffer = T.Buffer((128, 128), "float32x4", strides=(128, 1), offset_factor=64)
+  ///   input = T.float32()
+  ///   arg1 = T.int32()
+  ///   arg2 = T.int32()
+  ///   buffer[arg1, arg2] = T.Ramp(input, T.Cast("float32", arg1), 4)
+  PrimExpr lane0 = tvm::FloatImm{DataType::Float(32), 1.0};
+  PrimExpr lane1 = tvm::FloatImm{DataType::Float(32), 2.0};
+  PrimExpr lane2 = tvm::FloatImm{DataType::Float(32), 3.0};
+  PrimExpr lane3 = tvm::FloatImm{DataType::Float(32), 4.0};
+  /// @brief `Shuffle` is one of the most important operators in TVM. We have learned
+  /// about that `Broadcast` operator is use to expand a scalar to a vector (all the lanes
+  /// are same), and `Ramp` is used to expand a start value to a vector by strides (all
+  /// the lanes are different). And `Shuffle` gives user the ability to expand a vector in
+  /// a fine-grained way, for example, we can use `Shuffle` to concat values for each
+  /// lane. For example, we have 4 values for 4 lanes: {1.0f, 8.0f, 4.0f, 5.0f}, and we
+  /// want store them into a float32x4 buffer. Then we can use `Shuffle` to concat the
+  /// values vector together, and give it a index vector like {0,1,2,3} or {3,1,2,0} that
+  /// tell the values vector which lane to take the value from. And the result of the
+  /// `Shuffle` operator will be {1.0f, 8.0f, 4.0f, 5.0f} or {5.0f, 8.0f, 4.0f, 1.0f}.
+  PrimExpr shuffle = tvm::tir::Shuffle{
+      {lane0, lane1, lane2, lane3},
+      {0,     1,     2,     3    }
+  };
+  bufferstore = BufferStore{buffer, shuffle, indices};
+  LOG_PRINT_VAR(bufferstore);
+  /// Output:
+  ///   buffer = T.Buffer((128, 128), "float32x4", strides=(128, 1), offset_factor=64)
+  ///   arg1 = T.int32()
+  ///   arg2 = T.int32()
+  ///   buffer[arg1, arg2] = T.Shuffle([T.float32(1.0), T.float32(2.0),
+  ///                                  T.float32(3.0), T.float32(4.0)], [0, 1, 2, 3])
 
   /// Annotate the region where the buffer need to be read and write in the body. We only
   /// need to allocate the space for the corresponding region.
+  ///
+  /// @todo (yangjianchao) Supplement more details about `BufferRealize`.
   LOG_SPLIT_LINE("BufferRealize");
   BufferRealize bufferrealize{
       buffer,
@@ -98,6 +137,8 @@ void TirBufferStoreTest() {
   ///       buffer[arg1, arg2] = T.Broadcast(input, 4)
 
   /// DeclBuffer: Declare a buffer that can be used in the body.
+  ///
+  /// @todo (yangjianchao) Supplement more details about DeclBuffer.
   LOG_SPLIT_LINE("DeclBuffer");
   Evaluate evaluate{buffer->elem_offset};
   DeclBuffer declbuffer{buffer, evaluate};
@@ -110,6 +151,7 @@ void TirBufferStoreTest() {
 
   /// SeqStmt
   LOG_SPLIT_LINE("SeqStmt");
+  /// It makes no sense, and can only show usage of SeqStmt.
   SeqStmt seqstmt{
       {bufferstore, bufferrealize, declbuffer, evaluate}
   };
@@ -157,6 +199,7 @@ void TirProducerStoreTest() {
   ///   placeholder[arg1, arg2] = T.Broadcast(input, 4)
 
   LOG_SPLIT_LINE("ProducerRealize");
+  /// @todo (yangjianchao) Supplement more details about ProducerRealize.
   ProducerRealize producerrealize{
       tensor,
       {
@@ -383,6 +426,7 @@ void TirPrefetchTest() {
   ///   buffer[1:23, 2:4]
 
   /// MatchBufferRegion
+  /// @todo (yangjianchao) Supplement more details about MatchBufferRegion.
   LOG_SPLIT_LINE("MatchBufferRegion");
   Array<tvm::Range> matchregion{
       {{0, 128}, {0, 128}}

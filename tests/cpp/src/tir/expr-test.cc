@@ -294,6 +294,16 @@ void TirCallTest() {
   }
 }
 
+/// @brief `Shuffle` is one of the most important operators in TVM. We have learned about
+/// that `Broadcast` operator is use to expand a scalar to a vector (all the lanes are
+/// same), and `Ramp` is used to expand a start value to a vector by strides (all the
+/// lanes are different). And `Shuffle` gives user the ability to expand a vector in a
+/// fine-grained way, for example, we can use `Shuffle` to concat values for each lane.
+/// For example, we have 4 values for 4 lanes: {1.0f, 8.0f, 4.0f, 5.0f}, and we want
+/// store them into a float32x4 buffer. Then we can use `Shuffle` to concat the values
+/// vector together, and give it a index vector like {0,1,2,3} or {3,1,2,0} that tell
+/// the values vector which lane to take the value from. And the result of the `Shuffle`
+/// operator will be {1.0f, 8.0f, 4.0f, 5.0f} or {5.0f, 8.0f, 4.0f, 1.0f}.
 void TirShuffleTest() {
   /// Shuffle instruction.
   ///   vec = concat(vectors)

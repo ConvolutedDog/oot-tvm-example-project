@@ -6,6 +6,7 @@ namespace function_test {
 void TirPrimFuncTest() {
   LOG_SPLIT_LINE("TirPrimFuncTest");
 
+  /// PrimFuncNode contains TIR statements.
   Var m("m", DataType::Int(32));
   Var n("n", DataType::Int(32));
   int lanes = 2;
@@ -27,6 +28,26 @@ void TirPrimFuncTest() {
       producerstore, retTy
   };
   LOG_PRINT_VAR(primfunc);
+  /// # from tvm.script import tir as T
+  /// # from tvm.script import relax as R
+  ///
+  /// @T.prim_func(private=True)
+  /// def main(m: T.int32, n: T.int32) -> R.Tensor(ndim=2, dtype="bfloat16x2"):
+  ///     placeholder[m, n] = T.Broadcast(0, 2)
+
+  LOG_PRINT_VAR(primfunc->func_type_annotation());
+  /// Output:
+  ///   I.FuncType([T.int32, T.int32], R.Tensor(ndim=2, dtype="bfloat16x2"))
+
+  LOG_PRINT_VAR(primfunc->params);         // [m, n]
+  LOG_PRINT_VAR(primfunc->body);           // m = T.int32()
+                                           // n = T.int32()
+                                           // placeholder[m, n] = T.Broadcast(0, 2)
+  LOG_PRINT_VAR(primfunc->ret_type);       // R.Tensor(ndim=2, dtype="bfloat16x2")
+  LOG_PRINT_VAR(primfunc->buffer_map);     // {}
+  LOG_PRINT_VAR(primfunc->checked_type_);  // Same to func_type_annotation()
+  LOG_PRINT_VAR(primfunc->struct_info_);   // R.Callable((R.Prim("int32"),
+                                           // R.Prim("int32")), R.Object, True)
 }
 
 /// @todo (yangjianchao)
