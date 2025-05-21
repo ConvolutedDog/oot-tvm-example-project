@@ -164,10 +164,12 @@ void OpTest() {
   /// @todo (yangjianchao) foldl(...)
 
   /// MakeConstScalar
+  // clang-format off
   /// @note If `t` is DataType::Int, returns `IntImm`. If `t` is DataType::UInt, only when
   /// 0 <= `value` < static_cast<uint64_t>(std::numeric_limits<int64_t>::max()), it returns
   /// `IntImm`, and if `value` >= static_cast<uint64_t>(std::numeric_limits<int64_t>::max()),
   /// it returns `tvm::tir::Call`. If `t` is DataType::BFloat/Float, returns `FloatImm`.
+  // clang-format on
   LOG_PRINT_VAR(MakeConstScalar(tvm::DataType::Float(32), 1.0f));
   LOG_PRINT_VAR(MakeConstScalar(tvm::DataType::Float(32), true));
   LOG_PRINT_VAR(MakeConstScalar(tvm::DataType::Float(32), false));

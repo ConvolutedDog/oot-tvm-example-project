@@ -1,23 +1,27 @@
 #include "test-func-registry.h"
+#include <cstdlib>
+#include <iostream>
 #include <tvm/runtime/logging.h>
 
-void TestMethod1() {
+void TestMethod1(bool listAllNames) {
   /// Test suite registry
   TestSuiteRegistry *registry = TestSuiteRegistry::Global();
 
   /// Print all test suite names.
-  registry->PrintAllTestSuiteNames();
+  if (listAllNames)
+    registry->PrintAllTestSuiteNames();
 
   /// Method 1: Run all test suites.
   registry->RunAllTestSuites();
 }
 
-void TestMethod2() {
+void TestMethod2(bool listAllNames) {
   /// Test suite registry
   TestSuiteRegistry *registry = TestSuiteRegistry::Global();
 
   /// Print all test suite names.
-  registry->PrintAllTestSuiteNames();
+  if (listAllNames)
+    registry->PrintAllTestSuiteNames();
 
   /// Method 2: Run each specific test suite.
   registry->RunTestSuite("runtime_ndarray_test_RuntimeNDArrayTest");
@@ -107,7 +111,18 @@ void TestMethod2() {
   registry->RunTestSuite("te_operation_test_TeOtherFuncTest");
 }
 
-int main() {
-  TestMethod2();
+int main(int argc, char *argv[]) {
+  bool listAllNames = false;
+  for (int i = 1; i < argc; ++i) {
+    std::string arg = argv[i];
+    if (arg == "-l" || arg == "--list") {
+      listAllNames = true;
+    } else {
+      std::cerr << "Unknown argument: " << arg << std::endl;
+      return 1;
+    }
+  }
+
+  TestMethod2(listAllNames);
   return 0;
 }

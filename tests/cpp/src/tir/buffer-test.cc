@@ -227,7 +227,8 @@ void TirBufferTest() {
   int access_mask = 1;  // READ, NOLINT
   PrimExpr accessptr = buffer.access_ptr(access_mask);
   /// Output:
-  ///   T.tvm_access_ptr(T.type_annotation("float32x4"), dataptr, 64, 16384, 1) // 2 for READ
+  ///   T.tvm_access_ptr(T.type_annotation("float32x4"), dataptr, 64, 16384, 1) // 2 for
+  ///   READ
   LOG_PRINT_VAR(accessptr);
 
   /// Create an Expr that does a vector load at begin index.

@@ -5,6 +5,7 @@
 #include "tvm/runtime/container/string.h"
 
 #define GREEN_TEXT "\033[32m"
+#define BLUE_TEXT "\033[34m"
 #define RESET_TEXT "\033[0m"
 
 /// Macro for printing variable name and its value.
