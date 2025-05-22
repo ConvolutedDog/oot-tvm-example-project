@@ -114,6 +114,10 @@ void TestMethod2(bool listAllNames) {
   registry->RunTestSuite("relax_type_test_TensorTypeTest");
   registry->RunTestSuite("relax_type_test_ObjectTypeTest");
   registry->RunTestSuite("relax_type_test_PackedFuncTypeTest");
+  registry->RunTestSuite("tir_builtin_test_TirretTest");
+  registry->RunTestSuite("tir_data_layout_test_TirLayoutAxisTest");
+  registry->RunTestSuite("tir_data_layout_test_TirLayoutTest");
+  registry->RunTestSuite("tir_data_layout_test_TirBijectiveLayoutTest");
 }
 
 int main(int argc, char *argv[]) {

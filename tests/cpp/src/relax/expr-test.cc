@@ -1,6 +1,7 @@
 #include "relax/expr-test.h"
 #include "dlpack/dlpack.h"
 #include "test-func-registry.h"
+#include "tvm/relax/attrs/nn.h"
 #include "tvm/relax/struct_info.h"
 #include <tvm/node/script_printer.h>
 #include <tvm/relax/expr.h>
@@ -25,22 +26,50 @@ void RelaxCallTest() {
   Var arg1{"arg1", tvm::relax::ShapeStructInfo{4}};
   Var arg2{"arg2", tvm::relax::ShapeStructInfo{4}};
 
+  auto convattrs = tvm::make_object<tvm::relax::Conv2DAttrs>();
+  using tvm::IntImm;
+  convattrs->strides = {
+      IntImm{DataType::Int(32), 2},
+      IntImm{DataType::Int(32), 2}
+  };
+  convattrs->padding = {
+      IntImm{DataType::Int(32), 1},
+      IntImm{DataType::Int(32), 1}
+  };
+  convattrs->dilation = {
+      IntImm{DataType::Int(32), 1},
+      IntImm{DataType::Int(32), 1}
+  };
+  convattrs->groups = 1;
+  convattrs->data_layout = "NCHW";
+  convattrs->kernel_layout = "OIHW";
+  convattrs->out_layout = "NCHW";
+  convattrs->out_dtype = tvm::DataType::BFloat(16);
+
   /// op: The operator(function) being invoked.
   /// - It can be tvm::Op which corresponds to the primitive operators.
   /// - It can also be user defined functions (Function, GlobalVar, Var).
   Call call{
-      opexpr, {arg1, arg2}
+      opexpr, {arg1, arg2},
+       tvm::Attrs{convattrs}
   };
   LOG_PRINT_VAR(call);
   /// Output:
-  ///   R.nn.conv2d(arg1, arg2)
+  ///   R.nn.conv2d(arg1, arg2, strides=[2, 2], padding=[1, 1],
+  ///               dilation=[1, 1], groups=1, data_layout="NCHW",
+  ///               kernel_layout="OIHW", out_layout="NCHW", out_dtype="bfloat16")
 
+  /// @brief `WithFields` returns `call` with the given properties. A null property
+  /// denotes 'no change'. Returns `call` if all properties are unchanged. Otherwise,
+  /// returns a copy with the new fields.
   Call callwithfields =
       WithFields(call, tvm::Op::Get("relax.argmax"),
                  tvm::runtime::Optional<tvm::runtime::Array<Expr>>{{globalvarexpr}});
   LOG_PRINT_VAR(callwithfields);
   /// Output:
-  ///   R.argmax(testglobalvar)
+  ///   R.argmax(testglobalvar, strides=[2, 2], padding=[1, 1],
+  ///            dilation=[1, 1], groups=1, data_layout="NCHW",
+  ///            kernel_layout="OIHW", out_layout="NCHW", out_dtype="bfloat16")
 
   Function func{
       {arg1, arg2},
@@ -53,7 +82,10 @@ void RelaxCallTest() {
   ///   # from tvm.script import relax as R
   ///   @R.function(private=True)
   ///   def main(arg1: R.Shape(ndim=4), arg2: R.Shape(ndim=4)) -> R.Shape(ndim=4):
-  ///       return R.nn.conv2d(arg1, arg2)
+  ///       return R.nn.conv2d(arg1, arg2, strides=[2, 2], padding=[1, 1],
+  ///                          dilation=[1, 1], groups=1, data_layout="NCHW",
+  ///                          kernel_layout="OIHW", out_layout="NCHW",
+  ///                          out_dtype="bfloat16")
 }
 
 void RelaxTupleTest() {
@@ -62,21 +94,29 @@ void RelaxTupleTest() {
   /// Create Expr
   Expr opexpr = tvm::Op::Get("relax.nn.conv2d");
   LOG_PRINT_VAR(opexpr);
+  /// Output:
+  ///   Op(relax.nn.conv2d)
 
   Expr globalvarexpr = GlobalVar("testglobalvar");
   LOG_PRINT_VAR(globalvarexpr);
+  /// Output:
+  ///   I.GlobalVar("testglobalvar")
 
   Tuple tuple{
-      {
-       opexpr, }
+      {opexpr, globalvarexpr}
   };
   LOG_PRINT_VAR(tuple);
+  /// Output:
+  ///   (I.Op("relax.nn.conv2d"), testglobalvar)
 
+  Expr globalvarexpr1 = GlobalVar("testglobalvar1");
   Tuple tuplewithfields =
       WithFields(tuple, tvm::runtime::Optional<tvm::runtime::Array<Expr>>{
-                            {opexpr, globalvarexpr}
+                            {opexpr, globalvarexpr, globalvarexpr1}
   });
   LOG_PRINT_VAR(tuplewithfields);
+  /// Output:
+  ///   (I.Op("relax.nn.conv2d"), testglobalvar, testglobalvar1)
 }
 
 void RelaxTupleGetItemTest() {
@@ -89,11 +129,15 @@ void RelaxTupleGetItemTest() {
   };
   TupleGetItem tuplegetitem{tuple, 1};
   LOG_PRINT_VAR(tuplegetitem);
+  /// Output:
+  ///   (arg1, arg2)[1]
 
   Expr globalvarexpr = GlobalVar("testglobalvar");
   TupleGetItem tuplegetitemwithfields =
       WithFields(tuplegetitem, {globalvarexpr}, tvm::Integer{0});
   LOG_PRINT_VAR(tuplegetitemwithfields);
+  /// Output:
+  ///   testglobalvar[0]
 }
 
 void RelaxLeafExprTest() {
@@ -103,40 +147,46 @@ void RelaxLeafExprTest() {
   ShapeExpr shapeexpr{
       {1, 2, 3, 4}
   };
-  LOG_PRINT_VAR(shapeexpr);
+  LOG_PRINT_VAR(shapeexpr);  // R.shape([1, 2, 3, 4])
 
   /// Var
   Var var{"testvar", tvm::relax::ShapeStructInfo{4}};
-  LOG_PRINT_VAR(var);
-  LOG_PRINT_VAR(var->vid->name_hint);
+  LOG_PRINT_VAR(var);                  // testvar
+  LOG_PRINT_VAR(var->vid->name_hint);  // testvar
 
   /// DataflowVar
   DataflowVar dataflowvar{"testdataflowvar", tvm::relax::ShapeStructInfo{4}};
-  LOG_PRINT_VAR(dataflowvar);
+  LOG_PRINT_VAR(dataflowvar);  // testdataflowvar
 
   /// Constant
   NDArray ndarrayconstvalue2 =
       NDArray::Empty(ShapeTuple{1, 2, 3, 4}, DLDataType{DLDataTypeCode::kDLFloat, 32, 1},
                      DLDevice{DLDeviceType::kDLCPU, 0});
-  LOG_PRINT_VAR(ndarrayconstvalue2);
+  LOG_PRINT_VAR(ndarrayconstvalue2);  // runtime.NDArray(0x1944c30)
   Constant constant2{ndarrayconstvalue2};
-  LOG_PRINT_VAR(constant2);
+  LOG_PRINT_VAR(constant2);        // metadata["relax.expr.Constant"][0]
+  LOG_PRINT_VAR(constant2->data);  // runtime.NDArray(0x1944c30)
+  // `tensor_type()` has only been declared, but not defined in TVM.
+  // LOG_PRINT_VAR(constant2->tensor_type());
+  LOG_PRINT_VAR(constant2->is_scalar());  // 0
 
   /// PrimValue
   PrimValue primvalue{1};
-  LOG_PRINT_VAR(primvalue);
+  LOG_PRINT_VAR(primvalue);  // R.prim_value(1)
   PrimValue primvalue2{
       tvm::IntImm{DataType{DLDataType{DLDataTypeCode::kDLInt, 32, 1}}, 2}
   };
-  LOG_PRINT_VAR(primvalue2);
+  LOG_PRINT_VAR(primvalue2);  // R.prim_value(2)
+  PrimValue primvalue3 = PrimValue::Int64(3);
+  LOG_PRINT_VAR(primvalue3);  // R.prim_value(3)
 
   /// StringImm
   StringImm stringimm{"hello"};
-  LOG_PRINT_VAR(stringimm);
+  LOG_PRINT_VAR(stringimm);  // R.str("hello")
 
   /// DataTypeImm
   DataTypeImm datatypeimm{DataType{DLDataType{DLDataTypeCode::kDLInt, 32, 1}}};
-  LOG_PRINT_VAR(datatypeimm);
+  LOG_PRINT_VAR(datatypeimm);  // R.dtype("int32")
 }
 
 void RelaxBindTest() {
@@ -175,6 +225,8 @@ void RelaxBindTest() {
         NDArray::Empty(ShapeTuple{16, 8}, DLDataType{DLDataTypeCode::kDLInt, 64, 1},
                        DLDevice{DLDeviceType::kDLCPU, 0});
     Constant shape{ndarrayconstvalue2};
+    /// @brief Runtime-match the value to the struct info. Here, match the `shape` to
+    /// `TensorStructInfo{ShapeExpr{{m, n}}, DataType::Int(32)`.
     MatchCast b0{
         var, shape, TensorStructInfo{ShapeExpr{{m, n}}, DataType::Int(32)}
     };
@@ -186,6 +238,9 @@ void RelaxBindTest() {
     ///     metadata["relax.expr.Constant"][0],
     ///     R.Tensor((m, n), dtype="int32")
     /// )
+    LOG_PRINT_VAR(b0->struct_info);  // R.Tensor((m, n), dtype="int32")
+    LOG_PRINT_VAR(b0->var);          // v0
+    LOG_PRINT_VAR(b0->value);        // metadata["relax.expr.Constant"][0]
   }
 
   /// VarBinding & BindingBlock & SeqExpr
@@ -254,38 +309,49 @@ void RelaxBindTest() {
     Call call_node{
         Op::Get("relax.add"), {x, gv0}
     };
+    LOG_PRINT_VAR(call_node);  // R.add(x, gv0)
 
     // NOLINTNEXTLINE
     tvm::Array<Binding> _bindings{{VarBinding(gv1, call_node)}};
+    LOG_PRINT_VAR(_bindings);  // [m = T.int64()
+                               //  n = T.int64()
+                               //  x: R.Tensor((m, n), dtype="float32")
+                               //  gv0: R.Tensor((m, n), dtype="float32")
+                               //  gv1: R.Tensor((m, n), dtype="float32") = R.add(x, gv0)]
     // NOLINTNEXTLINE
     tvm::Array<BindingBlock> _blocks{{BindingBlock(_bindings)}};
+    LOG_PRINT_VAR(_blocks);  // [m = T.int64()
+                             //  n = T.int64()
+                             //  x: R.Tensor((m, n), dtype="float32")
+                             //  gv0: R.Tensor((m, n), dtype="float32")
+                             //  gv1: R.Tensor((m, n), dtype="float32") = R.add(x, gv0)]
     // NOLINTNEXTLINE
     SeqExpr seq_expr(_blocks, gv1);
 
     LOG_PRINT_VAR(tvm::TVMScriptPrinter::Script(_bindings[0], tvm::PrinterConfig{}));
     /// Output:
-    /// m = T.int64()
-    /// n = T.int64()
-    /// x: R.Tensor((m, n), dtype="float32")
-    /// gv0: R.Tensor((m, n), dtype="float32")
-    /// gv1: R.Tensor((m, n), dtype="float32") = R.add(x, gv0)
+    ///   m = T.int64()
+    ///   n = T.int64()
+    ///   x: R.Tensor((m, n), dtype="float32")
+    ///   gv0: R.Tensor((m, n), dtype="float32")
+    ///   gv1: R.Tensor((m, n), dtype="float32") = R.add(x, gv0)
 
     LOG_PRINT_VAR(tvm::TVMScriptPrinter::Script(_blocks[0], tvm::PrinterConfig{}));
     /// Output:
-    /// m = T.int64()
-    /// n = T.int64()
-    /// x: R.Tensor((m, n), dtype="float32")
-    /// gv0: R.Tensor((m, n), dtype="float32")
-    /// gv1: R.Tensor((m, n), dtype="float32") = R.add(x, gv0)
+    ///   m = T.int64()
+    ///   n = T.int64()
+    ///   x: R.Tensor((m, n), dtype="float32")
+    ///   gv0: R.Tensor((m, n), dtype="float32")
+    ///   gv1: R.Tensor((m, n), dtype="float32") = R.add(x, gv0)
 
     LOG_PRINT_VAR(tvm::TVMScriptPrinter::Script(seq_expr, tvm::PrinterConfig{}));
     /// Output:
-    /// m = T.int64()
-    /// n = T.int64()
-    /// x: R.Tensor((m, n), dtype="float32")
-    /// gv0: R.Tensor((m, n), dtype="float32")
-    /// gv1: R.Tensor((m, n), dtype="float32") = R.add(x, gv0)
-    /// gv1
+    ///   m = T.int64()
+    ///   n = T.int64()
+    ///   x: R.Tensor((m, n), dtype="float32")
+    ///   gv0: R.Tensor((m, n), dtype="float32")
+    ///   gv1: R.Tensor((m, n), dtype="float32") = R.add(x, gv0)
+    ///   gv1
   }
 
   /// If & WithFields
@@ -498,6 +564,16 @@ void RelaxBindTest() {
     };
     // NOLINTNEXTLINE
     Function inner_func{{ipt}, SeqExpr({inner_block}, y), scalar_struct_info};
+    LOG_PRINT_VAR(inner_func);
+    /// Output:
+    ///   # from tvm.script import relax as R
+    ///   @R.function(private=True)
+    ///   def main(ipt: R.Tensor((-1,), dtype="int32")) -> R.Tensor((-1,), dtype="int32"):
+    ///       f: R.Callable((R.Tensor((-1,), dtype="int32"),),
+    ///                     R.Tensor((-1,), dtype="int32"), True)
+    ///       x0: R.Tensor((-1,), dtype="int32") = metadata["relax.expr.Constant"][0]
+    ///       y: R.Tensor((-1,), dtype="int32") = f(x0)
+    ///       return y
 
     OpRegistry *opregistry = OpRegistry::Global();
     // NOLINTNEXTLINE
