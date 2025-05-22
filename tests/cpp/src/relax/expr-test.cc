@@ -11,23 +11,36 @@ void RelaxCallTest() {
   LOG_SPLIT_LINE("CallTest");
 
   /// Create Expr
-  Expr opexpr = tvm::Op::Get("relax.nn.conv2d");
+  Op opexpr = tvm::Op::Get("relax.nn.conv2d");
   LOG_PRINT_VAR(opexpr);
+  /// Output:
+  ///   Op(relax.nn.conv2d)
 
   Expr globalvarexpr = GlobalVar("testglobalvar");
   LOG_PRINT_VAR(globalvarexpr);
+  /// Output:
+  ///   I.GlobalVar("testglobalvar")
 
   /// Create tvm::relax::Function
   Var arg1{"arg1", tvm::relax::ShapeStructInfo{4}};
   Var arg2{"arg2", tvm::relax::ShapeStructInfo{4}};
+
+  /// op: The operator(function) being invoked.
+  /// - It can be tvm::Op which corresponds to the primitive operators.
+  /// - It can also be user defined functions (Function, GlobalVar, Var).
   Call call{
       opexpr, {arg1, arg2}
   };
+  LOG_PRINT_VAR(call);
+  /// Output:
+  ///   R.nn.conv2d(arg1, arg2)
 
   Call callwithfields =
       WithFields(call, tvm::Op::Get("relax.argmax"),
                  tvm::runtime::Optional<tvm::runtime::Array<Expr>>{{globalvarexpr}});
   LOG_PRINT_VAR(callwithfields);
+  /// Output:
+  ///   R.argmax(testglobalvar)
 
   Function func{
       {arg1, arg2},
@@ -35,8 +48,12 @@ void RelaxCallTest() {
       tvm::relax::ShapeStructInfo{4},
       true,
   };
-
   LOG_PRINT_VAR(func);
+  /// Output:
+  ///   # from tvm.script import relax as R
+  ///   @R.function(private=True)
+  ///   def main(arg1: R.Shape(ndim=4), arg2: R.Shape(ndim=4)) -> R.Shape(ndim=4):
+  ///       return R.nn.conv2d(arg1, arg2)
 }
 
 void RelaxTupleTest() {

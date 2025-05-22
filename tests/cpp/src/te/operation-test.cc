@@ -152,6 +152,8 @@ void TeComputeOpTest() {
         };
     tensor = compute({1024,}, fcompute, "B", "tagB");
     LOG_PRINT_VAR(tensor);
+    /// Output:
+    ///   Tensor(shape=[1024], op.name=B)
     // clang-format on
   }
 
@@ -169,6 +171,8 @@ void TeComputeOpTest() {
         };
     tensor = compute(tensor->shape, fcompute, "B", "tagB");
     LOG_PRINT_VAR(tensor);
+    /// Output:
+    ///   Tensor(shape=[1024, 512], op.name=B)
     // clang-format on
   }
 
@@ -186,6 +190,8 @@ void TeComputeOpTest() {
         };
     Array<Tensor> tensorbatch = compute(tensor->shape, fcompute, "B", "tagB");
     LOG_PRINT_VAR(tensorbatch);
+    /// Output:
+    ///   [Tensor(shape=[1024, 512], op.name=B)]
     // clang-format on
   }
 }
@@ -234,6 +240,8 @@ void TeScanOpTest() {
   ScanOp scanop{"scan",   "tagscan",  {},        scan_axis,
                 {s_init}, {s_update}, {s_state}, {input}};
   LOG_PRINT_VAR(scanop);
+  /// Output:
+  ///   scan(scan, 0x189b030)
 
   /// scan
   LOG_SPLIT_LINE("scan");
@@ -254,6 +262,8 @@ void TeScanOpTest() {
     Array<Tensor> scanop =
         scan({s_init}, {s_update}, {s_state}, {input}, "scanop", "tagscan", {});
     LOG_PRINT_VAR(scanop);
+    /// Output:
+    ///   [Tensor(shape=[m, n], op.name=scanop)]
     // clang-format on
   }
 }
@@ -287,6 +297,8 @@ void TeExternOpTest() {
       };
   tensor = compute({n,}, fcompute, "B");
   LOG_PRINT_VAR(tensor);
+  /// Output:
+  ///   Tensor(shape=[1024], op.name=B)
   Array<Buffer> input_placeholders = {  // NOLINT
     tvm::tir::decl_buffer({n,}, tvm::DataType::Float(32), "input_placeholders",
                           "global")
@@ -307,6 +319,8 @@ void TeExternOpTest() {
                     input_placeholders, output_placeholders,
                     tvm::tir::Evaluate{body}};
   LOG_PRINT_VAR(externop);
+  /// Output:
+  ///   extern(C, 0x189e250)
   // clang-format on
 }
 
@@ -315,12 +329,18 @@ void TeOtherFuncTest() {
 
   tvm::tir::Var var{"var", DataType::Int(32)};
   LOG_PRINT_VAR(var);
+  /// Output:
+  ///   var
 
   tvm::tir::IterVar threadaxis = thread_axis({0, 512}, "thread_axis");
   LOG_PRINT_VAR(threadaxis);
+  /// Output:
+  ///   T.iter_var(thread_axis, T.Range(0, 512), "ThreadIndex", "thread_axis")
 
   tvm::tir::IterVar reduceaxis = reduce_axis({0, 512}, "reduce_axis");
   LOG_PRINT_VAR(reduceaxis);
+  /// Output:
+  ///   T.iter_var(reduce_axis, T.Range(0, 512), "CommReduce", "")
 }
 
 }  // namespace operation_test

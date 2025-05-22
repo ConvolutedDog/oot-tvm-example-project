@@ -44,6 +44,7 @@ void TestMethod2(bool listAllNames) {
   registry->RunTestSuite("ir_attrs_test_IrAttrFieldInfoTest");
   registry->RunTestSuite("ir_attrs_test_IrAttrsTest");
   registry->RunTestSuite("ir_attrs_test_IrDictAttrsTest");
+  registry->RunTestSuite("ir_attrs_test_IrAttrBriefTest");
   registry->RunTestSuite("ir_function_test_IrBaseFuncTest");
   registry->RunTestSuite("ir_source_map_test_IrSpanTest");
   registry->RunTestSuite("ir_source_map_test_IrSourceTest");
@@ -109,6 +110,10 @@ void TestMethod2(bool listAllNames) {
   registry->RunTestSuite("te_operation_test_TeScanOpTest");
   registry->RunTestSuite("te_operation_test_TeExternOpTest");
   registry->RunTestSuite("te_operation_test_TeOtherFuncTest");
+  registry->RunTestSuite("relax_type_test_ShapeTypeTest");
+  registry->RunTestSuite("relax_type_test_TensorTypeTest");
+  registry->RunTestSuite("relax_type_test_ObjectTypeTest");
+  registry->RunTestSuite("relax_type_test_PackedFuncTypeTest");
 }
 
 int main(int argc, char *argv[]) {

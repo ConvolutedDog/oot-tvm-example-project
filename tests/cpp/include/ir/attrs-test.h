@@ -97,5 +97,6 @@ void IrAttrUtilsTests();
 void IrAttrFieldInfoTest();
 void IrAttrsTest();
 void IrDictAttrsTest();
+void IrAttrBriefTest();
 
 }  // namespace attrs_test
