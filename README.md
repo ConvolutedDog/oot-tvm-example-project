@@ -27,7 +27,7 @@ This project relies on the following environment variables:
 - **Clone the repository**:
 
   ```bash
-  git clone https://github.com/ConvolutedDog/oot-tvm-example.git
+  git clone https://github.com/ConvolutedDog/oot-tvm-example-project.git
   cd oot-tvm-example
   ```
 

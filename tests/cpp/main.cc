@@ -125,8 +125,8 @@ void TestMethod2(bool listAllNames, bool onlyListAllNames) {
   registry->RunTestSuite("tir_data_layout_test_TirLayoutTest");
   registry->RunTestSuite("tir_data_layout_test_TirBijectiveLayoutTest");
   registry->RunTestSuite("tir_transform_test_TirVectorizeLoopTest");
-  // registry->RunTestSuite("tir_stmt_functor_test_TirStmtFunctorTest");
-  // registry->RunTestSuite("tir_stmt_functor_test_TirOtherVisitorMutatorTest");
+  registry->RunTestSuite("tir_stmt_functor_test_TirStmtFunctorTest");
+  registry->RunTestSuite("tir_stmt_functor_test_TirOtherVisitorMutatorTest");
   registry->RunTestSuite("tir_index_map_test_TirIndexMapTest");
   registry->RunTestSuite("tir_index_map_test_TirSubstituteTest");
 }
