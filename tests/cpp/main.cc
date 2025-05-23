@@ -3,25 +3,31 @@
 #include <iostream>
 #include <tvm/runtime/logging.h>
 
-void TestMethod1(bool listAllNames) {
+void TestMethod1(bool listAllNames, bool onlyListAllNames) {
   /// Test suite registry
   TestSuiteRegistry *registry = TestSuiteRegistry::Global();
 
   /// Print all test suite names.
   if (listAllNames)
     registry->PrintAllTestSuiteNames();
+
+  if (onlyListAllNames)
+    return;
 
   /// Method 1: Run all test suites.
   registry->RunAllTestSuites();
 }
 
-void TestMethod2(bool listAllNames) {
+void TestMethod2(bool listAllNames, bool onlyListAllNames) {
   /// Test suite registry
   TestSuiteRegistry *registry = TestSuiteRegistry::Global();
 
   /// Print all test suite names.
   if (listAllNames)
     registry->PrintAllTestSuiteNames();
+
+  if (onlyListAllNames)
+    return;
 
   /// Method 2: Run each specific test suite.
   registry->RunTestSuite("runtime_ndarray_test_RuntimeNDArrayTest");
@@ -118,20 +124,37 @@ void TestMethod2(bool listAllNames) {
   registry->RunTestSuite("tir_data_layout_test_TirLayoutAxisTest");
   registry->RunTestSuite("tir_data_layout_test_TirLayoutTest");
   registry->RunTestSuite("tir_data_layout_test_TirBijectiveLayoutTest");
+  registry->RunTestSuite("tir_transform_test_TirVectorizeLoopTest");
+  // registry->RunTestSuite("tir_stmt_functor_test_TirStmtFunctorTest");
+  // registry->RunTestSuite("tir_stmt_functor_test_TirOtherVisitorMutatorTest");
+  registry->RunTestSuite("tir_index_map_test_TirIndexMapTest");
+  registry->RunTestSuite("tir_index_map_test_TirSubstituteTest");
 }
 
 int main(int argc, char *argv[]) {
   bool listAllNames = false;
+  bool onlyListAllNames = false;
   for (int i = 1; i < argc; ++i) {
     std::string arg = argv[i];
     if (arg == "-l" || arg == "--list") {
       listAllNames = true;
+    } else if (arg == "-ol" || arg == "--only-list") {
+      listAllNames = true;
+      onlyListAllNames = true;
+    } else if (arg == "-h" || arg == "--help") {
+      std::cout
+          << "Usage: " << argv[0]
+          << " [options]\n"
+             "  -l, --list        List all test suite names and run specified suites\n"
+             "  -ol, --only-list  Only list all test suite names\n"
+             "  -h, --help        Show this help message\n";
+      return 0;
     } else {
       std::cerr << "Unknown argument: " << arg << std::endl;
       return 1;
     }
   }
 
-  TestMethod2(listAllNames);
+  TestMethod2(listAllNames, onlyListAllNames);
   return 0;
 }

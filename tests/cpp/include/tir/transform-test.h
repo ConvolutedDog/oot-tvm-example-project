@@ -112,4 +112,7 @@ using tvm::tir::SeqStmt;
 using tvm::tir::Stmt;
 using tvm::tir::Var;
 
+IRModule SimpleFor();
+void TirVectorizeLoopTest();
+
 }  // namespace transform_test
