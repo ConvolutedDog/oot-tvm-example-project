@@ -31,7 +31,6 @@ void TestMethod2(bool listAllNames, bool onlyListAllNames) {
 
   /// Method 2: Run each specific test suite.
   registry->RunTestSuite("runtime_ndarray_test_RuntimeNDArrayTest");
-  // Bug on MacOS
   registry->RunTestSuite("runtime_inplace_array_base_test_RuntimeInplaceArrayBaseTest");
   registry->RunTestSuite("runtime_object_test_RuntimeObjectTest");
   registry->RunTestSuite("runtime_objectref_test_RuntimeObjectRefTest");
@@ -129,6 +128,9 @@ void TestMethod2(bool listAllNames, bool onlyListAllNames) {
   registry->RunTestSuite("tir_stmt_functor_test_TirOtherVisitorMutatorTest");
   registry->RunTestSuite("tir_index_map_test_TirIndexMapTest");
   registry->RunTestSuite("tir_index_map_test_TirSubstituteTest");
+  registry->RunTestSuite("tir_data_type_rewriter_test_TirDataTypeLegalizerTest");
+  registry->RunTestSuite("tir_data_type_rewriter_test_TirIndexDataTypeRewriterTest");
+  registry->RunTestSuite("tir_data_type_rewriter_test_TirIndexDataTypeNormalizerTest");
 }
 
 int main(int argc, char *argv[]) {
