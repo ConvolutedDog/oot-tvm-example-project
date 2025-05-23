@@ -131,6 +131,10 @@ void TestMethod2(bool listAllNames, bool onlyListAllNames) {
   registry->RunTestSuite("tir_data_type_rewriter_test_TirDataTypeLegalizerTest");
   registry->RunTestSuite("tir_data_type_rewriter_test_TirIndexDataTypeRewriterTest");
   registry->RunTestSuite("tir_data_type_rewriter_test_TirIndexDataTypeNormalizerTest");
+  registry->RunTestSuite("tir_block_scope_test_TirStmtSRefTest");
+  registry->RunTestSuite("tir_block_scope_test_TirSRefTreeCreatorTest");
+  registry->RunTestSuite("tir_block_scope_test_TirDependencyTest");
+  registry->RunTestSuite("tir_block_scope_test_TirBlockScopeTest");
 }
 
 int main(int argc, char *argv[]) {
