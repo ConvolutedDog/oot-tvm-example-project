@@ -1,9 +1,22 @@
 #include "ir/transform-test.h"
 #include "test-func-registry.h"
+#include <tvm/ir/expr.h>
+#include <tvm/ir/module.h>
 #include <tvm/ir/transform.h>
+#include <tvm/runtime/data_type.h>
 #include <tvm/runtime/logging.h>
+#include <tvm/tir/buffer.h>
+#include <tvm/tir/expr.h>
+#include <tvm/tir/stmt.h>
 
 namespace transform_test {
+
+using tvm::IntImm;
+using tvm::PrimExpr;
+using tvm::runtime::Array;
+using tvm::tir::Buffer;
+using tvm::tir::For;
+using tvm::tir::Stmt;
 
 std::ostream &operator<<(std::ostream &os,
                          const Map<String, Map<String, String>> &configs) {
@@ -98,14 +111,17 @@ void IrPassTest() {
   BindingBlock inner_block{
       {VarBinding{x0, constant2}, VarBinding{y, Call{f, {x0}}}}
   };
+  LOG_PRINT_VAR(inner_block);
   // NOLINTNEXTLINE
-  Function inner_func{{ipt}, SeqExpr({inner_block}, y), scalar_struct_info};
+  Function inner_func{{ipt}, SeqExpr({inner_block}, x0), scalar_struct_info};
+  LOG_PRINT_VAR(inner_func);
 
   OpRegistry *opregistry = OpRegistry::Global();
   // NOLINTNEXTLINE
   Call call_add{
       Op::Get("relax.add"), {x1, Call{f, {x1}}}
   };
+  LOG_PRINT_VAR(call_add);
   // NOLINTNEXTLINE
   BindingBlock outer_block{
       {VarBinding{f, inner_func}, VarBinding{x1, constant1}, VarBinding{x2, call_add},
@@ -133,8 +149,73 @@ void IrPassTest() {
   LOG_PRINT_VAR(PrintIR()(irmodule2));
 }
 
+/// @todo @Benkang Peng
+/// 1. Correctly instantiate `relax.call_tir` and `relax.assert_op`
+/// 2. test the function of Pass `CallTIRRewrite` and `LowerTVMBuiltin`
+void IrPassTest2() {
+
+  TensorStructInfo tensorInfo{ShapeExpr({tvm::Integer(8)}), DataType::Float(32)};
+
+  Var x{"x", tensorInfo};
+  Var gv0("gv0", tensorInfo);
+
+  PrimExpr n = 8;
+  Buffer bufA = tvm::tir::decl_buffer({n}, DataType::Float(32), "a");
+  Buffer bufB = tvm::tir::decl_buffer({n}, DataType::Float(32), "b");
+  Buffer bufC = tvm::tir::decl_buffer({n}, DataType::Float(32), "c");
+
+  LOG_PRINT_VAR(bufA);
+
+  tvm::tir::Var i("i", DataType::Int(32));
+  Stmt body = For(
+      /*loop_var*/ i,
+      /*min*/ 0,
+      /*extent*/ n,
+      /*kind*/ tvm::tir::ForKind::kSerial,
+      /*body*/
+      tvm::tir::BufferStore(
+          bufC, tvm::tir::BufferLoad(bufA, {i}) + tvm::tir::BufferLoad(bufB, {i}), {i}));
+
+  LOG_PRINT_VAR(body);
+
+  tvm::tir::PrimFunc tirFunc(
+      /*args*/ Array<tvm::tir::Var>({bufA->data, bufB->data, bufC->data}),
+      /*body*/ body,
+      /*ret_type*/ tvm::VoidType());
+  LOG_PRINT_VAR(tirFunc);
+
+  GlobalVar myTirFunc("my_tir_func");
+  Array<Expr> args = {myTirFunc, x, gv0};
+
+  /// don't know how to pass the `args` into `relax.call_tir`
+  /// `args` passed into `relax.call_tir` are wrong, which cause `callTir` can't be print
+  Call callTir(Op::Get("relax.call_tir"), args);
+  LOG_PRINT_VAR(callTir->op);
+  LOG_PRINT_VAR(callTir->args);
+  // LOG_PRINT_VAR(callTir);//have bug
+
+  Call assertCall(Op::Get("relax.assert_op"), {x});
+  LOG_PRINT_VAR(assertCall->op);
+  LOG_PRINT_VAR(assertCall->args);
+  // LOG_PRINT_VAR(assertCall);//have bug
+
+  BindingBlock block({VarBinding(gv0, callTir), VarBinding(x, assertCall)});
+  // LOG_PRINT_VAR(block);//have bug
+
+  Function func(
+      /*params*/ {x},
+      /*body*/ SeqExpr({block}, gv0),
+      /*ret_struct_info*/ tensorInfo);
+
+  IRModule mod;
+  mod->Add(myTirFunc, tirFunc);
+  mod->Add(GlobalVar("main"), func);
+  // LOG_PRINT_VAR(mod);
+}
 }  // namespace transform_test
 
 REGISTER_TEST_SUITE(transform_test::IrPassContextTest,
                     ir_transform_test_IrPassContextTest);
 REGISTER_TEST_SUITE(transform_test::IrPassTest, ir_transform_test_IrPassTest);
+
+REGISTER_TEST_SUITE(transform_test::IrPassTest2, ir_transform_test_IrPassTest2)

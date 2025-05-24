@@ -77,8 +77,8 @@ void TirBufferTest() {
                                  // the buffer starts with data + 8 * sizeof(dtype).
   String buffer_name{"buffer"};  // NOLINT
   /// The alignment of data in bytes.
-  int align = 64;  // Specify byte alignment requirements for Buffer data (e.g., 16 for
-                   // 16-byte alignment).
+  int align = 16;  // Specify byte alignment requirements for Buffer data (e.g., 16 for
+                   // 16-byte alignment).32 * 4 / 8 = 16
   /// Factor of elem_offset field, elem_offset is guaranteed to be multiple of
   /// offset_factor. @ref https://www.zhihu.com/question/565420155
   // NOLINTNEXTLINE
