@@ -213,6 +213,7 @@ void TirBufferLoadTest() {
   LOG_PRINT_VAR(bufferflatten);
   const_cast<BufferNode *>(bufferflatten.get())->VisitAttrs(&serializer);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   LOG_PRINT_VAR(bufferflatten->data);
   LOG_PRINT_VAR(bufferflatten->shape);
@@ -226,6 +227,8 @@ void TirBufferLoadTest() {
   LOG_PRINT_VAR("bufferflatten");
   const_cast<BufferNode *>(bufferflatten.get())->VisitAttrs(&serializer);
 >>>>>>> ae99631 ([Doc] add something in several file:)
+=======
+>>>>>>> 8910890 (Update tests/cpp/src/tir/expr-test.cc)
   /// LOG_PRINT_VAR(bufferflatten->data);
   /// the `Buffer`. The shape of the indices must equal to the shape size of `Buffer`.
   /// The indices can set its last index to be a vector type (with DataType's lanes > 1).
