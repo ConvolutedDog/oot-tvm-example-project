@@ -205,7 +205,7 @@ void TirBufferLoadTest() {
   Buffer buffer = Buffer(data, dtype, shape, strides, elem_offset, buffer_name, align,
                          offset_factor, BufferType::kDefault, axis_separators, Span{});
 
-  LOG_PRINT_VAR("buffer");
+  LOG_PRINT_VAR(buffer);
   MyIRSerializer serializer;
   const_cast<BufferNode *>(buffer.get())->VisitAttrs(&serializer);
   /// GetFlattenedBuffer
