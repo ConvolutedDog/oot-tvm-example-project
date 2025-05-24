@@ -212,6 +212,20 @@ void TirBufferLoadTest() {
   auto bufferflatten = buffer.GetFlattenedBuffer();
   LOG_PRINT_VAR(bufferflatten);
   const_cast<BufferNode *>(bufferflatten.get())->VisitAttrs(&serializer);
+<<<<<<< HEAD
+=======
+  LOG_PRINT_VAR(bufferflatten->data);
+  LOG_PRINT_VAR(bufferflatten->shape);
+  LOG_PRINT_VAR(bufferflatten->axis_separators);
+  LOG_PRINT_VAR(bufferflatten->strides);
+  LOG_PRINT_VAR(bufferflatten->elem_offset);
+  LOG_PRINT_VAR(bufferflatten->name);
+  LOG_PRINT_VAR(bufferflatten->data_alignment);
+  LOG_PRINT_VAR(bufferflatten->offset_factor);
+  LOG_PRINT_VAR(bufferflatten->buffer_type);
+  LOG_PRINT_VAR("bufferflatten");
+  const_cast<BufferNode *>(bufferflatten.get())->VisitAttrs(&serializer);
+>>>>>>> ae99631 ([Doc] add something in several file:)
   /// LOG_PRINT_VAR(bufferflatten->data);
   /// the `Buffer`. The shape of the indices must equal to the shape size of `Buffer`.
   /// The indices can set its last index to be a vector type (with DataType's lanes > 1).
