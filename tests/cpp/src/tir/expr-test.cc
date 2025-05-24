@@ -210,7 +210,7 @@ void TirBufferLoadTest() {
   const_cast<BufferNode *>(buffer.get())->VisitAttrs(&serializer);
   /// GetFlattenedBuffer
   auto bufferflatten = buffer.GetFlattenedBuffer();
-  LOG_PRINT_VAR("bufferflatten");
+  LOG_PRINT_VAR(bufferflatten);
   const_cast<BufferNode *>(bufferflatten.get())->VisitAttrs(&serializer);
   /// LOG_PRINT_VAR(bufferflatten->data);
   /// LOG_PRINT_VAR(bufferflatten->dtype);
