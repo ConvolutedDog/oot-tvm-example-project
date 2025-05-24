@@ -159,10 +159,10 @@ void TirBufferLoadTest() {
   /// This shape contains the shape as it is accessed by BufferLoad/BufferStore nodes, and
   /// used by the low-level code generators.
   Array<PrimExpr> shape{128, 128, 128};  // 2D 128 x 128 matrix buffer
-  Array<PrimExpr> strides{};  // Row-major. Here, users can also don't specify
-                                    // strides. Just use `strides{}` here and call
-                                    // `buffer.MakeStrideView()` will generate strides
-                                    // automatically (default to row-major: [128, 1]).
+  Array<PrimExpr> strides{};             // Row-major. Here, users can also don't specify
+                                         // strides. Just use `strides{}` here and call
+  // `buffer.MakeStrideView()` will generate strides
+  // automatically (default to row-major: [128, 1]).
   /// The offset in terms of number of dtype elements (including lanes).
   PrimExpr elem_offset = PrimExpr(0);  // NOLINT
   String buffer_name{"buffer"};        // NOLINT
@@ -178,7 +178,7 @@ void TirBufferLoadTest() {
   /// @todo Supplement more details about axis_separators.
   // NOLINTNEXTLINE
   Array<IntImm> axis_separators{
-      { IntImm{DataType::Int(32), 0}, IntImm{DataType::Int(32), 1}}
+      {IntImm{DataType::Int(32), 0}, IntImm{DataType::Int(32), 1}}
   };
 
   /// @brief BufferType:
@@ -213,7 +213,6 @@ void TirBufferLoadTest() {
   LOG_PRINT_VAR(bufferflatten);
   const_cast<BufferNode *>(bufferflatten.get())->VisitAttrs(&serializer);
   LOG_PRINT_VAR(bufferflatten->data);
-  LOG_PRINT_VAR(bufferflatten->dtype);
   LOG_PRINT_VAR(bufferflatten->shape);
   LOG_PRINT_VAR(bufferflatten->axis_separators);
   LOG_PRINT_VAR(bufferflatten->strides);
@@ -222,10 +221,9 @@ void TirBufferLoadTest() {
   LOG_PRINT_VAR(bufferflatten->data_alignment);
   LOG_PRINT_VAR(bufferflatten->offset_factor);
   LOG_PRINT_VAR(bufferflatten->buffer_type);
-
-  /// Define a BufferLoad instance.
-  // clang-format off
-  /// Lanes of `predicate` of `Bufferload` must be consistent with the `dtype.lanes` of
+  LOG_PRINT_VAR("bufferflatten");
+  const_cast<BufferNode *>(bufferflatten.get())->VisitAttrs(&serializer);
+  /// LOG_PRINT_VAR(bufferflatten->data);
   /// the `Buffer`. The shape of the indices must equal to the shape size of `Buffer`.
   /// The indices can set its last index to be a vector type (with DataType's lanes > 1).
   /// @todo (yangjianchao) Supplement more details about indices with its last index being

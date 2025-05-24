@@ -180,3 +180,5 @@ using TestSuiteRegistry = test_func_registry::TestSuiteRegistry;
   ::test_func_registry::TestSuiteRegistry &STR_CONCAT(__make_TestSuite, __COUNTER__) =   \
       ::test_func_registry::TestSuiteRegistry::Global()                                  \
           -> RegisterTestSuite(#key, func, __FILE__, __LINE__)
+
+void DBG_PRINT_VAR(tvm::runtime::ObjectRef &stmt);  // NOLINT

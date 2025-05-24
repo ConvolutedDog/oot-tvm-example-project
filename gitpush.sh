@@ -17,7 +17,7 @@ while [ $retry_count -lt $MAX_RETRIES ]; do
     echo "Attempting git push... (Attempt: $((retry_count + 1))/$MAX_RETRIES)"
 
     # Execute git push with a timeout
-    timeout $PUSH_TIMEOUT git push
+    timeout $PUSH_TIMEOUT git push "$@"
 
     # Check the exit status of git push
     push_exit_code=$?
