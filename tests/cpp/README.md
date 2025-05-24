@@ -13,7 +13,7 @@ flowchart LR
     tvm::RelaxExpr --> tvm::relax::Call
     tvm::RelaxExpr --> tvm::relax::If
     tvm::RelaxExpr --> tvm::relax::LeafExpr
-    tvm::RelaxExpr --> tvm::relax:SeqExpr
+    tvm::RelaxExpr --> tvm::relax::SeqExpr
     tvm::RelaxExpr --> tvm::relax::Tuple
     tvm::RelaxExpr --> tvm::relax::TupleGetItem
 
