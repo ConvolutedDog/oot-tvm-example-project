@@ -1,13 +1,51 @@
 #include "tir/expr-test.h"
 #include "test-func-registry.h"
-#include "tvm/relax/struct_info.h"
 #include <tvm/ir/expr.h>
+#include <tvm/ir/type.h>
+#include <tvm/runtime/container/array.h>
 #include <tvm/runtime/data_type.h>
 #include <tvm/te/operation.h>
+#include <tvm/tir/buffer.h>
 #include <tvm/tir/expr.h>
 #include <tvm/tir/op.h>
+#include <tvm/tir/var.h>
 
 namespace expr_test {
+
+using ::tvm::tir::BufferNode;
+
+class MyIRSerializer : public tvm::AttrVisitor {
+  void Visit(const char *key, double *value) override {
+    std::cout << " double:             " << key << "=" << *value << ";\n";
+  }
+  void Visit(const char *key, int64_t *value) override {
+    std::cout << " int64_t:            " << key << "=" << *value << ";\n";
+  }
+  void Visit(const char *key, uint64_t *value) override {
+    std::cout << " uint64_t:           " << key << "=" << *value << ";\n";
+  }
+  void Visit(const char *key, int *value) override {
+    std::cout << " int:                " << key << "=" << *value << ";\n";
+  }
+  void Visit(const char *key, bool *value) override {
+    std::cout << " bool:               " << key << "=" << *value << ";\n";
+  }
+  void Visit(const char *key, std::string *value) override {
+    std::cout << " std::string:        " << key << "=" << *value << ";\n";
+  }
+  void Visit(const char *key, void **value) override {
+    std::cout << " void:               " << key << "=" << *value << ";\n";
+  }
+  void Visit(const char *key, DataType *value) override {
+    std::cout << " DataType:           " << key << "=" << *value << ";\n";
+  }
+  void Visit(const char *key, tvm::runtime::NDArray *value) override {
+    std::cout << " runtime::NDArray:   " << key << "=" << *value << ";\n";
+  }
+  void Visit(const char *key, tvm::runtime::ObjectRef *value) override {
+    std::cout << " runtime::ObjectRef: " << key << "=" << *value << ";\n";
+  }
+};
 
 void TirExprTest() {
   LOG_SPLIT_LINE("ExprTest");
@@ -167,8 +205,13 @@ void TirBufferLoadTest() {
   Buffer buffer = Buffer(data, dtype, shape, strides, elem_offset, buffer_name, align,
                          offset_factor, BufferType::kDefault, axis_separators, Span{});
 
+  LOG_PRINT_VAR(buffer);
+  MyIRSerializer serializer;
+  const_cast<BufferNode *>(buffer.get())->VisitAttrs(&serializer);
   /// GetFlattenedBuffer
   auto bufferflatten = buffer.GetFlattenedBuffer();
+  LOG_PRINT_VAR(bufferflatten);
+  const_cast<BufferNode *>(bufferflatten.get())->VisitAttrs(&serializer);
   /// LOG_PRINT_VAR(bufferflatten->data);
   /// LOG_PRINT_VAR(bufferflatten->dtype);
   /// LOG_PRINT_VAR(bufferflatten->shape);
@@ -317,6 +360,13 @@ void TirShuffleTest() {
     LOG_PRINT_VAR(shuffle->vectors);
     LOG_PRINT_VAR(shuffle->indices);
     LOG_PRINT_VAR(shuffle->dtype);
+
+    auto var1 = tvm::tir::Var("var1", DataType::Int(32, 4));
+    auto var2 = tvm::tir::Var("var2", DataType::Int(32, 4));
+
+    Array<PrimExpr> vector2({var1, var2});
+    PrimExpr shuffleconcat2{Shuffle::Concat(vector2)};
+    LOG_PRINT_VAR(shuffleconcat2);
 
     PrimExpr shuffleconcat{Shuffle::Concat(vectors)};
     LOG_PRINT_VAR(shuffleconcat);

@@ -304,7 +304,7 @@ void RelaxBindTest() {
     };
 
     OpRegistry *opregistry = OpRegistry::Global();
-    // LOG_PRINT_VAR(opregistry->ListAllNames());
+    LOG_PRINT_VAR(opregistry->ListAllNames());
     // NOLINTNEXTLINE
     Call call_node{
         Op::Get("relax.add"), {x, gv0}

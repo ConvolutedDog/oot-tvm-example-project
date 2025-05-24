@@ -77,6 +77,7 @@ void TestMethod2(bool listAllNames, bool onlyListAllNames) {
   registry->RunTestSuite("ir_replace_global_vars_test_IrReplaceGlobalVarsTest");
   registry->RunTestSuite("ir_transform_test_IrPassContextTest");
   registry->RunTestSuite("ir_transform_test_IrPassTest");
+  registry->RunTestSuite("ir_transform_test_IrPassTest2");
   registry->RunTestSuite("node_repr_printer_test_NodeDumpTest");
   registry->RunTestSuite("node_repr_printer_test_NodeAsLegacyReprTest");
   registry->RunTestSuite("node_repr_printer_test_NodeReprPrinterTest");
