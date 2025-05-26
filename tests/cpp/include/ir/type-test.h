@@ -4,6 +4,8 @@
 #include "tvm/runtime/container/array.h"
 #include "tvm/runtime/data_type.h"
 
+/// @sa src/ir/type.cc
+
 namespace type_test {
 
 void IrPrimTypeTest();

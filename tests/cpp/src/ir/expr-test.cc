@@ -105,6 +105,8 @@ namespace expr_test {
 
 void IrPrimExprTest() {
   PrimExpr primExprA = 4;
+  LOG_PRINT_VAR(primExprA.as<IntImmNode>()->value);
+  LOG_PRINT_VAR(primExprA.as<tvm::IntImm>());
   DataType dtypeA = primExprA.dtype();
   DLDataType dldtypeA = DLDataType(dtypeA);
   LOG_PRINT_VAR(dldtypeA);

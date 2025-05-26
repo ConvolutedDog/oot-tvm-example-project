@@ -158,8 +158,8 @@ void TirBufferLoadTest() {
   };
   /// This shape contains the shape as it is accessed by BufferLoad/BufferStore nodes, and
   /// used by the low-level code generators.
-  Array<PrimExpr> shape{128, 128};  // 2D 128 x 128 matrix buffer
-  Array<PrimExpr> strides{128, 1};  // Row-major. Here, users can also don't specify
+  Array<PrimExpr> shape{128, 128, 128};  // 2D 128 x 128 matrix buffer
+  Array<PrimExpr> strides{};  // Row-major. Here, users can also don't specify
                                     // strides. Just use `strides{}` here and call
                                     // `buffer.MakeStrideView()` will generate strides
                                     // automatically (default to row-major: [128, 1]).
@@ -178,7 +178,7 @@ void TirBufferLoadTest() {
   /// @todo Supplement more details about axis_separators.
   // NOLINTNEXTLINE
   Array<IntImm> axis_separators{
-      {IntImm{DataType::Int(32), 0}, IntImm{DataType::Int(32), 1}}
+      { IntImm{DataType::Int(32), 0}, IntImm{DataType::Int(32), 1}}
   };
 
   /// @brief BufferType:
@@ -212,16 +212,16 @@ void TirBufferLoadTest() {
   auto bufferflatten = buffer.GetFlattenedBuffer();
   LOG_PRINT_VAR(bufferflatten);
   const_cast<BufferNode *>(bufferflatten.get())->VisitAttrs(&serializer);
-  /// LOG_PRINT_VAR(bufferflatten->data);
-  /// LOG_PRINT_VAR(bufferflatten->dtype);
-  /// LOG_PRINT_VAR(bufferflatten->shape);
-  /// LOG_PRINT_VAR(bufferflatten->axis_separators);
-  /// LOG_PRINT_VAR(bufferflatten->strides);
-  /// LOG_PRINT_VAR(bufferflatten->elem_offset);
-  /// LOG_PRINT_VAR(bufferflatten->name);
-  /// LOG_PRINT_VAR(bufferflatten->data_alignment);
-  /// LOG_PRINT_VAR(bufferflatten->offset_factor);
-  /// LOG_PRINT_VAR(bufferflatten->buffer_type);
+  LOG_PRINT_VAR(bufferflatten->data);
+  LOG_PRINT_VAR(bufferflatten->dtype);
+  LOG_PRINT_VAR(bufferflatten->shape);
+  LOG_PRINT_VAR(bufferflatten->axis_separators);
+  LOG_PRINT_VAR(bufferflatten->strides);
+  LOG_PRINT_VAR(bufferflatten->elem_offset);
+  LOG_PRINT_VAR(bufferflatten->name);
+  LOG_PRINT_VAR(bufferflatten->data_alignment);
+  LOG_PRINT_VAR(bufferflatten->offset_factor);
+  LOG_PRINT_VAR(bufferflatten->buffer_type);
 
   /// Define a BufferLoad instance.
   // clang-format off
@@ -230,22 +230,22 @@ void TirBufferLoadTest() {
   /// The indices can set its last index to be a vector type (with DataType's lanes > 1).
   /// @todo (yangjianchao) Supplement more details about indices with its last index being
   /// with DataType's lanes > 1.
-  BufferLoad bufferload{buffer, {2, 4}, Broadcast{tvm::Bool{true}, 4}};
+  // BufferLoad bufferload{buffer, {2, 4}, Broadcast{tvm::Bool{true}, 4}};
   // clang-format on
-  LOG_PRINT_VAR(bufferload);
-  LOG_PRINT_VAR(bufferload->buffer->data);
-  LOG_PRINT_VAR(bufferload->buffer->dtype);
-  LOG_PRINT_VAR(bufferload->buffer->shape);
-  LOG_PRINT_VAR(bufferload->buffer->axis_separators);
-  LOG_PRINT_VAR(bufferload->buffer->strides);
-  LOG_PRINT_VAR(bufferload->buffer->elem_offset);
-  LOG_PRINT_VAR(bufferload->buffer->name);
-  LOG_PRINT_VAR(bufferload->buffer->data_alignment);
-  LOG_PRINT_VAR(bufferload->buffer->offset_factor);
-  LOG_PRINT_VAR(bufferload->buffer->buffer_type);
-  LOG_PRINT_VAR(bufferload->dtype);
-  LOG_PRINT_VAR(bufferload->indices);
-  LOG_PRINT_VAR(bufferload->predicate);
+  // LOG_PRINT_VAR(bufferload);
+  // LOG_PRINT_VAR(bufferload->buffer->data);
+  // LOG_PRINT_VAR(bufferload->buffer->dtype);
+  // LOG_PRINT_VAR(bufferload->buffer->shape);
+  // LOG_PRINT_VAR(bufferload->buffer->axis_separators);
+  // LOG_PRINT_VAR(bufferload->buffer->strides);
+  // LOG_PRINT_VAR(bufferload->buffer->elem_offset);
+  // LOG_PRINT_VAR(bufferload->buffer->name);
+  // LOG_PRINT_VAR(bufferload->buffer->data_alignment);
+  // LOG_PRINT_VAR(bufferload->buffer->offset_factor);
+  // LOG_PRINT_VAR(bufferload->buffer->buffer_type);
+  // LOG_PRINT_VAR(bufferload->dtype);
+  // LOG_PRINT_VAR(bufferload->indices);
+  // LOG_PRINT_VAR(bufferload->predicate);
 }
 
 void TirProducerLoadTest() {

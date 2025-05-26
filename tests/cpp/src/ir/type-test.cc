@@ -1,5 +1,7 @@
 #include "ir/type-test.h"
 #include "test-func-registry.h"
+#include "tvm/ir/expr.h"
+#include <tvm/runtime/logging.h>
 
 using tvm::Span;
 
@@ -13,6 +15,31 @@ using tvm::runtime::Array;
 using tvm::runtime::DataType;
 
 namespace type_test {
+
+/// @brief Some explanation about DataType's vscale factor.
+/// `DataType` can be used to store fixed-length vector or scalable vector. For the
+/// fixed-length vectors, `lanes` should satisfy `static_cast<int16_t>(lanes) > 1`.
+/// Fixed-length vectors' lanes can be accessed during the compile time. For the
+/// scalable vectors, `lanes` should satisfy `static_cast<int16_t>(lanes) < -1`.
+/// scalabe vectors' lanes can not be accessed during the compile time, but the
+/// scalable vector length is determined by the hardware.
+///
+/// When we set the lanes of a fixed-length vector, `lanes = 4` only means that
+/// "this operation semantically processes 4 elements" (the number of logical
+/// lanes), and does not directly represent the actual vector length of the
+/// hardware. For scalable vectors, we set `lanes = -4`, which means that the
+/// number of real lanes of the scalable vector equals to the number of lanes
+/// of the hardware basic vector unit * 4.
+///
+/// So, if we want to broadcast a scalr value to a scalable vector, we need to
+/// call the `builtin::vscale` function to get the target's number of lanes
+/// of the hardware basic vector unit. For example, in the operator+ function,
+/// If op_a is a scalar value and op_b is a scalable vector, we need to broadcast
+/// op_a to a scalable vector:
+///   DataType dtype_a = op_a.dtype();  // lanes = 1
+///   DataType dtype_b = op_b.dtype();  // lanes < -1
+///   tir::Broadcast(op_a, tir::Mul(dtype_b.vscale_factor(),
+///                  Call(DataType::Int(32), builtin::vscale(), {})));
 
 std::string DataType2Str(const DataType &dtype) {
   return tvm::runtime::DLDataType2String((DLDataType)dtype);

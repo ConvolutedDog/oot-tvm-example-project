@@ -557,6 +557,9 @@ classDiagram
       -> mutable Span span
     }
 
+    note for tvm.Type "runtime::DataType GetRuntimeDataType(const Type& type)"
+    note for tvm.Type "Type GetType(const PrimExpr& expr)"
+
     class tvm.PrimType {
         -> DataType dtype
         PrimType(DataType dtype, Span = Span())
