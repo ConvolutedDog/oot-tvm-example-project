@@ -19,11 +19,7 @@ PULL_TIMEOUT=20
 while [ $retry_count -lt $MAX_RETRIES ]; do
     echo "Attempting git pull ${@}... (Attempt: $((retry_count + 1))/$MAX_RETRIES)"
 
-<<<<<<< HEAD
     # Execute git pull with arguments and a timeout
-=======
-    # Execute git pull with a timeout
->>>>>>> ae99631 ([Doc] add something in several file:)
     timeout $PULL_TIMEOUT git pull "$@"
 
     # Check the exit status of git pull
