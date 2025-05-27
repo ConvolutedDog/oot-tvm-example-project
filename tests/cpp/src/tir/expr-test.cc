@@ -208,31 +208,44 @@ void TirBufferLoadTest() {
   LOG_PRINT_VAR(buffer);
   MyIRSerializer serializer;
   const_cast<BufferNode *>(buffer.get())->VisitAttrs(&serializer);
+
   /// GetFlattenedBuffer
   auto bufferflatten = buffer.GetFlattenedBuffer();
   LOG_PRINT_VAR(bufferflatten);
   const_cast<BufferNode *>(bufferflatten.get())->VisitAttrs(&serializer);
-  /// LOG_PRINT_VAR(bufferflatten->data);
+  LOG_PRINT_VAR(bufferflatten->data);
+  LOG_PRINT_VAR(bufferflatten->shape);
+  LOG_PRINT_VAR(bufferflatten->axis_separators);
+  LOG_PRINT_VAR(bufferflatten->strides);
+  LOG_PRINT_VAR(bufferflatten->elem_offset);
+  LOG_PRINT_VAR(bufferflatten->name);
+  LOG_PRINT_VAR(bufferflatten->data_alignment);
+  LOG_PRINT_VAR(bufferflatten->offset_factor);
+  LOG_PRINT_VAR(bufferflatten->buffer_type);
+  
+  /// Define a BufferLoad instance.
+  // clang-format off
+  /// Lanes of `predicate` of `Bufferload` must be consistent with the `dtype.lanes` of
   /// the `Buffer`. The shape of the indices must equal to the shape size of `Buffer`.
   /// The indices can set its last index to be a vector type (with DataType's lanes > 1).
   /// @todo (yangjianchao) Supplement more details about indices with its last index being
   /// with DataType's lanes > 1.
-  // BufferLoad bufferload{buffer, {2, 4}, Broadcast{tvm::Bool{true}, 4}};
+  BufferLoad bufferload{buffer, {2, 4}, Broadcast{tvm::Bool{true}, 4}};
   // clang-format on
-  // LOG_PRINT_VAR(bufferload);
-  // LOG_PRINT_VAR(bufferload->buffer->data);
-  // LOG_PRINT_VAR(bufferload->buffer->dtype);
-  // LOG_PRINT_VAR(bufferload->buffer->shape);
-  // LOG_PRINT_VAR(bufferload->buffer->axis_separators);
-  // LOG_PRINT_VAR(bufferload->buffer->strides);
-  // LOG_PRINT_VAR(bufferload->buffer->elem_offset);
-  // LOG_PRINT_VAR(bufferload->buffer->name);
-  // LOG_PRINT_VAR(bufferload->buffer->data_alignment);
-  // LOG_PRINT_VAR(bufferload->buffer->offset_factor);
-  // LOG_PRINT_VAR(bufferload->buffer->buffer_type);
-  // LOG_PRINT_VAR(bufferload->dtype);
-  // LOG_PRINT_VAR(bufferload->indices);
-  // LOG_PRINT_VAR(bufferload->predicate);
+  LOG_PRINT_VAR(bufferload);
+  LOG_PRINT_VAR(bufferload->buffer->data);
+  LOG_PRINT_VAR(bufferload->buffer->dtype);
+  LOG_PRINT_VAR(bufferload->buffer->shape);
+  LOG_PRINT_VAR(bufferload->buffer->axis_separators);
+  LOG_PRINT_VAR(bufferload->buffer->strides);
+  LOG_PRINT_VAR(bufferload->buffer->elem_offset);
+  LOG_PRINT_VAR(bufferload->buffer->name);
+  LOG_PRINT_VAR(bufferload->buffer->data_alignment);
+  LOG_PRINT_VAR(bufferload->buffer->offset_factor);
+  LOG_PRINT_VAR(bufferload->buffer->buffer_type);
+  LOG_PRINT_VAR(bufferload->dtype);
+  LOG_PRINT_VAR(bufferload->indices);
+  LOG_PRINT_VAR(bufferload->predicate);
 }
 
 void TirProducerLoadTest() {
