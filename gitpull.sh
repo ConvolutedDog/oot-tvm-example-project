@@ -1,9 +1,12 @@
 #!/bin/bash
 
 # Script: gitpull.sh
-# Purpose: Automatically retry `git pull` until success or max retries reached.
+# Purpose: Automatically retry `git pull` with arguments until success
+#          or max retries reached.
 # Handles timeouts (e.g., due to network provider) and other failures.
-# Note: Only works well on Linux systems. We have not test it on MacOS.
+# Usage: ./gitpull.sh [any git pull arguments, e.g. upstream main]
+# Note: It's user's pesponsibility for safe command.
+#       Only works well on Linux systems. We have not test it on MacOS.
 
 # Maximum number of retries
 MAX_RETRIES=100
@@ -14,9 +17,9 @@ PULL_TIMEOUT=20
 
 # Loop until git pull succeeds or the maximum number of retries is reached
 while [ $retry_count -lt $MAX_RETRIES ]; do
-    echo "Attempting git pull... (Attempt: $((retry_count + 1))/$MAX_RETRIES)"
+    echo "Attempting git pull ${@}... (Attempt: $((retry_count + 1))/$MAX_RETRIES)"
 
-    # Execute git pull with a timeout
+    # Execute git pull with arguments and a timeout
     timeout $PULL_TIMEOUT git pull "$@"
 
     # Check the exit status of git pull
