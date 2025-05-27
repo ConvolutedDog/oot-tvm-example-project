@@ -1,9 +1,12 @@
 #!/bin/bash
 
 # Script: gitpush.sh
-# Purpose: Automatically retry `git push` until success or max retries reached.
+# Purpose: Automatically retry `git push` with arguments until success
+#          or max retries reached.
 # Handles timeouts (e.g., due to network provider) and other failures.
-# Note: Only works well on Linux systems. We have not test it on MacOS.
+# Usage: ./gitpush.sh [any git push arguments, e.g. origin dev]
+# Note: It's user's pesponsibility for safe command.
+#       Only works well on Linux systems. We have not test it on MacOS.
 
 # Maximum number of retries
 MAX_RETRIES=100
@@ -14,10 +17,10 @@ PUSH_TIMEOUT=20
 
 # Loop until git push succeeds or the maximum number of retries is reached
 while [ $retry_count -lt $MAX_RETRIES ]; do
-    echo "Attempting git push... (Attempt: $((retry_count + 1))/$MAX_RETRIES)"
+    echo "Attempting git push ${@}... (Attempt: $((retry_count + 1))/$MAX_RETRIES)"
 
     # Execute git push with a timeout
-    timeout $PUSH_TIMEOUT git push
+    timeout $PUSH_TIMEOUT git push "$@"
 
     # Check the exit status of git push
     push_exit_code=$?
