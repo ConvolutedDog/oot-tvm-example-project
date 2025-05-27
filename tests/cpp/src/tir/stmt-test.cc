@@ -2,6 +2,8 @@
 #include "test-func-registry.h"
 #include <tvm/ir/expr.h>
 #include <tvm/runtime/ndarray.h>
+#include <tvm/te/operation.h>
+#include <tvm/tir/expr.h>
 #include <tvm/tir/op.h>
 #include <tvm/tir/stmt.h>
 
@@ -70,6 +72,7 @@ void TirBufferStoreTest() {
   LOG_SPLIT_LINE("BufferStore");
   BufferStore bufferstore{buffer, broadcast, indices};
   LOG_PRINT_VAR(bufferstore);
+  // DBG_PRINT_VAR(bufferstore);
   /// Output:
   ///   buffer = T.Buffer((128, 128), "float32x4", strides=(128, 1), offset_factor=64)
   ///   input = T.float32()
@@ -105,6 +108,8 @@ void TirBufferStoreTest() {
       {lane0, lane1, lane2, lane3},
       {0,     1,     2,     3    }
   };
+  tvm::tir::Shuffle shuffle2({lane0, lane1, lane2, lane3}, {3, 1, 2, 0});
+  LOG_PRINT_VAR(shuffle2);
   bufferstore = BufferStore{buffer, shuffle, indices};
   LOG_PRINT_VAR(bufferstore);
   /// Output:

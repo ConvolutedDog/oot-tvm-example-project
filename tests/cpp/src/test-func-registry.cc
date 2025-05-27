@@ -103,3 +103,9 @@ TestSuiteRegistry *TestSuiteRegistry::inst = nullptr;
 TestSuiteRegistry::InstanceDeleter TestSuiteRegistry::deleter_;
 
 }  // namespace test_func_registry
+
+#include "tvm/node/repr_printer.h"
+
+void DBG_PRINT_VAR(tvm::runtime::ObjectRef &stmt) {  // NOLINT
+  tvm::runtime::operator<<(std::cout, stmt);
+}
