@@ -1,5 +1,6 @@
 #include "ir/module-test.h"
 #include "test-func-registry.h"
+#include "utils.h"
 
 namespace module_test {
 
@@ -133,6 +134,9 @@ void IrModuleTest() {
   /// Shallow copy
   irmodule3 = irmodule1->ShallowCopy();
   LOG_PRINT_VAR(irmodule3);
+
+  /// Test `_contains_relax` 
+  LOG_PRINT_VAR(_contains_relax(irmodule3));
 }
 
 }  // namespace module_test
