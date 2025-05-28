@@ -1,3 +1,4 @@
+import tvm
 import tvm.relax as rx
 from tvm import tir
 from tvm.script import ir as I, relax as R, tir as T
@@ -49,7 +50,8 @@ false_blocks = [rx.BindingBlock(false_bindings)]
 false_seq_expr = rx.SeqExpr(false_blocks, false_blocks[-1].bindings[-1].var)
 
 # build If node
-if_node = rx.If(cond=cond, true_branch=true_seq_expr, false_branch=false_seq_expr)
+if_node = rx.If(cond=cond, true_branch=true_seq_expr,
+                false_branch=false_seq_expr)
 
 if_node.show()
 
@@ -68,10 +70,12 @@ y = rx.Var("y", scalar_struct_info)
 
 
 inner_block = rx.BindingBlock(
-    [rx.VarBinding(x0, rx.const(2, "int32")), rx.VarBinding(y, rx.Call(f, [x0]))]
+    [rx.VarBinding(x0, rx.const(2, "int32")),
+     rx.VarBinding(y, rx.Call(f, [x0]))]
 )
 
-inner_func = rx.Function([ipt], rx.SeqExpr([inner_block], y), scalar_struct_info)
+inner_func = rx.Function([ipt], rx.SeqExpr(
+    [inner_block], y), scalar_struct_info)
 
 outer_block = rx.BindingBlock(
     [
