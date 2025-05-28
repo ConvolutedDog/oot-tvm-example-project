@@ -234,20 +234,20 @@ void TirBufferLoadTest() {
   /// with DataType's lanes > 1.
   BufferLoad bufferload{buffer, {2, 4, 8}, Broadcast{tvm::Bool{true}, 4}};
   // clang-format on
-  // LOG_PRINT_VAR(bufferload);
-  // LOG_PRINT_VAR(bufferload->buffer->data);
-  // LOG_PRINT_VAR(bufferload->buffer->dtype);
-  // LOG_PRINT_VAR(bufferload->buffer->shape);
-  // LOG_PRINT_VAR(bufferload->buffer->axis_separators);
-  // LOG_PRINT_VAR(bufferload->buffer->strides);
-  // LOG_PRINT_VAR(bufferload->buffer->elem_offset);
-  // LOG_PRINT_VAR(bufferload->buffer->name);
-  // LOG_PRINT_VAR(bufferload->buffer->data_alignment);
-  // LOG_PRINT_VAR(bufferload->buffer->offset_factor);
-  // LOG_PRINT_VAR(bufferload->buffer->buffer_type);
-  // LOG_PRINT_VAR(bufferload->dtype);
-  // LOG_PRINT_VAR(bufferload->indices);
-  // LOG_PRINT_VAR(bufferload->predicate);
+  LOG_PRINT_VAR(bufferload);
+  LOG_PRINT_VAR(bufferload->buffer->data);
+  LOG_PRINT_VAR(bufferload->buffer->dtype);
+  LOG_PRINT_VAR(bufferload->buffer->shape);
+  LOG_PRINT_VAR(bufferload->buffer->axis_separators);
+  LOG_PRINT_VAR(bufferload->buffer->strides);
+  LOG_PRINT_VAR(bufferload->buffer->elem_offset);
+  LOG_PRINT_VAR(bufferload->buffer->name);
+  LOG_PRINT_VAR(bufferload->buffer->data_alignment);
+  LOG_PRINT_VAR(bufferload->buffer->offset_factor);
+  LOG_PRINT_VAR(bufferload->buffer->buffer_type);
+  LOG_PRINT_VAR(bufferload->dtype);
+  LOG_PRINT_VAR(bufferload->indices);
+  LOG_PRINT_VAR(bufferload->predicate);
 }
 
 void TirProducerLoadTest() {
