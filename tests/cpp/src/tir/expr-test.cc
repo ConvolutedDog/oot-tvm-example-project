@@ -230,7 +230,7 @@ void TirBufferLoadTest() {
   /// The indices can set its last index to be a vector type (with DataType's lanes > 1).
   /// @todo (yangjianchao) Supplement more details about indices with its last index being
   /// with DataType's lanes > 1.
-  BufferLoad bufferload{buffer, {2, 4,8}, Broadcast{tvm::Bool{true}, 4}};
+  BufferLoad bufferload{buffer, {2, 4, 8}, Broadcast{tvm::Bool{true}, 4}};
   // clang-format on
   LOG_PRINT_VAR(bufferload);
   LOG_PRINT_VAR(bufferload->buffer->data);
