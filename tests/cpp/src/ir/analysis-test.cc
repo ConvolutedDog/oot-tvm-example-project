@@ -1,5 +1,7 @@
 #include "ir/analysis-test.h"
 #include "test-func-registry.h"
+#include "utils.h"
+#include <tvm/ir/op.h>
 #include <tvm/runtime/container/array.h>
 #include <tvm/runtime/container/optional.h>
 #include <tvm/tir/function.h>
@@ -48,11 +50,16 @@ Expr MakeCallTIR(Expr func, Tuple args, Array<TensorStructInfo> out_sinfo_list,
 void IrAnalysisTest() {
   LOG_SPLIT_LINE("IrAnalysisTest");
 
+  /// @brief List all op names.
+  Array<tvm::runtime::String> names = ListAllOpNames();
+  AdjustScreenPrint(std::cout, names);
+
   /// @brief Define a GlobalVar.
   GlobalVar globalvar("globalvar");
 
   /// Create tvm::relax::Function
   Expr opexpr = tvm::Op::Get("relax.nn.conv2d");
+
   Var arg1{"arg1", tvm::relax::ShapeStructInfo{4}};
   Var arg2{"arg2", tvm::relax::ShapeStructInfo{4}};
   Call call{

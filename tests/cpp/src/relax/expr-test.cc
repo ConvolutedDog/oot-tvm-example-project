@@ -3,6 +3,7 @@
 #include "test-func-registry.h"
 #include "tvm/relax/attrs/nn.h"
 #include "tvm/relax/struct_info.h"
+#include "utils.h"
 #include <tvm/node/script_printer.h>
 #include <tvm/relax/expr.h>
 
@@ -303,8 +304,9 @@ void RelaxBindTest() {
         "gv1", TensorStructInfo{ShapeExpr{{m, n}}, DataType::Float(32)}
     };
 
-    OpRegistry *opregistry = OpRegistry::Global();
-    LOG_PRINT_VAR(opregistry->ListAllNames());
+    Array<tvm::runtime::String> names = ListAllOpNames();
+    AdjustScreenPrint(std::cout, names);
+
     // NOLINTNEXTLINE
     Call call_node{
         Op::Get("relax.add"), {x, gv0}
