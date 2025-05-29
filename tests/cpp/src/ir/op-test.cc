@@ -1,6 +1,7 @@
 #include "ir/op-test.h"
 #include "dlpack/dlpack.h"
 #include "test-func-registry.h"
+#include "utils.h"
 
 namespace op_test {
 
@@ -146,8 +147,10 @@ void IrOpTest() {
 
   /// @brief We can use `OpRegistry::ListAllNames()` to get all the operator names that
   /// are registered in the system.
+  Array<tvm::runtime::String> names = ListAllOpNames();
+  AdjustScreenPrint(std::cout, names);
+
   OpRegistry *opregistry = OpRegistry::Global();
-  LOG_PRINT_VAR(opregistry->ListAllNames());
 
   /// @brief We can use `Op::Get()` to get the `Op` operator by its name.
   Op op = Op::Get("relax.nn.conv2d");
