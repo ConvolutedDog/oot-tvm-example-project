@@ -83,31 +83,31 @@ classDiagram
     class tvm.PrimExpr {
       -> DataType dtype
       -> string Script(const Optional&ltPrinterConfig&gt& config = NullOpt)
-      PrimExpr(int32_t value)
-      PrimExpr(float value)
+      PrimExpr(int32_t value) // Return tvm.IntImm
+      PrimExpr(float value) // Return tvm.FloatImm
       DataType dtype()
     }
 
-    note for tvm.PrimExpr "PrimExpr operator+(PrimExpr a, PrimExpr b)"
-    note for tvm.PrimExpr "PrimExpr operator-(PrimExpr a, PrimExpr b)"
-    note for tvm.PrimExpr "PrimExpr operator-(PrimExpr a)"
-    note for tvm.PrimExpr "PrimExpr operator*(PrimExpr a, PrimExpr b)"
-    note for tvm.PrimExpr "PrimExpr operator/(PrimExpr a, PrimExpr b)"
-    note for tvm.PrimExpr "PrimExpr operator<<(PrimExpr a, PrimExpr b)"
-    note for tvm.PrimExpr "PrimExpr operator>>(PrimExpr a, PrimExpr b)"
-    note for tvm.PrimExpr "PrimExpr operator>(PrimExpr a, PrimExpr b)"
-    note for tvm.PrimExpr "PrimExpr operator>=(PrimExpr a, PrimExpr b)"
-    note for tvm.PrimExpr "PrimExpr operator<(PrimExpr a, PrimExpr b)"
-    note for tvm.PrimExpr "PrimExpr operator<=(PrimExpr a, PrimExpr b)"
-    note for tvm.PrimExpr "PrimExpr operator==(PrimExpr a, PrimExpr b)"
-    note for tvm.PrimExpr "PrimExpr operator!=(PrimExpr a, PrimExpr b)"
-    note for tvm.PrimExpr "PrimExpr operator&&(PrimExpr a, PrimExpr b)"
-    note for tvm.PrimExpr "PrimExpr operator||(PrimExpr a, PrimExpr b)"
-    note for tvm.PrimExpr "PrimExpr operator!(PrimExpr a)"
-    note for tvm.PrimExpr "PrimExpr operator&(PrimExpr a, PrimExpr b)"
-    note for tvm.PrimExpr "PrimExpr operator|(PrimExpr a, PrimExpr b)"
-    note for tvm.PrimExpr "PrimExpr operator^(PrimExpr a, PrimExpr b)"
-    note for tvm.PrimExpr "PrimExpr operator~(PrimExpr a)"
+    %% note for tvm.PrimExpr "PrimExpr operator+(PrimExpr a, PrimExpr b)"
+    %% note for tvm.PrimExpr "PrimExpr operator-(PrimExpr a, PrimExpr b)"
+    %% note for tvm.PrimExpr "PrimExpr operator-(PrimExpr a)"
+    %% note for tvm.PrimExpr "PrimExpr operator*(PrimExpr a, PrimExpr b)"
+    %% note for tvm.PrimExpr "PrimExpr operator/(PrimExpr a, PrimExpr b)"
+    %% note for tvm.PrimExpr "PrimExpr operator<<(PrimExpr a, PrimExpr b)"
+    %% note for tvm.PrimExpr "PrimExpr operator>>(PrimExpr a, PrimExpr b)"
+    %% note for tvm.PrimExpr "PrimExpr operator>(PrimExpr a, PrimExpr b)"
+    %% note for tvm.PrimExpr "PrimExpr operator>=(PrimExpr a, PrimExpr b)"
+    %% note for tvm.PrimExpr "PrimExpr operator<(PrimExpr a, PrimExpr b)"
+    %% note for tvm.PrimExpr "PrimExpr operator<=(PrimExpr a, PrimExpr b)"
+    %% note for tvm.PrimExpr "PrimExpr operator==(PrimExpr a, PrimExpr b)"
+    %% note for tvm.PrimExpr "PrimExpr operator!=(PrimExpr a, PrimExpr b)"
+    %% note for tvm.PrimExpr "PrimExpr operator&&(PrimExpr a, PrimExpr b)"
+    %% note for tvm.PrimExpr "PrimExpr operator||(PrimExpr a, PrimExpr b)"
+    %% note for tvm.PrimExpr "PrimExpr operator!(PrimExpr a)"
+    %% note for tvm.PrimExpr "PrimExpr operator&(PrimExpr a, PrimExpr b)"
+    %% note for tvm.PrimExpr "PrimExpr operator|(PrimExpr a, PrimExpr b)"
+    %% note for tvm.PrimExpr "PrimExpr operator^(PrimExpr a, PrimExpr b)"
+    %% note for tvm.PrimExpr "PrimExpr operator~(PrimExpr a)"
 
     class tvm.RelaxExpr {
         -> mutable Type checked_type_
@@ -197,12 +197,20 @@ classDiagram
         AddNode* CopyOnWrite()
     }
 
+    note for tvm.tir.Add "PrimExpr operator+(PrimExpr a, PrimExpr b)"
+    note for tvm.tir.Add "PrimExpr add(PrimExpr a, PrimExpr b)"
+
     class tvm.tir.Sub {
         -> PrimExpr a
         -> PrimExpr b
         Sub(PrimExpr a, PrimExpr b, Span span = Span())
         SubNode* CopyOnWrite()
     }
+
+    note for tvm.tir.Sub "PrimExpr operator-(PrimExpr a, PrimExpr b)"
+    note for tvm.tir.Sub "PrimExpr sub(PrimExpr a, PrimExpr b)"
+    note for tvm.tir.Sub "PrimExpr operator-(PrimExpr a)"
+    note for tvm.tir.Sub "PrimExpr neg(PrimExpr a)"
 
     class tvm.tir.Mul {
         -> PrimExpr a
@@ -211,12 +219,18 @@ classDiagram
         MulNode* CopyOnWrite()
     }
 
+    note for tvm.tir.Mul "PrimExpr operator*(PrimExpr a, PrimExpr b)"
+    note for tvm.tir.Mul "PrimExpr mul(PrimExpr a, PrimExpr b)"
+
     class tvm.tir.Div {
         -> PrimExpr a
         -> PrimExpr b
         Div(PrimExpr a, PrimExpr b, Span span = Span())
         DivNode* CopyOnWrite()
     }
+
+    note for tvm.tir.Div "PrimExpr operator/(PrimExpr a, PrimExpr b)"
+    note for tvm.tir.Div "PrimExpr div(PrimExpr a, PrimExpr b)"
 
     class tvm.tir.Mod {
         -> PrimExpr a
@@ -225,12 +239,19 @@ classDiagram
         ModNode* CopyOnWrite()
     }
 
+    note for tvm.tir.Mod "PrimExpr operator%(PrimExpr a, PrimExpr b)"
+
     class tvm.tir.FloorDiv {
         -> PrimExpr a
         -> PrimExpr b
         FloorDiv(PrimExpr a, PrimExpr b, Span span = Span())
         FloorDivNode* CopyOnWrite()
     }
+
+    note for tvm.tir.FloorDiv "PrimExpr ceildiv(PrimExpr a, PrimExpr b)"
+    note for tvm.tir.FloorDiv "PrimExpr floordiv(PrimExpr a, PrimExpr b)"
+    note for tvm.tir.FloorDiv "indexdiv(PrimExpr a, PrimExpr b)"
+    note for tvm.tir.FloorDiv "shapediv(PrimExpr a, PrimExpr b)"
 
     class tvm.tir.FloorMod {
         -> PrimExpr a
@@ -239,12 +260,17 @@ classDiagram
         FloorModNode* CopyOnWrite()
     }
 
+    note for tvm.tir.FloorDiv "PrimExpr floormod(PrimExpr a, PrimExpr b)"
+    note for tvm.tir.FloorDiv "PrimExpr indexmod(PrimExpr a, PrimExpr b)"
+
     class tvm.tir.Min {
         -> PrimExpr a
         -> PrimExpr b
         Min(PrimExpr a, PrimExpr b, Span span = Span())
         MinNode* CopyOnWrite()
     }
+
+    note for tvm.tir.Min "PrimExpr min(PrimExpr a, PrimExpr b)"
 
     class tvm.tir.Max {
         -> PrimExpr a
@@ -253,12 +279,16 @@ classDiagram
         MaxNode* CopyOnWrite()
     }
 
+    note for tvm.tir.Max "PrimExpr max(PrimExpr a, PrimExpr b)"
+
     class tvm.tir.EQ {
         -> PrimExpr a
         -> PrimExpr b
         EQ(PrimExpr a, PrimExpr b, Span span = Span())
         EQNode* CopyOnWrite()
     }
+
+    note for tvm.tir.EQ "PrimExpr operator==(PrimExpr a, PrimExpr b)"
 
     class tvm.tir.NE {
         -> PrimExpr a
@@ -267,12 +297,16 @@ classDiagram
         NENode* CopyOnWrite()
     }
 
+    note for tvm.tir.NE "PrimExpr operator!=(PrimExpr a, PrimExpr b)"
+
     class tvm.tir.LT {
         -> PrimExpr a
         -> PrimExpr b
         LT(PrimExpr a, PrimExpr b, Span span = Span())
         LTNode* CopyOnWrite()
     }
+
+    note for tvm.tir.LT "PrimExpr operator<(PrimExpr a, PrimExpr b)"
 
     class tvm.tir.LE {
         -> PrimExpr a
@@ -281,11 +315,15 @@ classDiagram
         LENode* CopyOnWrite()
     }
 
+    note for tvm.tir.LE "PrimExpr operator<=(PrimExpr a, PrimExpr b)"
+
     class tvm.tir.GT {
         -> PrimExpr a
         -> PrimExpr b
         GT(PrimExpr a, PrimExpr b, Span span = Span())
     }
+
+    note for tvm.tir.GT "PrimExpr operator>(PrimExpr a, PrimExpr b)"
 
     class tvm.tir.GE {
         -> PrimExpr a
@@ -294,12 +332,16 @@ classDiagram
         GENode* CopyOnWrite()
     }
 
+    note for tvm.tir.GE "PrimExpr operator>=(PrimExpr a, PrimExpr b)"
+
     class tvm.tir.And {
         -> PrimExpr a
         -> PrimExpr b
         And(PrimExpr a, PrimExpr b, Span span = Span())
         AndNode* CopyOnWrite()
     }
+
+    note for tvm.tir.And "PrimExpr operator&&(PrimExpr a, PrimExpr b)"
 
     class tvm.tir.Or {
         -> PrimExpr a
@@ -308,11 +350,15 @@ classDiagram
         OrNode* CopyOnWrite()
     }
 
+    note for tvm.tir.Or "PrimExpr operator||(PrimExpr a, PrimExpr b)"
+
     class tvm.tir.Not {
         -> PrimExpr a
         Not(PrimExpr a, Span span = Span())
         NotNode* CopyOnWrite()
     }
+
+    note for tvm.tir.Not "PrimExpr operator!(PrimExpr a)"
 
     class tvm.tir.Select {
         -> PrimExpr condition
@@ -352,6 +398,8 @@ classDiagram
         BroadcastNode* CopyOnWrite()
     }
 
+    note for tvm.tir.Broadcast "void BroadcastToMatchLanes(PrimExpr& op_a, PrimExpr& op_b)"
+
     class tvm.tir.Let {
         -> PrimExpr var
         -> PrimExpr value
@@ -367,6 +415,33 @@ classDiagram
         CallNode* CopyOnWrite()
     }
 
+    note for tvm.tir.Call "PrimExpr ret(PrimExpr value)"
+    note for tvm.tir.Call "PrimExpr left_shift(PrimExpr a, PrimExpr b)"
+    note for tvm.tir.Call "PrimExpr operator<<(PrimExpr a, PrimExpr b)"
+    note for tvm.tir.Call "PrimExpr right_shift(PrimExpr a, PrimExpr b)"
+    note for tvm.tir.Call "PrimExpr operator>>(PrimExpr a, PrimExpr b)"
+    note for tvm.tir.Call "PrimExpr operator&(PrimExpr a, PrimExpr b)"
+    note for tvm.tir.Call "PrimExpr bitwise_and(PrimExpr a, PrimExpr b)"
+    note for tvm.tir.Call "PrimExpr operator|(PrimExpr a, PrimExpr b)"
+    note for tvm.tir.Call "PrimExpr bitwise_or(PrimExpr a, PrimExpr b)"
+    note for tvm.tir.Call "PrimExpr operator^(PrimExpr a, PrimExpr b)"
+    note for tvm.tir.Call "PrimExpr bitwise_xor(PrimExpr a, PrimExpr b)"
+    note for tvm.tir.Call "PrimExpr operator~(PrimExpr a)"
+    note for tvm.tir.Call "PrimExpr bitwise_neg(PrimExpr a)"
+    note for tvm.tir.Call "PrimExpr pow(PrimExpr x, PrimExpr y)"
+    note for tvm.tir.Call "PrimExpr isnan(PrimExpr x)"
+    note for tvm.tir.Call "PrimExpr fmod(PrimExpr x, PrimExpr y)"
+    note for tvm.tir.Call "PrimExpr floor(PrimExpr x)"
+    note for tvm.tir.Call "PrimExpr ceil(PrimExpr x)"
+    note for tvm.tir.Call "PrimExpr round(PrimExpr x)"
+    note for tvm.tir.Call "PrimExpr nearbyint(PrimExpr x)"
+    note for tvm.tir.Call "PrimExpr trunc(PrimExpr x)"
+    note for tvm.tir.Call "PrimExpr likely(PrimExpr cond)"
+    note for tvm.tir.Call "PrimExpr if_then_else(PrimExpr cond, PrimExpr true_value, PrimExpr false_value)"
+    note for tvm.tir.Call "PrimExpr reinterpret(const DataType& t, PrimExpr value)"
+    note for tvm.tir.Call "PrimExpr q_multiply_shift(PrimExpr x, PrimExpr y, PrimExpr q, PrimExpr s)"
+    note for tvm.tir.Call "PrimExpr LargeUIntImm(DataType t, int64_t low, int64_t high)"
+    
     class tvm.tir.Shuffle {
         -> Array&ltPrimExpr&gt vectors
         -> Array&ltPrimExpr&gt indices

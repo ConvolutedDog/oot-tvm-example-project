@@ -135,7 +135,7 @@ void IrModuleTest() {
   irmodule3 = irmodule1->ShallowCopy();
   LOG_PRINT_VAR(irmodule3);
 
-  /// Test `_contains_relax` 
+  /// Test `_contains_relax`
   LOG_PRINT_VAR(_contains_relax(irmodule3));
 }
 

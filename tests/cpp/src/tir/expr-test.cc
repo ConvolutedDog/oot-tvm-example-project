@@ -179,7 +179,7 @@ void TirBufferLoadTest() {
   /// @todo Supplement more details about axis_separators.
   // NOLINTNEXTLINE
   Array<IntImm> axis_separators{
-      { IntImm{DataType::Int(32), 0}, IntImm{DataType::Int(32), 1}}
+      {IntImm{DataType::Int(32), 0}, IntImm{DataType::Int(32), 1}}
   };
 
   /// @brief BufferType:

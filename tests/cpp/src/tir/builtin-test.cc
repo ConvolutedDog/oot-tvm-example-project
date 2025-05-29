@@ -1,6 +1,13 @@
 #include "tir/builtin-test.h"
 #include "test-func-registry.h"
 #include <tvm/ir/expr.h>
+#include <tvm/runtime/container/optional.h>
+#include "tvm/relax/expr.h"
+#include "tvm/relax/struct_info.h"
+#include "tvm/target/codegen.h"
+#include "tvm/relax/transform.h"
+#include "tvm/ir/transform.h"
+#include "tvm/tir/transform.h"
 
 namespace builtin_test {
 
@@ -10,7 +17,7 @@ void TirretTest() {
   auto &op = ret();
   LOG_PRINT_VAR(op->name);
   tvm::tir::Call call{tvm::DataType::Float(32), op, {tvm::PrimExpr{1}}};
-  LOG_PRINT_VAR(call)
+  LOG_PRINT_VAR(call);
 }
 
 void TirreinterpretTest() {}
@@ -25,7 +32,52 @@ void Tirbitwise_xorTest() {}
 
 void Tirbitwise_notTest() {}
 
-void Tirshift_leftTest() {}
+void Tirshift_leftTest() {
+  LOG_SPLIT_LINE("Tirshift_leftTest");
+
+  auto &op = shift_left();
+  tvm::GlobalVar globalvar("globalvar");
+
+  /// Create tvm::relax::Function
+  tvm::RelaxExpr opexpr = tvm::Op::Get("relax.add");
+  tvm::relax::Var arg1("arg1", tvm::relax::TensorStructInfo(tvm::DataType::Float(32), 4));
+  tvm::relax::Var arg2("arg2", tvm::relax::TensorStructInfo(tvm::DataType::Float(32), 4));
+  tvm::relax::Call call{
+      opexpr, {arg1, arg2}
+  };
+  tvm::relax::Function func{
+      {arg1, arg2},
+      call,
+      tvm::relax::TensorStructInfo{tvm::DataType::Float(32), 4},
+      true,
+  };
+
+  /// @note TVMScript cannot print functions of type: BaseFunc
+  tvm::IRModule irmodule{{std::pair<tvm::GlobalVar, tvm::BaseFunc>{globalvar, func}}};
+  LOG_PRINT_VAR(irmodule);
+
+  tvm::transform::Sequential passseq = tvm::transform::Sequential({
+      tvm::relax::transform::LegalizeOps(tvm::NullOpt),
+      tvm::tir::transform::LowerTVMBuiltin(),
+      tvm::tir::transform::LowerIntrin(),
+      tvm::tir::transform::LowerThreadAllreduce(),
+      tvm::tir::transform::LowerDeviceStorageAccessInfo(),
+      tvm::tir::transform::LowerCustomDatatypes(),
+  });
+  irmodule = passseq(irmodule);
+  LOG_PRINT_VAR(irmodule);
+
+  
+  // auto vm = tvm::relax::transform::VMCodeLower(target, "executable")(irmodule);
+
+
+  tvm::Target target = tvm::Target("llvm");
+
+  LOG_PRINT_VAR(target->kind->name);
+  tvm::runtime::Module exe = tvm::codegen::Build(irmodule, target);
+  // tvm::runtime::Module module = tvm::codegen::Build(irmodule, target);
+  LOG_PRINT_VAR(exe);
+}
 
 void Tirshift_rightTest() {}
 
