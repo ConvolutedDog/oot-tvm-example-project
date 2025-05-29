@@ -1,6 +1,7 @@
 #include "node/serialization-test.h"
 #include "test-func-registry.h"
 #include <tvm/ir/module.h>
+#include <tvm/runtime/data_type.h>
 
 namespace serialization_test {
 
@@ -12,15 +13,15 @@ void NodeSerializationTest() {
 
   /// Create tvm::relax::Function
   Expr opexpr = tvm::Op::Get("relax.nn.conv2d");
-  Var arg1{"arg1", tvm::relax::ShapeStructInfo{4}};
-  Var arg2{"arg2", tvm::relax::ShapeStructInfo{4}};
+  Var arg1{"arg1", tvm::relax::TensorStructInfo{tvm::DataType::Float(32), 4}};
+  Var arg2{"arg2", tvm::relax::TensorStructInfo{tvm::DataType::Float(32), 4}};
   Call call{
       opexpr, {arg1, arg2}
   };
   Function func{
       {arg1, arg2},
       call,
-      tvm::relax::ShapeStructInfo{4},
+      tvm::relax::TensorStructInfo{tvm::DataType::Float(32), 4},
       true,
   };
 

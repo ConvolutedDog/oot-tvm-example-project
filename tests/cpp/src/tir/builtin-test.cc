@@ -56,27 +56,23 @@ void Tirshift_leftTest() {
   tvm::IRModule irmodule{{std::pair<tvm::GlobalVar, tvm::BaseFunc>{globalvar, func}}};
   LOG_PRINT_VAR(irmodule);
 
-  tvm::transform::Sequential passseq = tvm::transform::Sequential({
-      tvm::relax::transform::LegalizeOps(tvm::NullOpt),
-      tvm::tir::transform::LowerTVMBuiltin(),
-      tvm::tir::transform::LowerIntrin(),
-      tvm::tir::transform::LowerThreadAllreduce(),
-      tvm::tir::transform::LowerDeviceStorageAccessInfo(),
-      tvm::tir::transform::LowerCustomDatatypes(),
-  });
-  irmodule = passseq(irmodule);
-  LOG_PRINT_VAR(irmodule);
-
-  
+  /// @todo
+  // tvm::transform::Sequential passseq = tvm::transform::Sequential({
+  //     tvm::relax::transform::LegalizeOps(tvm::NullOpt),
+  //     tvm::tir::transform::LowerTVMBuiltin(),
+  //     tvm::tir::transform::LowerIntrin(),
+  //     tvm::tir::transform::LowerThreadAllreduce(),
+  //     tvm::tir::transform::LowerDeviceStorageAccessInfo(),
+  //     tvm::tir::transform::LowerCustomDatatypes(),
+  // });
+  // irmodule = passseq(irmodule);
+  // LOG_PRINT_VAR(irmodule);
   // auto vm = tvm::relax::transform::VMCodeLower(target, "executable")(irmodule);
-
-
-  tvm::Target target = tvm::Target("llvm");
-
-  LOG_PRINT_VAR(target->kind->name);
-  tvm::runtime::Module exe = tvm::codegen::Build(irmodule, target);
+  // tvm::Target target = tvm::Target("llvm");
+  // LOG_PRINT_VAR(target->kind->name);
+  // tvm::runtime::Module exe = tvm::codegen::Build(irmodule, target);
   // tvm::runtime::Module module = tvm::codegen::Build(irmodule, target);
-  LOG_PRINT_VAR(exe);
+  // LOG_PRINT_VAR(exe);
 }
 
 void Tirshift_rightTest() {}

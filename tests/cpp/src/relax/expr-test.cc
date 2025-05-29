@@ -6,6 +6,7 @@
 #include "utils.h"
 #include <tvm/node/script_printer.h>
 #include <tvm/relax/expr.h>
+#include <tvm/runtime/data_type.h>
 
 namespace expr_test {
 
@@ -24,8 +25,12 @@ void RelaxCallTest() {
   ///   I.GlobalVar("testglobalvar")
 
   /// Create tvm::relax::Function
-  Var arg1{"arg1", tvm::relax::ShapeStructInfo{4}};
-  Var arg2{"arg2", tvm::relax::ShapeStructInfo{4}};
+  Var arg1{
+      "arg1", tvm::relax::TensorStructInfo{tvm::DataType::Float(32), 4}
+  };
+  Var arg2{
+      "arg2", tvm::relax::TensorStructInfo{tvm::DataType::Float(32), 4}
+  };
 
   auto convattrs = tvm::make_object<tvm::relax::Conv2DAttrs>();
   using tvm::IntImm;
@@ -72,17 +77,21 @@ void RelaxCallTest() {
   ///            dilation=[1, 1], groups=1, data_layout="NCHW",
   ///            kernel_layout="OIHW", out_layout="NCHW", out_dtype="bfloat16")
 
+  // clang-format off
   Function func{
       {arg1, arg2},
       call,
-      tvm::relax::ShapeStructInfo{4},
+      tvm::relax::TensorStructInfo{tvm::DataType::Float(32), 4},
       true,
   };
+  // clang-format on
   LOG_PRINT_VAR(func);
   /// Output:
   ///   # from tvm.script import relax as R
   ///   @R.function(private=True)
-  ///   def main(arg1: R.Shape(ndim=4), arg2: R.Shape(ndim=4)) -> R.Shape(ndim=4):
+  ///   def main(arg1: R.Tensor(dtype="float32", ndim=4),
+  ///            arg2: R.Tensor(dtype="float32", ndim=4)
+  ///           ) -> R.Tensor(dtype="float32", ndim=4):
   ///       return R.nn.conv2d(arg1, arg2, strides=[2, 2], padding=[1, 1],
   ///                          dilation=[1, 1], groups=1, data_layout="NCHW",
   ///                          kernel_layout="OIHW", out_layout="NCHW",
