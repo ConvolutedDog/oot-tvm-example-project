@@ -11,6 +11,7 @@
 #include <tvm/tir/function.h>
 #include <tvm/tir/op.h>
 #include <tvm/tir/stmt.h>
+#include <tvm/tir/transform.h>
 #include <tvm/tir/var.h>
 
 namespace transform_test {
@@ -116,7 +117,6 @@ void TirVectorizeLoopTest() {
 
 IRModule PartitionedLoop() {
 
-  /// @brief the sample below refers to
   Var i("i"), j("j"), k("k");
 
   Var m("m"), n("n");
@@ -239,10 +239,7 @@ void TirUnrollLoopTest() {
     /// @bug @BenkangPeng Aborted(core dumped)
     /// dump at tir/ir/transform.cc line121: func = pass_func(std::move(func), mod,
     /// pass_ctx);
-    // auto partitionedMod = pass(mod);
-
-    // LOG(INFO) << "Pass applied successfully";
-
+    // auto partitionedMod = UnrollLoop()(mod);
     // LOG_PRINT_VAR(partitionedMod);  // the same as mod, no change
   }
 }
