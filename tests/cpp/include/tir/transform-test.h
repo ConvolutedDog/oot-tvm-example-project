@@ -2,11 +2,15 @@
 #include <tvm/ir/expr.h>
 #include <tvm/ir/module.h>
 #include <tvm/ir/type.h>
+#include <tvm/node/functor.h>
 #include <tvm/tir/buffer.h>
 #include <tvm/tir/stmt.h>
 
 namespace transform_test {
 
+using tvm::Bool;
+using tvm::ObjectRef;
+using tvm::runtime::String;
 using tvm::transform::Pass;
 using tvm::transform::PassContext;
 using tvm::transform::PassContextNode;
@@ -99,7 +103,9 @@ using tvm::runtime::Array;
 using tvm::runtime::Map;
 using tvm::tir::Block;
 using tvm::tir::Buffer;
+using tvm::tir::BufferLoad;
 using tvm::tir::BufferRegion;
+using tvm::tir::BufferStore;
 using tvm::tir::decl_buffer;
 using tvm::tir::Evaluate;
 using tvm::tir::For;
@@ -114,5 +120,6 @@ using tvm::tir::Var;
 
 IRModule SimpleFor();
 void TirVectorizeLoopTest();
+void TirPartitionLoopTest();
 
 }  // namespace transform_test
