@@ -1,16 +1,25 @@
 #include "tvm/tir/transform.h"
+#include <../src/tir/transforms/loop_partition.h>
 #include <tvm/ir/expr.h>
 #include <tvm/ir/module.h>
 #include <tvm/ir/type.h>
 #include <tvm/node/functor.h>
+#include <tvm/runtime/container/base.h>
 #include <tvm/tir/buffer.h>
+#include <tvm/tir/expr.h>
+#include <tvm/tir/op.h>
 #include <tvm/tir/stmt.h>
+#include <tvm/tir/var.h>
 
 namespace transform_test {
 
 using tvm::Bool;
+using tvm::make_object;
 using tvm::ObjectRef;
+using tvm::With;
 using tvm::runtime::String;
+using tvm::tir::LoopPartitionConfig;
+using tvm::tir::LoopPartitionConfigNode;
 using tvm::transform::Pass;
 using tvm::transform::PassContext;
 using tvm::transform::PassContextNode;
@@ -96,7 +105,10 @@ using tvm::tir::transform::VectorizeLoop;
 using tvm::DataType;
 using tvm::IntImm;
 using tvm::IRModule;
+using tvm::likely;
+using tvm::PointerType;
 using tvm::PrimExpr;
+using tvm::PrimType;
 using tvm::Range;
 using tvm::VoidType;
 using tvm::runtime::Array;
@@ -106,6 +118,7 @@ using tvm::tir::Buffer;
 using tvm::tir::BufferLoad;
 using tvm::tir::BufferRegion;
 using tvm::tir::BufferStore;
+using tvm::tir::BufferType;
 using tvm::tir::decl_buffer;
 using tvm::tir::Evaluate;
 using tvm::tir::For;
@@ -114,7 +127,9 @@ using tvm::tir::IfThenElse;
 using tvm::tir::IterVar;
 using tvm::tir::IterVarType;
 using tvm::tir::PrimFunc;
+using tvm::tir::Select;
 using tvm::tir::SeqStmt;
+using tvm::tir::SizeVar;
 using tvm::tir::Stmt;
 using tvm::tir::Var;
 
