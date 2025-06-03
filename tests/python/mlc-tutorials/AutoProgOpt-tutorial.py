@@ -14,9 +14,9 @@ MATRIX_SIZE = 128
 dtype = "float32"
 RANDOM_SEARCH = False
 ITERATE_J_FACTOR = False
-Stochastic_Meta_Schedule_MM = False
+Stochastic_Meta_Schedule_MM = True
 Default_Meta_Schedule_MM = False
-Default_Meta_Schedule_Network = True
+Default_Meta_Schedule_Network = False
 
 a_np = np.random.rand(MATRIX_SIZE, MATRIX_SIZE).astype(dtype)
 b_np = np.random.rand(MATRIX_SIZE, MATRIX_SIZE).astype(dtype)
@@ -169,6 +169,8 @@ if Stochastic_Meta_Schedule_MM:
     sch.trace.show()
     showmod(sch.mod)
     buildandtest(sch.mod)
+
+exit()
 
 # Leverage Default AutoScheduling
 if Default_Meta_Schedule_MM:

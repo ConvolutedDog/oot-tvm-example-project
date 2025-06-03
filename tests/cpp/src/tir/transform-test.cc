@@ -1,5 +1,6 @@
 #include "tir/transform-test.h"
 #include "test-func-registry.h"
+#include "tvm/tir/op.h"
 #include <tvm/ir/expr.h>
 #include <tvm/ir/function.h>
 #include <tvm/ir/module.h>
@@ -7,6 +8,7 @@
 #include <tvm/runtime/container/map.h>
 #include <tvm/runtime/data_type.h>
 #include <tvm/runtime/object.h>
+#include <tvm/runtime/packed_func.h>
 #include <tvm/support/with.h>
 #include <tvm/tir/function.h>
 #include <tvm/tir/op.h>
@@ -116,7 +118,6 @@ void TirVectorizeLoopTest() {
 }
 
 IRModule PartitionedLoop() {
-
   Var i("i"), j("j"), k("k");
 
   Var m("m"), n("n");
@@ -141,12 +142,12 @@ void TirPartitionLoopTest() {
 
   auto *reflection = ReflectionVTable::Global();
 
-  ///@brief Legalize the pass config, which converts the `Map<String,Bool>` to
-  ///`LoopPartitionConfig`
-  ///@param obj The pass config, which is a `Map<String,Bool>`
-  ///@param type_key struct `LoopPartitionConfigNode`'s `_type_key`
-  ///@return The legalized pass config, which is a `LoopPartitionConfig`
-  ///@sa tvm/src/tir/transforms/loop_partition.cc
+  /// @brief Legalize the pass config, which converts the `Map<String,Bool>` to
+  /// `LoopPartitionConfig`.
+  /// @param obj The pass config, which is a `Map<String,Bool>`.
+  /// @param type_key struct `LoopPartitionConfigNode`'s `_type_key`.
+  /// @return The legalized pass config, which is a `LoopPartitionConfig`.
+  /// @sa tvm/src/tir/transforms/loop_partition.cc
   auto legalization = [=](const ObjectRef &obj) -> ObjectRef {
     return reflection->CreateObject("tir.transform.LoopPartitionConfig",
                                     Downcast<Map<String, ObjectRef>>(obj));
@@ -193,12 +194,12 @@ void TirUnrollLoopTest() {
 
   auto *reflection = ReflectionVTable::Global();
 
-  ///@brief Legalize the pass config, which converts the `Map<String,Bool>` to
-  ///`UnrollLoopConfig`
-  ///@param obj The pass config, which is a `Map<String,Bool>`
-  ///@param type_key struct `UnrollLoopConfigNode`'s `_type_key`
-  ///@return The legalized pass config, which is a `UnrollLoopConfig`
-  ///@sa tvm/src/tir/transforms/unroll_loop.cc
+  /// @brief Legalize the pass config, which converts the `Map<String,Bool>` to
+  /// `UnrollLoopConfig`.
+  /// @param obj The pass config, which is a `Map<String,Bool>`.
+  /// @param type_key struct `UnrollLoopConfigNode`'s `_type_key`.
+  /// @return The legalized pass config, which is a `UnrollLoopConfig`.
+  /// @sa tvm/src/tir/transforms/unroll_loop.cc
   auto legalization = [=](const ObjectRef &obj) -> ObjectRef {
     return reflection->CreateObject("tir.transform.UnrollLoopConfig",
                                     Downcast<Map<String, ObjectRef>>(obj));

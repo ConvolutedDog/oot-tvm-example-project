@@ -37,15 +37,19 @@ void IrModuleTest() {
 
   /// Create tvm::relax::Function
   Expr opexpr = tvm::Op::Get("relax.add");
-  Var arg1{"arg1", tvm::relax::TensorStructInfo{tvm::DataType::Float(32), 4}};
-  Var arg2{"arg2", tvm::relax::TensorStructInfo{tvm::DataType::Float(32), 4}};
+  Var arg1{
+      "arg1", tvm::relax::TensorStructInfo{tvm::DataType::Float(32), 4}
+  };
+  Var arg2{
+      "arg2", tvm::relax::TensorStructInfo{tvm::DataType::Float(32), 4}
+  };
   Call call{
       opexpr, {arg1, arg2}
   };
   Function func{
-      {arg1, arg2},
+      {arg1,                     arg2},
       call,
-      tvm::relax::TensorStructInfo{tvm::DataType::Float(32), 4},
+      tvm::relax::TensorStructInfo{tvm::DataType::Float(32), 4   },
       true,
   };
 
@@ -101,9 +105,9 @@ void IrModuleTest() {
       opexpr2, {arg1, arg2}
   };
   Function func2{
-      {arg1, arg2},
+      {arg1,                     arg2},
       call2,
-      tvm::relax::TensorStructInfo{tvm::DataType::Float(32), 4},
+      tvm::relax::TensorStructInfo{tvm::DataType::Float(32), 4   },
       true,
   };
   irmodule2->Update(globalvar3, func2);

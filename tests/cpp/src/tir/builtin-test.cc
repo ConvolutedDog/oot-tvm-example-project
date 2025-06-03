@@ -1,13 +1,13 @@
 #include "tir/builtin-test.h"
 #include "test-func-registry.h"
-#include <tvm/ir/expr.h>
-#include <tvm/runtime/container/optional.h>
+#include "tvm/ir/transform.h"
 #include "tvm/relax/expr.h"
 #include "tvm/relax/struct_info.h"
-#include "tvm/target/codegen.h"
 #include "tvm/relax/transform.h"
-#include "tvm/ir/transform.h"
+#include "tvm/target/codegen.h"
 #include "tvm/tir/transform.h"
+#include <tvm/ir/expr.h>
+#include <tvm/runtime/container/optional.h>
 
 namespace builtin_test {
 
@@ -51,9 +51,9 @@ void Tirshift_leftTest() {
       opexpr, {arg1, arg2}
   };
   tvm::relax::Function func{
-      {arg1, arg2},
+      {arg1,                     arg2},
       call,
-      tvm::relax::TensorStructInfo{tvm::DataType::Float(32), 4},
+      tvm::relax::TensorStructInfo{tvm::DataType::Float(32), 4   },
       true,
   };
 

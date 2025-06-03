@@ -5,6 +5,7 @@
 #include <tvm/node/functor.h>
 #include <tvm/node/reflection.h>
 #include <tvm/runtime/container/base.h>
+#include <tvm/runtime/container/string.h>
 #include <tvm/tir/buffer.h>
 #include <tvm/tir/expr.h>
 #include <tvm/tir/op.h>
@@ -113,6 +114,7 @@ using tvm::VoidType;
 using tvm::runtime::Array;
 using tvm::runtime::Downcast;
 using tvm::runtime::Map;
+using tvm::runtime::String;
 using tvm::tir::Block;
 using tvm::tir::Buffer;
 using tvm::tir::BufferLoad;

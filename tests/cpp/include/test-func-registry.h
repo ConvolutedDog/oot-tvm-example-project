@@ -111,7 +111,7 @@ using TestSuiteRegistry = test_func_registry::TestSuiteRegistry;
 ///
 /// @note For example:
 ///   🚀 1 argument: `REGISTER_TEST_SUITE(TestSuite1)` will be expand️ed to:
-///     @code {.cpp}
+///     @code{.cpp}
 ///     namespace {
 ///     GET_MACRO_TEST_SUITE(TestSuite1, REGISTER_TEST_SUITE_2,
 ///                          REGISTER_TEST_SUITE_1)(TestSuite1);
@@ -120,7 +120,7 @@ using TestSuiteRegistry = test_func_registry::TestSuiteRegistry;
 ///     Then this will be further replaced by `REGISTER_TEST_SUITE_1(TestSuite1)`.
 ///   🚀 2 argument:
 ///     `REGISTER_TEST_SUITE(TestSuite2, NameHint)` will be expand️ed to:
-///     @code {.cpp}
+///     @code{.cpp}
 ///     namespace {
 ///     REGISTER_TEST_SUITE_2(TestSuite2, NameHint);
 ///     }
@@ -143,7 +143,7 @@ using TestSuiteRegistry = test_func_registry::TestSuiteRegistry;
 ///                                      runtime_ndarray_test_RuntimeNDArrayTest);`
 ///    will be expanded to:
 ///
-///    @code {.cpp}
+///    @code{.cpp}
 ///    namespace {
 ///    ::test_func_registry::TestSuiteRegistry __make_TestSuite0 =            \
 ///     ::test_func_registry::TestSuiteRegistry::Global()                      \
