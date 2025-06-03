@@ -1,6 +1,5 @@
 #include "tir/transform-test.h"
 #include "test-func-registry.h"
-#include <tvm/ir/attrs.h>
 #include <tvm/ir/expr.h>
 #include <tvm/ir/function.h>
 #include <tvm/ir/module.h>
