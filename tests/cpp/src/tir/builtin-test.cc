@@ -20,7 +20,12 @@ void TirretTest() {
   LOG_PRINT_VAR(call);
 }
 
-void TirreinterpretTest() {}
+void TirreinterpretTest() {
+  LOG_SPLIT_LINE("TirreinterpretTest");
+  auto &op = reinterpret();
+  LOG_PRINT_VAR(op->name);
+  tvm::tir::Call call{tvm::DataType::Float(32), op, {tvm::PrimExpr{1}}};
+}
 
 void TirlikelyTest() {}
 
