@@ -1,12 +1,16 @@
 #include "ir/attrs-test.h"
 #include "test-func-registry.h"
+#include "tvm/../../src/relax/op/tensor/linear_algebra.h"
 #include "tvm/ir/op.h"
 #include "tvm/relax/attrs/nn.h"
 #include "tvm/relax/expr.h"
+#include "tvm/relax/op_attr_types.h"
 #include "tvm/relax/struct_info.h"
+#include "utils.h"
 #include <tvm/ir/attrs.h>
 #include <tvm/ir/expr.h>
 #include <tvm/runtime/data_type.h>
+#include <tvm/runtime/object.h>
 
 namespace attrs_test {
 
@@ -275,7 +279,7 @@ void IrAttrBriefTest() {
 /// @code{.cpp}
 ///   struct MatmulAttrs : public tvm::AttrsNode<MatmulAttrs> {
 ///     DataType out_dtype;
-///   
+///
 ///     TVM_DECLARE_ATTRS(MatmulAttrs, "relax.attrs.MatmulAttrs") {
 ///       TVM_ATTR_FIELD(out_dtype).describe("The data type of the output tensor");
 ///     }
@@ -291,7 +295,31 @@ void IrAttrBriefTest() {
 ///     return Call(op, {std::move(x1), std::move(x2)}, Attrs(attrs), {});
 ///   }
 /// @endcode
-void IrAllAttrsIntroTest() { LOG_SPLIT_LINE("IrAllAttrsIntroTest"); }
+void IrAllAttrsIntroTest() {
+  LOG_SPLIT_LINE("IrAllAttrsIntroTest");
+
+  const tvm::Op &op = GetOpByStringName("relax.matmul");
+  LOG_PRINT_VAR(op);
+  /// Output:
+  ///   op: Op(relax.matmul)
+
+  LOG_PRINT_VAR(GetAdditioanlAttrValue<tvm::Bool>("relax.matmul", "FPurity"));
+  /// Output:
+  ///   GetAdditioanlAttrValue<tvm::Bool>("relax.matmul", "FPurity"): T.bool(True)
+
+  LOG_PRINT_VAR(GetAdditioanlAttrValue<tvm::relax::FInferStructInfo>("relax.matmul",
+                                                                     "FInferStructInfo"));
+  /// Output:
+  ///   GetAdditioanlAttrValue<tvm::relax::FInferStructInfo>(
+  ///       "relax.matmul", "FInferStructInfo"): runtime.PackedFunc(0x12a0960)
+
+  tvm::RelaxExpr expr = tvm::relax::matmul(tvm::GlobalVar{"a"}, tvm::GlobalVar{"b"},
+                                           tvm::DataType::Float(32));
+  tvm::Attrs attrs = GetNormalAttrValue(expr);
+  LOG_PRINT_VAR(attrs);
+  /// Output:
+  ///   attrs: relax.attrs.MatmulAttrs(0x16cb9a8)
+}
 
 }  // namespace attrs_test
 
@@ -300,3 +328,4 @@ REGISTER_TEST_SUITE(attrs_test::IrAttrFieldInfoTest, ir_attrs_test_IrAttrFieldIn
 REGISTER_TEST_SUITE(attrs_test::IrAttrsTest, ir_attrs_test_IrAttrsTest);
 REGISTER_TEST_SUITE(attrs_test::IrDictAttrsTest, ir_attrs_test_IrDictAttrsTest);
 REGISTER_TEST_SUITE(attrs_test::IrAttrBriefTest, ir_attrs_test_IrAttrBriefTest);
+REGISTER_TEST_SUITE(attrs_test::IrAllAttrsIntroTest, ir_attrs_test_IrAllAttrsIntroTest);

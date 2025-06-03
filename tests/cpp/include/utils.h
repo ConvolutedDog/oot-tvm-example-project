@@ -6,6 +6,8 @@
 #include <tvm/../../src/node/attr_registry.h>
 #include <tvm/ir/module.h>
 #include <tvm/relax/expr.h>
+#include <tvm/runtime/container/optional.h>
+#include <tvm/runtime/logging.h>
 #include <tvm/tir/function.h>
 #include <type_traits>
 #include <unistd.h>
@@ -51,6 +53,42 @@ bool _contains_relax(T mod) {  // NOLINT
 inline Array<String> ListAllOpNames() {
   using OpRegistry = tvm::AttrRegistry<tvm::OpRegEntry, tvm::Op>;
   return OpRegistry::Global()->ListAllNames();
+}
+
+/// @brief Retrieves an operator by its string name.
+///
+/// This function accesses the global operator registry and returns the operator
+/// associated with the given string name.
+///
+/// @param opName The string name of the operator.
+/// @return The operator associated with the given string name.
+inline const tvm::Op &GetOpByStringName(const String &opName) {
+  tvm::OpRegEntry &opregentry = tvm::OpRegEntry::RegisterOrGet(opName);
+  return opregentry.op();
+}
+
+/// @brief Get the additional attributes' value of the operator by its string name and the
+/// attribute name.
+///
+/// @tparam ValueType The type of the additional attribute's value.
+/// @param opName The string name of the operator.
+/// @param attrName The string name of the attribute.
+/// @return The additional attribute's value.
+template <typename ValueType>
+ValueType GetAdditioanlAttrValue(const String &opName, const String &attrName) {
+  using OpRegistry = tvm::AttrRegistry<tvm::OpRegEntry, tvm::Op>;
+  using AttrMapType = tvm::AttrRegistryMapContainerMap<tvm::Op>;
+  const AttrMapType &attrMap = OpRegistry::Global()->GetAttrMap(attrName);
+  const tvm::Op &op = GetOpByStringName(opName);
+  ICHECK(attrMap.count(op)) << "Attribute " << attrName
+                            << " has not been registered for operator " << opName;
+  return attrMap.operator[](op);
+}
+
+inline tvm::Attrs GetNormalAttrValue(const tvm::RelaxExpr &expr) {
+  tvm::relax::Call call = tvm::runtime::Downcast<tvm::relax::Call>(expr);
+  tvm::Attrs attrs = call->attrs;
+  return attrs;
 }
 
 /// @brief Adjusts screen printing of a collection of strings for better terminal display.
