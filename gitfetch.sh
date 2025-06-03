@@ -3,7 +3,7 @@
 # Script: gitfetch.sh
 # Purpose: Automatically retry `git fetch` with arguments until success
 #          or max retries reached.
-# Handles timeouts (e.g., due to the FUCKING network provider) and other failures(e.g., the FUCKING DNS spoofing).
+# Handles timeouts (e.g., due to the problematic network provider) and other failures (e.g., issues with DNS spoofing).
 # Usage: ./gitfetch.sh [any git fetch arguments, e.g. upstream main]
 # Note: It's user's responsibility for safe command.
 #       Only works well on Linux systems. We have not test it on MacOS.
