@@ -85,6 +85,10 @@ ValueType GetAdditioanlAttrValue(const String &opName, const String &attrName) {
   return attrMap.operator[](op);
 }
 
+/// @brief Get the normal attr value of a relax::Call instance.
+///
+/// @param expr The relax::Call instance to get the normal attr value from.
+/// @return The normal attr value of the relax::Call instance.
 inline tvm::Attrs GetNormalAttrValue(const tvm::RelaxExpr &expr) {
   tvm::relax::Call call = tvm::runtime::Downcast<tvm::relax::Call>(expr);
   tvm::Attrs attrs = call->attrs;
