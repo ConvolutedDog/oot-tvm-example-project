@@ -136,5 +136,6 @@ using tvm::tir::Var;
 IRModule SimpleFor();
 void TirVectorizeLoopTest();
 void TirPartitionLoopTest();
+void TirUnrollLoopTest();
 
 }  // namespace transform_test
