@@ -1,9 +1,9 @@
 #include "ir/module-test.h"
 #include "test-func-registry.h"
+#include "tvm/ir/replace_global_vars.h"
 #include "utils.h"
 #include <tvm/ir/module.h>
 #include <tvm/runtime/data_type.h>
-#include "tvm/ir/replace_global_vars.h"
 
 namespace module_test {
 
