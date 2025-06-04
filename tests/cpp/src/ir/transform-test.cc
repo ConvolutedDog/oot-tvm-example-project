@@ -51,14 +51,68 @@ void IrPassContextTest() {
   Map<String, Map<String, String>> configs = PassContext::ListConfigs();
   LOG_PRINT_VAR("PassContext::ListConfigs():");
   LOG_PRINT_VAR(configs);
+  /// Output:
+  ///   configs:
+  ///     tir.ReduceBranchingThroughOvercompute:
+  ///         {type: tir.transform.ReduceBranchingThroughOvercomputeConfig}
+  ///     tir.use_async_copy: {type: IntImm}
+  ///     tir.reset_start_id: {type: IntImm}
+  ///     tir.disable_vectorize: {type: IntImm}
+  ///     tir.lwp_max_depth: {type: IntImm}
+  ///     tir.LoopPartition: {type: tir.transform.LoopPartitionConfig}
+  ///     relax.FuseOps.max_depth: {type: IntImm}
+  ///     tir.InjectDoubleBuffer: {type: tir.transform.InjectDoubleBufferConfig}
+  ///     tir.detect_global_barrier: {type: IntImm}
+  ///     testing.immutable_module: {type: IntImm}
+  ///     cuda.kernels_output_dir: {type: runtime.String}
+  ///     tir.debug_keep_trivial_loop: {type: IntImm}
+  ///     tir.noalias: {type: IntImm}
+  ///     tir.disable_storage_rewrite: {type: IntImm}
+  ///     tir.merge_static_smem: {type: IntImm}
+  ///     tir.Simplify: {type: tir.transform.SimplifyConfig}
+  ///     relax.fallback_device_type: {type: IntImm}
+  ///     relax.transform.apply_legalize_ops: {type: IntImm}
+  ///     tir.lwp_disable_func_prof: {type: IntImm}
+  ///     relax.lift_transform_params.consume_params: {type: IntImm}
+  ///     tir.RemoveNoOp: {type: tir.transform.RemoveNoOpConfig}
+  ///     tir.disable_assert: {type: IntImm}
+  ///     tir.enable_debug: {type: IntImm}
+  ///     tir.add_lower_pass: {type: Array}
+  ///     tir.HoistIfThenElse: {type: tir.transform.HoistIfThenElseConfig}
+  ///     tir.instrument_bound_checkers: {type: IntImm}
+  ///     tir.enable_equiv_terms_in_cse_tir: {type: IntImm}
+  ///     tir.lwp_min_height: {type: IntImm}
+  ///     tir.instrument_lwp: {type: IntImm}
+  ///     tir.disable_cse_tir: {type: IntImm}
+  ///     tir.UnrollLoop: {type: tir.transform.UnrollLoopConfig}
+  ///     tir.enable_buffer_level_predication: {type: IntImm}
+  ///     relax.backend.use_cuda_graph: {type: IntImm}
+  ///     tir.vtcm_capacity: {type: IntImm}
+  ///     tir.is_entry_func: {type: IntImm}
+  ///     tir.ptx_ldg32: {type: IntImm}
+  ///     tir.HoistExpression: {type: tir.transform.HoistExpressionConfig}
+  ///     tir.instr_siblings: {type: IntImm}
 
   // Register a new config option.
   PassContext::RegisterConfigOption<tvm::Integer>("xxxxxxxxxxxxxx-testIntegerConfig");
   LOG_PRINT_VAR("PassContext::ListConfigs():");
   LOG_PRINT_VAR(PassContext::ListConfigs());
+  /// Output:
+  ///   ......
+  ///   xxxxxxxxxxxxxx-testIntegerConfig: {type: IntImm}
+  ///   ......
 
   PassContext passctx = PassContext::Create();
   LOG_PRINT_VAR(passctx);
+  /// Output:
+  ///   passctx: Pass context information:
+  ///       opt_level: 2
+  ///       required passes: []
+  ///       disabled passes: []
+  ///       instruments: []
+  ///       config: {}
+  ///       trace stack: []
+
   LOG_PRINT_VAR(passctx->diag_ctx);
   LOG_PRINT_VAR(passctx->config);
   LOG_PRINT_VAR(passctx->make_traceable);
@@ -66,6 +120,14 @@ void IrPassContextTest() {
   LOG_PRINT_VAR(passctx->tuning_api_database);
 
   LOG_PRINT_VAR(PassContext::Current());
+  /// Output:
+  ///   PassContext::Current(): Pass context information:
+  ///       opt_level: 2
+  ///       required passes: []
+  ///       disabled passes: []
+  ///       instruments: []
+  ///       config: {}
+  ///       trace stack: []
 
   // Get the registered test config.
   auto testIntegerConfig = passctx->GetConfig<tvm::Integer>(
@@ -192,15 +254,15 @@ void IrPassTest2() {
   Call callTir(Op::Get("relax.call_tir"), args);
   LOG_PRINT_VAR(callTir->op);
   LOG_PRINT_VAR(callTir->args);
-  // LOG_PRINT_VAR(callTir);//have bug
+  // LOG_PRINT_VAR(callTir);  //have bug
 
   Call assertCall(Op::Get("relax.assert_op"), {x});
   LOG_PRINT_VAR(assertCall->op);
   LOG_PRINT_VAR(assertCall->args);
-  // LOG_PRINT_VAR(assertCall);//have bug
+  // LOG_PRINT_VAR(assertCall);  //have bug
 
   BindingBlock block({VarBinding(gv0, callTir), VarBinding(x, assertCall)});
-  // LOG_PRINT_VAR(block);//have bug
+  // LOG_PRINT_VAR(block);  //have bug
 
   Function func(
       /*params*/ {x},
@@ -217,5 +279,4 @@ void IrPassTest2() {
 REGISTER_TEST_SUITE(transform_test::IrPassContextTest,
                     ir_transform_test_IrPassContextTest);
 REGISTER_TEST_SUITE(transform_test::IrPassTest, ir_transform_test_IrPassTest);
-
 REGISTER_TEST_SUITE(transform_test::IrPassTest2, ir_transform_test_IrPassTest2)

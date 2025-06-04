@@ -80,6 +80,17 @@ void IrAnalysisTest() {
   /// @note TVMScript cannot print functions of type: BaseFunc
   IRModule irmodule2{{std::pair<GlobalVar, BaseFunc>{globalvar, func}}};
   LOG_PRINT_VAR(irmodule2);
+  /// Output:
+  ///   # from tvm.script import ir as I
+  ///   # from tvm.script import relax as R
+  ///
+  ///   @I.ir_module
+  ///   class Module:
+  ///       @R.function(private=True)
+  ///       def globalvar(arg1: R.Tensor(dtype="float32", ndim=4),
+  ///                     arg2: R.Tensor(dtype="float32", ndim=4)
+  ///           ) -> R.Tensor(dtype="float32", ndim=4):
+  ///           return R.add(arg1, arg2)
   LOG_SPLIT_LINE("");
 
   LOG_PRINT_VAR(CollectCallMap(irmodule2));

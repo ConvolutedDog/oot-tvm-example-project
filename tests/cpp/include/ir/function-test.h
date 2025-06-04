@@ -19,8 +19,11 @@ using tvm::runtime::String;
 
 using tvm::DictAttrs;
 
+using tvm::CallingConv;
 using tvm::LinkageType;
+using tvm::attr::kCallingConv;
 using tvm::attr::kGlobalSymbol;
+using tvm::attr::kTarget;
 
 using tvm::NullValue;
 

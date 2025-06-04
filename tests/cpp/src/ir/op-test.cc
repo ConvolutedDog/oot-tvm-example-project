@@ -55,6 +55,7 @@ void IrOpNodeTest() {
   opnode.VisitAttrs(&serializer);
 }
 
+/// @sa attr-test.cc
 /// @brief `Op` is registered by `TVM_REGISTER_OP` macro. For example,
 ///   TVM_REGISTER_OP("relax.nn.conv2d")
 ///       .set_num_inputs(2)

@@ -1,7 +1,9 @@
 #include "ir/module-test.h"
 #include "test-func-registry.h"
 #include "utils.h"
+#include <tvm/ir/module.h>
 #include <tvm/runtime/data_type.h>
+#include "tvm/ir/replace_global_vars.h"
 
 namespace module_test {
 
@@ -30,6 +32,11 @@ void IrModuleTest() {
   BaseFunc basefunc(basefuncnodeptr);
   IRModule irmodule1 = IRModule::FromExpr(basefunc);
   LOG_PRINT_VAR(irmodule1);
+  /// Output:
+  ///   irmodule1: # from tvm.script import ir as I
+  ///   @I.ir_module
+  ///   class Module:
+  ///       main = metadata["BaseFunc"][0]
   LOG_SPLIT_LINE("");
 
   /// @brief Define a GlobalVar.
@@ -64,8 +71,10 @@ void IrModuleTest() {
   /// @I.ir_module
   /// class Module:
   ///     @R.function(private=True)
-  ///     def globalvar(arg1: R.Shape(ndim=4), arg2: R.Shape(ndim=4)) -> R.Shape(ndim=4):
-  ///         return R.nn.conv2d(arg1, arg2)
+  ///     def globalvar(arg1: R.Tensor(dtype="float32", ndim=4),
+  ///                   arg2: R.Tensor(dtype="float32", ndim=4)
+  ///         ) -> R.Tensor(dtype="float32", ndim=4):
+  ///         return R.add(arg1, arg2)
 
   /// @brief
   IRModule irmodule3 = IRModule::FromExpr(func);
@@ -78,25 +87,66 @@ void IrModuleTest() {
   /// @I.ir_module
   /// class Module:
   ///     @R.function(private=True)
-  ///     def main(arg1: R.Shape(ndim=4), arg2: R.Shape(ndim=4)) -> R.Shape(ndim=4):
-  ///         return R.nn.conv2d(arg1, arg2)
+  ///     def main(arg1: R.Tensor(dtype="float32", ndim=4),
+  ///              arg2: R.Tensor(dtype="float32", ndim=4)
+  ///         ) -> R.Tensor(dtype="float32", ndim=4):
+  ///         return R.add(arg1, arg2)
 
   LOG_PRINT_VAR(irmodule2->functions);
-  LOG_PRINT_VAR(irmodule2->source_map->source_map);
+  /// Output:
+  ///   {I.GlobalVar("globalvar"): # from tvm.script import relax as R ...}
+  LOG_PRINT_VAR(irmodule2->source_map);  // SourceMap(0x28ecba0)
   LOG_PRINT_VAR(irmodule2->attrs);
   LOG_PRINT_VAR(irmodule2->global_infos);
-  LOG_PRINT_VAR(irmodule2->global_var_map_);
+  LOG_PRINT_VAR(irmodule2->global_var_map_);  // {"globalvar": I.GlobalVar("globalvar")}
 
   /// Add a function
   GlobalVar globalvar2("globalvar2");
   irmodule2->Add(globalvar2, func);
   LOG_PRINT_VAR(irmodule2);
+  /// Output:
+  ///   # from tvm.script import ir as I
+  ///   # from tvm.script import relax as R
+  ///
+  ///   @I.ir_module
+  ///   class Module:
+  ///       @R.function(private=True)
+  ///       def globalvar(arg1: R.Tensor(dtype="float32", ndim=4),
+  ///                     arg2: R.Tensor(dtype="float32", ndim=4)
+  ///           ) -> R.Tensor(dtype="float32", ndim=4):
+  ///           return R.add(arg1, arg2)
+  ///
+  ///       @R.function(private=True)
+  ///       def globalvar2(arg1: R.Tensor(dtype="float32", ndim=4),
+  ///                      arg2: R.Tensor(dtype="float32", ndim=4)
+  ///           ) -> R.Tensor(dtype="float32", ndim=4):
+  ///           return R.add(arg1, arg2)
   LOG_SPLIT_LINE("");
 
   /// Add a function
   GlobalVar globalvar3("globalvar3");
   irmodule2->AddUnchecked(globalvar3, func);
   LOG_PRINT_VAR(irmodule2);
+  /// Output:
+  ///   @I.ir_module
+  ///   class Module:
+  ///       @R.function(private=True)
+  ///       def globalvar(arg1: R.Tensor(dtype="float32", ndim=4),
+  ///                     arg2: R.Tensor(dtype="float32", ndim=4)
+  ///           ) -> R.Tensor(dtype="float32", ndim=4):
+  ///           return R.add(arg1, arg2)
+  ///
+  ///       @R.function(private=True)
+  ///       def globalvar2(arg1: R.Tensor(dtype="float32", ndim=4),
+  ///                     arg2: R.Tensor(dtype="float32", ndim=4)
+  ///           ) -> R.Tensor(dtype="float32", ndim=4):
+  ///           return R.add(arg1, arg2)
+  ///
+  ///       @R.function(private=True)
+  ///       def globalvar3(arg1: R.Tensor(dtype="float32", ndim=4),
+  ///                     arg2: R.Tensor(dtype="float32", ndim=4)
+  ///           ) -> R.Tensor(dtype="float32", ndim=4):
+  ///           return R.add(arg1, arg2)
   LOG_SPLIT_LINE("");
 
   /// Update a function
@@ -112,36 +162,113 @@ void IrModuleTest() {
   };
   irmodule2->Update(globalvar3, func2);
   LOG_PRINT_VAR(irmodule2);
+  /// Output:
+  ///   @I.ir_module
+  ///   class Module:
+  ///       @R.function(private=True)
+  ///       def globalvar(arg1: R.Tensor(dtype="float32", ndim=4),
+  ///                     arg2: R.Tensor(dtype="float32", ndim=4)
+  ///           ) -> R.Tensor(dtype="float32", ndim=4):
+  ///           return R.add(arg1, arg2)
+  ///
+  ///       @R.function(private=True)
+  ///       def globalvar2(arg1: R.Tensor(dtype="float32", ndim=4),
+  ///                     arg2: R.Tensor(dtype="float32", ndim=4)
+  ///           ) -> R.Tensor(dtype="float32", ndim=4):
+  ///           return R.add(arg1, arg2)
+  ///
+  ///       @R.function(private=True)
+  ///       def globalvar3(arg1: R.Tensor(dtype="float32", ndim=4),
+  ///                     arg2: R.Tensor(dtype="float32", ndim=4)
+  ///           ) -> R.Tensor(dtype="float32", ndim=4):
+  ///           return R.max(arg1, arg2)
   LOG_SPLIT_LINE("");
 
   /// Remove a function
   irmodule2->Remove(globalvar3);
   LOG_PRINT_VAR(irmodule2);
+  /// Output:
+  ///   @I.ir_module
+  ///   class Module:
+  ///       @R.function(private=True)
+  ///       def globalvar(arg1: R.Tensor(dtype="float32", ndim=4),
+  ///                     arg2: R.Tensor(dtype="float32", ndim=4)
+  ///           ) -> R.Tensor(dtype="float32", ndim=4):
+  ///           return R.add(arg1, arg2)
+  ///
+  ///       @R.function(private=True)
+  ///       def globalvar2(arg1: R.Tensor(dtype="float32", ndim=4),
+  ///                     arg2: R.Tensor(dtype="float32", ndim=4)
+  ///           ) -> R.Tensor(dtype="float32", ndim=4):
+  ///           return R.add(arg1, arg2)
   LOG_SPLIT_LINE("");
 
-  LOG_PRINT_VAR(irmodule2->ContainGlobalVar("globalvar"));
-  LOG_PRINT_VAR(irmodule2->ContainGlobalVar("globalvar2"));
-  LOG_PRINT_VAR(irmodule2->ContainGlobalVar("globalvar3"));
+  LOG_PRINT_VAR(irmodule2->ContainGlobalVar("globalvar"));   // 1
+  LOG_PRINT_VAR(irmodule2->ContainGlobalVar("globalvar2"));  // 1
+  LOG_PRINT_VAR(irmodule2->ContainGlobalVar("globalvar3"));  // 0
 
-  LOG_PRINT_VAR(irmodule2->GetGlobalVar("globalvar"));
+  LOG_PRINT_VAR(irmodule2->GetGlobalVar("globalvar"));  // I.GlobalVar("globalvar")
   LOG_PRINT_VAR(irmodule2->GetGlobalVars());
+  /// Output:
+  ///   [I.GlobalVar("globalvar"), I.GlobalVar("globalvar2")]
+
+  LOG_PRINT_VAR(irmodule2->GetAttrs());  // {}
 
   LOG_PRINT_VAR(irmodule2->Lookup(globalvar));
+  /// Output:
+  ///   # from tvm.script import relax as R
+  ///   @R.function(private=True)
+  ///   def main(arg1: R.Tensor(dtype="float32", ndim=4),
+  ///            arg2: R.Tensor(dtype="float32", ndim=4)
+  ///       ) -> R.Tensor(dtype="float32", ndim=4):
+  ///       return R.add(arg1, arg2)
   LOG_PRINT_VAR(irmodule2->Lookup("globalvar"));
+  /// Output:
+  ///   # from tvm.script import relax as R
+  ///   @R.function(private=True)
+  ///   def main(arg1: R.Tensor(dtype="float32", ndim=4),
+  ///            arg2: R.Tensor(dtype="float32", ndim=4)
+  ///       ) -> R.Tensor(dtype="float32", ndim=4):
+  ///       return R.add(arg1, arg2)
 
   /// Update a IRModule
   LOG_SPLIT_LINE("irmodule1 before update:");
   LOG_PRINT_VAR(irmodule1);
+  /// Output:
+  ///   irmodule1: # from tvm.script import ir as I
+  ///   @I.ir_module
+  ///   class Module:
+  ///       main = metadata["BaseFunc"][0]
+
   irmodule1->Update(irmodule2);
   LOG_SPLIT_LINE("irmodule1 after update:");
   LOG_PRINT_VAR(irmodule1);
+  /// Output:
+  ///   irmodule1: # from tvm.script import ir as I
+  ///   # from tvm.script import relax as R
+  ///
+  ///   @I.ir_module
+  ///   class Module:
+  ///       @R.function(private=True)
+  ///       def globalvar(arg1: R.Tensor(dtype="float32", ndim=4),
+  ///                     arg2: R.Tensor(dtype="float32", ndim=4)
+  ///           ) -> R.Tensor(dtype="float32", ndim=4):
+  ///           return R.add(arg1, arg2)
+  ///
+  ///       @R.function(private=True)
+  ///       def globalvar2(arg1: R.Tensor(dtype="float32", ndim=4),
+  ///                      arg2: R.Tensor(dtype="float32", ndim=4)
+  ///           ) -> R.Tensor(dtype="float32", ndim=4):
+  ///           return R.add(arg1, arg2)
+  ///
+  ///       main = metadata["BaseFunc"][0]
 
   /// Shallow copy
   irmodule3 = irmodule1->ShallowCopy();
-  LOG_PRINT_VAR(irmodule3);
+  LOG_PRINT_VAR(irmodule3);  // same to irmodule1
 
   /// Test `_contains_relax`
-  LOG_PRINT_VAR(_contains_relax(irmodule3));
+  LOG_PRINT_VAR(_contains_relax(irmodule3));  // _contains_relax(irmodule3): 1
 }
 
 }  // namespace module_test

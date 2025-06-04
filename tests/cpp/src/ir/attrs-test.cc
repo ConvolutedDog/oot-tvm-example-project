@@ -9,6 +9,7 @@
 #include "utils.h"
 #include <tvm/ir/attrs.h>
 #include <tvm/ir/expr.h>
+#include <tvm/relax/attrs/linear_algebra.h>
 #include <tvm/runtime/data_type.h>
 #include <tvm/runtime/object.h>
 
@@ -37,6 +38,10 @@ void IrAttrFieldInfoTest() {
 
   const_cast<AttrFieldInfoNode *>(attrfieldinfo.as<AttrFieldInfoNode>())
       ->VisitAttrs(&serializer);
+  /// Output:
+  ///   runtime::ObjectRef: name="name";
+  ///   runtime::ObjectRef: type_info="type_info";
+  ///   runtime::ObjectRef: description="description";
 }
 
 void MyAttrNode::VisitNonDefaultAttrs(AttrVisitor *v) { v->Visit("__attr3__", &attr3); }
@@ -78,16 +83,38 @@ void IrAttrsTest() {
 
   MyAttr attr1{make_object<MyAttrNode>()};
   const_cast<MyAttrNode *>(attr1.as<MyAttrNode>())->VisitAttrs(&serializer);
+  /// Output:
+  ///   std::string:        attr1=;
+  ///   runtime::ObjectRef: attr2=(nullptr);
+  ///   std::string:        attr3=;
 
   MyAttr attr2{"attr1", 2, "attr3"};
   const_cast<MyAttrNode *>(attr2.as<MyAttrNode>())->VisitAttrs(&serializer);
+  /// Output:
+  ///   std::string:        attr1=attr1;
+  ///   runtime::ObjectRef: attr2=2;
+  ///   std::string:        attr3=attr3;
+
   const_cast<MyAttrNode *>(attr2.as<MyAttrNode>())->VisitNonDefaultAttrs(&serializer);
+  /// Output:
+  ///   std::string:        __attr3__=attr3;
 
   LOG_PRINT_VAR("attr2.get()->PrintDocString(std::cout) START");
   attr2.get()->PrintDocString(std::cout);
+  /// Output:
+  ///   attr1 : std::string
+  ///       description of attr1
+  ///   attr2 : tvm::PrimExpr
+  ///       description of attr2
+  ///   attr3 : std::string
+  ///       description of attr3
   LOG_PRINT_VAR("attr2.get()->PrintDocString(std::cout) END");
 
   LOG_PRINT_VAR(attr2.get()->ListFieldInfo());
+  /// Output:
+  ///   attr2.get()->ListFieldInfo(): [AttrFieldInfo(0x25a9fe0),
+  ///                                  AttrFieldInfo(0x25a9da0),
+  ///                                  AttrFieldInfo(0x25a9f20)]
 }
 
 void IrDictAttrsTest() {
@@ -295,6 +322,41 @@ void IrAttrBriefTest() {
 ///     return Call(op, {std::move(x1), std::move(x2)}, Attrs(attrs), {});
 ///   }
 /// @endcode
+///
+/// `TVM_DECLARE_ATTRS` mainly defines the:
+///   `template <typename FVisit> void _tvm_VisitAttrs(FVisit& _tvm_fvisit)`
+/// function that is used to visit all the fields of the attribute struct. And the macro
+/// `TVM_ATTR_FIELD` calls the `_tvm_fvisit` function to visit the fields. The defination
+/// of `struct MatmulAttrs` can be expanded to:
+/// @code{.cpp}
+///   struct MatmulAttrs : public tvm::AttrsNode<MatmulAttrs> {
+///     DataType out_dtype;
+///
+///     static constexpr const char* _type_key = "relax.attrs.MatmulAttrs";
+///     static const constexpr bool _type_final = true;
+///     static const constexpr int _type_child_slots = 0;
+///     ......
+///     template <typename FVisit>
+///     void _tvm_VisitAttrs(FVisit& _tvm_fvisit) {
+///       _tvm_fvisit("out_dtype", &out_dtype).describe(
+///         "The data type of the output tensor");
+///     }
+///   };
+/// @endcode
+///
+/// The call to `_tvm_VisitAttrs` is located at the following methods:
+/// template <typename Derived>
+/// 1. void AttrsNode<Derived>::VisitAttrs(AttrVisitor* v);
+/// 2. void AttrsNode<Derived>::VisitNonDefaultAttrs(AttrVisitor* v);
+/// 3. void AttrsNode<Derived>::InitByPackedArgs(const runtime::TVMArgs& args,
+///                                              bool allow_unknown);
+/// 4. bool AttrsNode<Derived>::SEqualReduce(const DerivedType* other,
+///                                          SEqualReducer equal);
+/// 5. void AttrsNode<Derived>::SHashReduce(SHashReducer hash_reducer);
+/// 6. Array<AttrFieldInfo> AttrsNode<Derived>::ListFieldInfo();
+/// where `Derived` is the `struct MatmulAttrs`.
+///
+/// @todo (yangjianchao)
 void IrAllAttrsIntroTest() {
   LOG_SPLIT_LINE("IrAllAttrsIntroTest");
 
@@ -319,6 +381,13 @@ void IrAllAttrsIntroTest() {
   LOG_PRINT_VAR(attrs);
   /// Output:
   ///   attrs: relax.attrs.MatmulAttrs(0x16cb9a8)
+
+  /// @brief MatmulAttrs <- AttrsNode <- BaseAttrsNode <- Object
+  tvm::relax::MatmulAttrs *attrptr =
+      static_cast<tvm::relax::MatmulAttrs *>(const_cast<BaseAttrsNode *>(attrs.get()));
+  LOG_PRINT_VAR(attrptr->out_dtype);
+  /// Output:
+  ///   attrptr->out_dtype: float32
 }
 
 }  // namespace attrs_test

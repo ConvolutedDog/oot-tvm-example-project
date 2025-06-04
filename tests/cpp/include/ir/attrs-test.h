@@ -4,6 +4,7 @@
 #include "tvm/runtime/memory.h"
 #include <tvm/ir/expr.h>
 #include <tvm/runtime/container/map.h>
+#include <tvm/runtime/logging.h>
 #include <tvm/runtime/object.h>
 
 namespace attrs_test {
