@@ -122,13 +122,41 @@ void TirBufferStoreTest() {
   /// Annotate the region where the buffer need to be read and write in the body. We only
   /// need to allocate the space for the corresponding region.
   ///
-  /// @todo (yangjianchao) Supplement more details about `BufferRealize`.
+  /// @note Supplement more details about `BufferRealize`.
+  ///
+  /// In TVM's TensorIR, `T.realize` is a directive used to explicitly specify the portion
+  /// of a buffer that should be computed and stored in memory. It allows fine-grained
+  /// control over which parts of a buffer are "materialized" (i.e., allocated and
+  /// computed), while ignoring unused regions for optimization.
+  /// @code{.py}
+  ///     buffer = T.Buffer((10,))          # Declare a buffer of size 10
+  ///     with T.realize(buffer[0:1]):      # Only compute buffer[0], skip buffer[1:9]
+  ///         T.evaluate(0)                 # Placeholder operation
+  /// @endcode
+  /// The above code indicates that only the first element of the buffer is computed,
+  /// while the rest are ignored. This can help reduce memory usage and improve
+  /// performance by avoiding unnecessary computations.
+  ///
+  /// Why Not Declare a Smaller Buffer?
+  ///
+  /// If we declare `buffer = T.Buffer((1,))` instead of `(10,)`:
+  /// 1. Loss of Context: The original intent (a subset of a larger buffer) becomes
+  ///    unclear.
+  /// 2. Compiler Constraints: Some operations may require the full logical shape (e.g.,
+  ///    for shape inference).
+  ///
+  /// `T.realize` provides a balance-keeping the logical shape intact while optimizing
+  /// physical computation.
   LOG_SPLIT_LINE("BufferRealize");
   BufferRealize bufferrealize{
       buffer,
       {
-        {var1 * 128, var1 * 128 + var2},
-        },
+        {var1, var2},  /// The indices of the buffer to be realized.
+                         /// The indices of the buffer to be realized. Here, we use `var1`
+                         /// and `var2` to indicate the range of the buffer to be
+                         /// realized. For example, if `var1=0` and `var2=10`, then the
+                         /// buffer will be realized from `buffer[0]` to `buffer[9]`.
+      },
       tvm::tir::const_true(1),
       bufferstore
   };
@@ -139,11 +167,13 @@ void TirBufferStoreTest() {
   ///   arg2 = T.int32()
   ///   with T.realize(buffer[arg1:arg1 + (arg2 - arg1)]):
   ///       input = T.float32()
-  ///       buffer[arg1, arg2] = T.Broadcast(input, 4)
+  ///       buffer[arg1, arg2] = T.Shuffle(
+  ///         [T.float32(1.0), T.float32(2.0), T.float32(3.0), T.float32(4.0)],
+  ///         [0, 1, 2, 3])
 
   /// DeclBuffer: Declare a buffer that can be used in the body.
   ///
-  /// @todo (yangjianchao) Supplement more details about DeclBuffer.
+  /// @note Supplement more details about DeclBuffer.
   LOG_SPLIT_LINE("DeclBuffer");
   Evaluate evaluate{buffer->elem_offset};
   DeclBuffer declbuffer{buffer, evaluate};
@@ -173,6 +203,22 @@ void TirBufferStoreTest() {
   ///                      offset_factor=64) as buffer:
   ///       T.evaluate(0)
   ///   T.evaluate(0)
+
+  /// Stmt SeqStmt::Flatten()
+  ///
+  /// Construct a sequence statement by flattening all the arrays and sequences in the
+  /// arguments recursively.
+  LOG_SPLIT_LINE("SeqStmt::Flatten");
+  SeqStmt flatseqstmt{
+      {seqstmt, bufferstore}
+  };
+  LOG_SPLIT_LINE("======= SeqStmt::Flatten =======");
+  LOG_PRINT_VAR(flatseqstmt);
+  LOG_SPLIT_LINE("======= SeqStmt::Flatten =======");
+  LOG_PRINT_VAR(SeqStmt::Flatten(Array<Stmt>{
+      {seqstmt, bufferstore}
+  }));
+  LOG_SPLIT_LINE("======= SeqStmt::Flatten =======");
 }
 
 void TirProducerStoreTest() {
@@ -443,6 +489,11 @@ void TirPrefetchTest() {
   ///   buffer = T.match_buffer(buffer[0:128, 0:128], (128, 128), "float32x4",
   ///                           strides=(128, 1), offset_factor=64)
 
+  LOG_SPLIT_LINE("PointerBufferRegion");
+  BufferRegion pointerbufferregion = BufferRegion::FromPoint(buffer, {1, 2});
+  LOG_PRINT_VAR(pointerbufferregion);
+  /// Output: pointerbufferregion: buffer[1, 2]
+
   /// Block
   LOG_SPLIT_LINE("Block");
   IterVar i = IterVar(tvm::Range(0, 128), Var{"i"}, tvm::tir::IterVarType::kDataPar);
@@ -471,6 +522,16 @@ void TirPrefetchTest() {
       block
   };
   LOG_PRINT_VAR(blockrealize);
+  /// Output:
+  ///   i = T.int32()
+  ///   j = T.int32()
+  ///   with T.block("block"):
+  ///       i = T.axis.spatial(128, i)
+  ///       j = T.axis.spatial(128, j)
+  ///       buffer = T.Buffer((128, 128), "float32x4", strides=(128, 1), offset_factor=64)
+  ///       T.reads(buffer[0:i, 0:j])
+  ///       T.writes(buffer[64:64 + (128 + i - 64), 16:16 + (64 + j - 16)])
+  ///       T.evaluate(1)
 }
 
 void TirTypeAnnotationTest() {
