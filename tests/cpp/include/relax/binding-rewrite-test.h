@@ -1,0 +1,32 @@
+#include <tvm/ir/expr.h>
+#include <tvm/ir/module.h>
+#include <tvm/relax/binding_rewrite.h>
+#include <tvm/relax/expr.h>
+#include <tvm/relax/struct_info.h>
+#include <tvm/runtime/container/optional.h>
+#include <tvm/runtime/data_type.h>
+#include <tvm/runtime/ndarray.h>
+#include <utils.h>
+namespace binding_rewrite_test {
+using tvm::DataType;
+using tvm::IRModule;
+using tvm::Op;
+using tvm::relax::Binding;
+using tvm::relax::BindingBlock;
+using tvm::relax::Call;
+using tvm::relax::Constant;
+using tvm::relax::DataflowBlock;
+using tvm::relax::DataflowBlockRewrite;
+using tvm::relax::Function;
+using tvm::relax::SeqExpr;
+using tvm::relax::ShapeExpr;
+using tvm::relax::TensorStructInfo;
+using tvm::relax::Var;
+using tvm::relax::VarBinding;
+using tvm::runtime::NDArray;
+using tvm::runtime::NullOptType;
+using tvm::runtime::ShapeTuple;
+using tvm::GlobalVar;
+using tvm::relax::DataflowVar;
+void DataflowBlockRewriteTest();
+}  // namespace binding_rewrite_test
