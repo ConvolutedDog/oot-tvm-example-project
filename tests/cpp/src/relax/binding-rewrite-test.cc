@@ -94,13 +94,12 @@ void DataflowBlockRewriteTest() {
     */
 
     VarBinding bind1(lv0, x);
-    VarBinding bind2(lv1,Call(Op::Get("relax.multiply"),{x,x}));
+    VarBinding bind2(lv1, Call(Op::Get("relax.multiply"), {x, x}));
     VarBinding bind3(lv2, lv0);
     VarBinding bind4(lv3, lv0);
-    VarBinding bind5(lv4,Call(Op::Get("relax.add"), {lv2, lv3}));
+    VarBinding bind5(lv4, Call(Op::Get("relax.add"), {lv2, lv3}));
 
-
-    DataflowBlock dfb({bind1, bind2, bind3, bind4,bind5});
+    DataflowBlock dfb({bind1, bind2, bind3, bind4, bind5});
 
     SeqExpr body({dfb}, lv4);
     Function fn({x}, body, info);

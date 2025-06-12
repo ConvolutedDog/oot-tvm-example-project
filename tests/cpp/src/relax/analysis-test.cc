@@ -42,20 +42,20 @@ void BaseCheckTest() {
   PrimStructInfo prim1(DataType::Float(32));
 
   ShapeStructInfo shape0(-1);
-  ShapeStructInfo shape1({2,2});
+  ShapeStructInfo shape1({2, 2});
 
   tvm::tir::Var m("m", DataType::Int(64)), n("n", DataType::Int(64));
-  ShapeStructInfo shape2({m,n});
+  ShapeStructInfo shape2({m, n});
 
-  TensorStructInfo tensor0(DataType::Int(32),-1);
-  TensorStructInfo tensor1(DataType::Int(32),2);
-  
+  TensorStructInfo tensor0(DataType::Int(32), -1);
+  TensorStructInfo tensor1(DataType::Int(32), 2);
+
   assert(StructInfoBaseCheck(prim0, prim1) == BaseCheckResult::kFailL0);
-  assert(StructInfoBaseCheck(prim0,obj0) == BaseCheckResult::kFailL1);
-  assert(StructInfoBaseCheck(shape2,shape1) == BaseCheckResult::kFailL2);
+  assert(StructInfoBaseCheck(prim0, obj0) == BaseCheckResult::kFailL1);
+  assert(StructInfoBaseCheck(shape2, shape1) == BaseCheckResult::kFailL2);
   assert(StructInfoBaseCheck(prim0, prim0) == BaseCheckResult::kPass);
 
-  LOG_PRINT_VAR(StructInfoBaseCheckPrecondition(shape2,shape1));
+  LOG_PRINT_VAR(StructInfoBaseCheckPrecondition(shape2, shape1));
 
   /// @todo @BenkangPeng The rest of `analysis.h` are not implemented yet.
 }

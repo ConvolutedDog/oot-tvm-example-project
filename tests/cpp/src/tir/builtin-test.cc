@@ -7,29 +7,92 @@
 #include "tvm/target/codegen.h"
 #include "tvm/tir/transform.h"
 #include <tvm/ir/expr.h>
+#include <tvm/ir/module.h>
 #include <tvm/runtime/container/optional.h>
+#include <tvm/tir/function.h>
 
 namespace builtin_test {
+
+tvm::IRModule IRModuleWrapper(tvm::tir::Call funccall,
+                              tvm::runtime::Array<tvm::tir::Var> funcparams,
+                              tvm::Type rettype) {
+  tvm::tir::PrimFunc func(std::move(funcparams), tvm::tir::Evaluate(std::move(funccall)),
+                          std::move(rettype));
+
+  tvm::runtime::Map<tvm::GlobalVar, tvm::BaseFunc> funcmap;
+  funcmap.Set(tvm::GlobalVar("main"), func);
+
+  tvm::IRModule irmodule{funcmap};
+  return irmodule;
+}
 
 void TirretTest() {
   LOG_SPLIT_LINE("TirretTest");
 
-  auto &op = ret();
-  LOG_PRINT_VAR(op->name);
-  tvm::tir::Call call{tvm::DataType::Float(32), op, {tvm::PrimExpr{1}}};
+  tvm::tir::Var x("x", tvm::DataType::Float(32));
+  tvm::tir::Var y("y", tvm::DataType::Float(32));
+
+  tvm::tir::Call call{tvm::DataType::Float(32), ret(), {tvm::PrimExpr{x + y}}};
   LOG_PRINT_VAR(call);
+
+  tvm::IRModule irmodule =
+      IRModuleWrapper(call, {x, y}, tvm::PrimType(tvm::DataType::Float(32)));
+  LOG_PRINT_VAR(irmodule);
+
+  tvm::transform::Pass lowerTVMBuiltin = tvm::tir::transform::LowerTVMBuiltin();
+  irmodule = lowerTVMBuiltin(irmodule);
+  LOG_PRINT_VAR(irmodule);
 }
 
 void TirreinterpretTest() {
   LOG_SPLIT_LINE("TirreinterpretTest");
-  auto &op = reinterpret();
-  LOG_PRINT_VAR(op->name);
-  tvm::tir::Call call{tvm::DataType::Float(32), op, {tvm::PrimExpr{1}}};
+
+  tvm::tir::Var x("x", tvm::DataType::Int(32));
+
+  tvm::tir::Call call{tvm::DataType::Float(32), reinterpret(), {tvm::PrimExpr{x}}};
+  
+  tvm::IRModule irmodule =
+      IRModuleWrapper(call, {x}, tvm::PrimType());
+  LOG_PRINT_VAR(irmodule);
+  
+  tvm::transform::Pass lowerTVMBuiltin = tvm::tir::transform::LowerTVMBuiltin();
+  irmodule = lowerTVMBuiltin(irmodule);
+  LOG_PRINT_VAR(irmodule);
 }
 
-void TirlikelyTest() {}
+void TirlikelyTest() {
+  LOG_SPLIT_LINE("TirlikelyTest");
 
-void Tirbitwise_andTest() {}
+  tvm::tir::Var x("x", tvm::DataType::Int(32));
+
+  tvm::tir::Call call{tvm::DataType::Float(32), likely(), {tvm::PrimExpr{x}}};
+  
+  tvm::IRModule irmodule =
+      IRModuleWrapper(call, {x}, tvm::PrimType());
+  LOG_PRINT_VAR(irmodule);
+  
+  tvm::transform::Pass lowerTVMBuiltin = tvm::tir::transform::LowerTVMBuiltin();
+  irmodule = lowerTVMBuiltin(irmodule);
+  LOG_PRINT_VAR(irmodule);
+}
+
+void Tirbitwise_andTest() {
+  LOG_SPLIT_LINE("Tirbitwise_andTest");
+
+  tvm::tir::Var x("x", tvm::DataType::Int(32));
+  tvm::tir::Var y("y", tvm::DataType::Int(32));
+
+  tvm::tir::Call call{tvm::DataType::Int(32), bitwise_and(), {x, y}};
+  LOG_PRINT_VAR(call);
+
+  tvm::IRModule irmodule =
+      IRModuleWrapper(call, {x, y}, tvm::PrimType(tvm::DataType::Float(32)));
+  LOG_PRINT_VAR(irmodule);
+
+  tvm::transform::Pass lowerTVMBuiltin = tvm::tir::transform::LowerTVMBuiltin();
+  irmodule = lowerTVMBuiltin(irmodule);
+  LOG_PRINT_VAR(irmodule);
+}
 
 void Tirbitwise_orTest() {}
 
