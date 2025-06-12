@@ -12,7 +12,6 @@
 namespace analysis_test {
 using tvm::DataType;
 using tvm::PrimExpr;
-using tvm::With;
 using tvm::arith::Analyzer;
 using tvm::relax::BaseCheckResult;
 using tvm::relax::CanProveShapeEqual;
@@ -29,6 +28,7 @@ using tvm::relax::TensorStructInfo;
 using tvm::relax::TensorType;
 using tvm::runtime::Map;
 using tvm::runtime::Registry;
+using tvm::With;
 void AnalysisTest();
 void BaseCheckTest();
 

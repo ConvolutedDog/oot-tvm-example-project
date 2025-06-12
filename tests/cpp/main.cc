@@ -64,10 +64,9 @@ void TestMethod2(bool listAllNames, bool onlyListAllNames) {
   // registry->RunTestSuite("relax_expr_test_RelaxTupleGetItemTest");
   // registry->RunTestSuite("relax_expr_test_RelaxLeafExprTest");
   // registry->RunTestSuite("relax_expr_test_RelaxBindTest");
-  // registry->RunTestSuite("relax_binding_rewrite_test_DataflowBlockRewriteTest");
-  // registry->RunTestSuite("relax_analysis_test_AnalysisTest");
-  // registry->RunTestSuite("relax_analysis_test_BaseCheckTest");
-  // registry->RunTestSuite("relax_binding_rewrite_test_DataflowBlockRewriteTest");
+  registry->RunTestSuite("relax_binding_rewrite_test_DataflowBlockRewriteTest");
+  registry->RunTestSuite("relax_analysis_test_AnalysisTest");
+  registry->RunTestSuite("relax_analysis_test_BaseCheckTest");
   // registry->RunTestSuite("ir_module_test_IrModuleTest");
   // registry->RunTestSuite("target_target_kind_test_TargetTargetKindTest");
   // registry->RunTestSuite("target_target_test_TargetTargetTest");
