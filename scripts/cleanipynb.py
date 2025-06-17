@@ -35,7 +35,7 @@ if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(script_dir)
     ipynb_files = glob.glob(os.path.join(project_root, 'tests/python/**/*.ipynb'), recursive=True)
-
+    print(ipynb_files)
     for ipynb in ipynb_files:
         print(f"Cleaning: {ipynb}")
         clean_notebook(ipynb)
