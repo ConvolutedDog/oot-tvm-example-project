@@ -6,7 +6,10 @@ repos:
         language: system
         entry: |
           jq --indent 1 '
-            del(.cells[].execution_count, .cells[].id, .metadata.kernelspec.display_name, .metadata.language_info.version)
+            (.cells[] | select(has("execution_count"))).execution_count = null |
+            (.cells[] | select(has("id"))).id = null |
+            del(.metadata.kernelspec?.display_name?,
+                .metadata.language_info?.version?)
           '
         files: \.ipynb$
         pass_filenames: true
