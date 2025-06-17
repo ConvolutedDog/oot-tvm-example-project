@@ -5,7 +5,7 @@ repos:
         name: Clean Jupyter Notebooks
         language: system
         entry: |
-          jq --indent 1 '
+          jq --indent 1 -i '
             (.cells[] | select(has("execution_count"))).execution_count = null |
             (.cells[] | select(has("id"))).id = null |
             del(.metadata.kernelspec?.display_name?,
