@@ -1,11 +1,14 @@
 repos:
-  - repo: git@github.com:kynan/nbstripout
-    rev: 0.8.1
-    hooks:
-      - id: nbstripout
-        args:
-          [
-            --extra-keys='metadata.kernelspec metadata.language_info',
-            --extra-keys='cells.id',
-            --extra-keys='cells.execution_count'
-          ]
+- repo: local
+  hooks:
+    - id: jq-notebook-clean
+      name: Clean Jupyter Notebooks
+      language: system
+      entry: |
+        jq --indent 1 '
+          del(.cells[].execution_count, .cells[].id) |
+          del(.metadata.kernelspec, .metadata.language_info)
+        '
+      files: \.ipynb$
+      pass_filenames: true
+      types_or: [file]
