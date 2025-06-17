@@ -5,12 +5,26 @@ repos:
       name: Clean Jupyter Notebooks
       language: system
       entry: |
-        printf "%s\n" "$@" | xargs -I{} sh -c '
-          jq --indent 1 "
-            del(.cells[].execution_count?, .cells[].id?) |
-            del(.metadata.kernelspec?.display_name?, .metadata.language_info?.version?)
-          " "{}" > "{}.tmp" && mv "{}.tmp" "{}" && echo "Cleaned: {}"
-        '
+        python -c '
+        import sys, json
+        for f in sys.argv[1:]:
+            try:
+                with open(f, "r+") as fp:
+                    data = json.load(fp)
+                    # 删除指定字段
+                    for cell in data.get("cells", []):
+                        cell.pop("execution_count", None)
+                        cell.pop("id", None)
+                    data.get("metadata", {}).get("kernelspec", {}).pop("display_name", None)
+                    data.get("metadata", {}).get("language_info", {}).pop("version", None)
+                    # 写回文件
+                    fp.seek(0)
+                    json.dump(data, fp, indent=1)
+                    fp.truncate()
+            except Exception as e:
+                print(f"Error processing {f}: {e}", file=sys.stderr)
+                sys.exit(1)
+          ' "$@"
       files: \.ipynb$
       pass_filenames: true
       types_or: [file]
