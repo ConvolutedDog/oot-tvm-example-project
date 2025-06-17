@@ -1,14 +1,13 @@
 repos:
-- repo: local
-  hooks:
-    - id: jq-notebook-clean
-      name: Clean Jupyter Notebooks
-      language: system
-      entry: |
-        jq --indent 1 '
-          del(.cells[].execution_count, .cells[].id) |
-          del(.metadata.kernelspec.display_name, .metadata.language_info.version)
-        '
-      files: \.ipynb$
-      pass_filenames: true
-      types_or: [file]
+  - repo: local
+    hooks:
+      - id: jq-notebook-clean
+        name: Clean Jupyter Notebooks
+        language: system
+        entry: |
+          jq --indent 1 '
+            del(.cells[].execution_count, .cells[].id, .metadata.kernelspec.display_name, .metadata.language_info.version)
+          '
+        files: \.ipynb$
+        pass_filenames: true
+        types_or: [file]
