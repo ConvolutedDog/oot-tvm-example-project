@@ -5,12 +5,14 @@ repos:
         name: Clean Jupyter Notebooks
         language: system
         entry: |
-          jq --indent 1 -i '
-            (.cells[] | select(has("execution_count"))).execution_count = null |
-            (.cells[] | select(has("id"))).id = null |
-            del(.metadata.kernelspec?.display_name?,
-                .metadata.language_info?.version?)
-          '
+          echo "$@" && find "$@" -type f -name "*.ipynb" -exec sh -c '
+            jq --indent 1 "
+              del(.cells[].execution_count?,
+                  .cells[].id?,
+                  .metadata.kernelspec?.display_name?,
+                  .metadata.language_info?.version?)
+            " "$1" > "$1.tmp" && mv "$1.tmp" "$1"
+          ' sh {} \;
         files: \.ipynb$
         pass_filenames: true
         types_or: [file]
