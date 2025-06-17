@@ -32,6 +32,6 @@ def clean_notebook(file_path):
 
 
 if __name__ == "__main__":
-    for ipynb in glob.glob("../tests/python/**/*.ipynb", recursive=True):
+    for ipynb in glob.glob("../tests/python/tvm/**/*-test.ipynb", recursive=True):
         print(f"Cleaning: {ipynb}")
         clean_notebook(ipynb)
