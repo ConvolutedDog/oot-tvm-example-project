@@ -3,7 +3,6 @@
 
 #include "test-func-registry.h"
 #include <sys/ioctl.h>
-#include <tvm/../../src/node/attr_registry.h>
 #include <tvm/ir/module.h>
 #include <tvm/relax/expr.h>
 #include <tvm/runtime/container/optional.h>
@@ -11,6 +10,9 @@
 #include <tvm/tir/function.h>
 #include <type_traits>
 #include <unistd.h>
+
+using tvm::runtime::TVMRetValue;
+#include <tvm/../../src/node/attr_registry.h>
 
 using std::string;
 using std::vector;

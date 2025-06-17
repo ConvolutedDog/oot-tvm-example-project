@@ -1,0 +1,11 @@
+repos:
+  - repo: git@github.com:kynan/nbstripout
+    rev: 0.8.1
+    hooks:
+      - id: nbstripout
+        args:
+          [
+            --extra-keys='metadata.kernelspec metadata.language_info',
+            --extra-keys='cells.id',
+            --extra-keys='cells.execution_count'
+          ]

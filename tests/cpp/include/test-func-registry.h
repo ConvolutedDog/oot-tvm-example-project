@@ -1,6 +1,7 @@
 #ifndef TEST_FUNC_REGISTRY
 #define TEST_FUNC_REGISTRY
 
+#include <tvm/runtime/packed_func.h>
 #include "tvm/runtime/container/array.h"
 #include "tvm/runtime/container/string.h"
 
