@@ -7,7 +7,7 @@ repos:
       entry: |
         jq --indent 1 '
           del(.cells[].execution_count, .cells[].id) |
-          del(.metadata.kernelspec, .metadata.language_info)
+          del(.metadata.kernelspec.display_name, .metadata.language_info.version)
         '
       files: \.ipynb$
       pass_filenames: true
