@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: clean-ipynb
+        name: Clean Jupyter Notebooks
+        entry: python3 ./scripts/cleanipynb.py
+        language: system
+        types: [jupyter]
+        stages: [pre-commit]
