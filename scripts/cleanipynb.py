@@ -9,13 +9,15 @@ def clean_notebook(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
         notebook = json.load(f)
 
+    cellid = 0
     for cell in notebook.get("cells", []):
         if "execution_count" in cell:
-            del cell["execution_count"]
+            cell["execution_count"] = None
         if "id" in cell:
-            del cell["id"]
+            cell["id"] = str(cellid)
+            cellid += 1
         if "metadata" in cell:
-            del cell["metadata"]
+            cell["metadata"] = {}
         if "outputs" in cell:
             del cell["outputs"]
 
