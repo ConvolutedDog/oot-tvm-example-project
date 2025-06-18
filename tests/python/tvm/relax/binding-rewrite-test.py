@@ -106,7 +106,7 @@ rewrite.replace_all_uses(lv0, lv1)
 rewrite.remove_all_unused()
 rewrite.mutated_root_fn().show()
 rewrite.mutate_irmodule(Lv0To1).show()
-        #   lv1 => lv0
+        #   lv1
         #  /   \
         # lv2  lv3
         #  \   /
