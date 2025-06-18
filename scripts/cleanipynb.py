@@ -68,7 +68,7 @@ def clean_notebook(file_path: str) -> None:
         if "metadata" in cell:
             cell["metadata"] = {}
         if "outputs" in cell:
-            del cell["outputs"]
+            cell["outputs"] = []
 
     # if "metadata" in notebook:
     #     del notebook["metadata"]
