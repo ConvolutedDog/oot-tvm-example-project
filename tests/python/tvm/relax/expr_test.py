@@ -163,8 +163,9 @@ def test_call():
     x = rx.Var("x", R.Tensor(ndim=-1))
     y = rx.Var("y", R.Tensor(ndim=-1))
     z = rx.Call(tvm.ir.Op.get("relax.add"), [x, y])
+    m = rx.op.add(x, z)
 
-    func = rx.Function([x, y], z, R.Tensor(ndim=-1))
+    func = rx.Function([x, y], m, R.Tensor(ndim=-1))
     print(func)
 
 
