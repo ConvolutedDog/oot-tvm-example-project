@@ -160,15 +160,12 @@ def test_prim_value():
 
 @register
 def test_call():
-    x = rx.Var("x")
-    y = rx.Var("y")
+    x = rx.Var("x", R.Tensor(ndim=-1))
+    y = rx.Var("y", R.Tensor(ndim=-1))
     z = rx.Call(tvm.ir.Op.get("relax.add"), [x, y])
 
-    # BUG @BenkangPeng
-    # dtype = rx.PrimStructInfo("int32")
-    # func = rx.Function([x, y], z, R.Tensor(ndim=-1))
-    # call1 = rx.Call(func, [x, y])
-    # print(call1)
+    func = rx.Function([x, y], z, R.Tensor(ndim=-1))
+    print(func)
 
 
 if __name__ == "__main__":
