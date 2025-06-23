@@ -39,6 +39,8 @@ def test_vm_build():
     mod2 = matmul_mod
     target = tvm.target.Target("llvm", host="llvm")
     ex = tvm.relax.build(mod2, target, exec_mode="compiled")
+    # we can aslo use `tvm.compile` to build the module
+    # ex = tvm.compile(mod2, target=target)
 
     # BUG @benkangpeng The content printed below is meaningless.
     # ex: VMExecutable
