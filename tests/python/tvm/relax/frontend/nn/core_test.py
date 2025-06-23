@@ -42,6 +42,10 @@ def test_Module():
             x = self.fc2(x)
             return x
 
+    # NOTE use the `export_tvm` to export the model to IRModule
+    # `spec` is the dictionary where
+    # * the keys are the method names to export
+    # * the values are dictionaries mapping parameter names to their specifications.
     mod, param_spec = MyModel().export_tvm(
         spec={"forward": {"x": nn.spec.Tensor((1, 784), "float32")}}
     )
