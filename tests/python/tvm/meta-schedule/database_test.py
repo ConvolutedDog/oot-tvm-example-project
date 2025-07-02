@@ -265,6 +265,12 @@ def test_PyDatabase():
             return None
 
 
+@register
+def test_memory_database():
+    pass
+
+# TODO Test `ordered_union_database`, `union_database`, and `schedule fn database`.
+# TAG Low priority
 
 
 if __name__ == "__main__":
